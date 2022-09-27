@@ -42,8 +42,7 @@
             </form>
         </div>
 
-
-
+        <Notification></Notification>
 
     </div>
 </template>
@@ -53,9 +52,13 @@
 
 import BaseRequest from '../../restful/admin/core/BaseRequest';
 import useEventBus from '../../composables/useEventBus'
+import Notification from './Notification'
 
 export default {
     name : "ProfileAdmin",
+    components: {
+      Notification
+    },
     created(){
         document.title = "Meta Shop - Admin Profile"
     },
@@ -77,45 +80,57 @@ export default {
                 updated_at:null,
                 email_verified_at:null,
             },
-            err:null,
+            err:{
+                fullname:[],
+                email:[],
+                username:[],
+                address:[],
+                phone:[],
+                age:[],
+            },
         }
     },
     setup(){
-      const { emitEvent } = useEventBus()
       return {
-        geneEvent:function(){
-          emitEvent('geneEvent');
-        },
+
       }
     },
     computed(){
 
     },
     mounted(){
-        var ad = JSON.parse(window.localStorage.getItem('admin'));
-        console.log(ad);
-        this.admin = ad.user;
-        this.admin.access_token = ad.access_token;
-        console.log(this.admin);
+        this.admin = JSON.parse(window.localStorage.getItem('admin'));
+        // console.log(this.admin);
     },
     methods:{
         saveInfor:function(){
-            alert("Chỉnh sửa thông tin thành công !");
-            let s = JSON.stringify(this.admin);
+            let iadmin = JSON.stringify(this.admin);
             BaseRequest.patch('api/auth/update-infor',this.admin)
             .then( (data) =>{
-                console.log(data);
-                alert("Chỉnh sửa thông tin thành công !");
-                window.localStorage.setItem('admin',s);
-                this.geneEvent();
+                // console.log(data);
+                const { emitEvent } = useEventBus();
+                emitEvent('eventSuccess','Edit Information Success !');
+
+                window.localStorage.setItem('admin',iadmin);
                 this.err = null;
             }) 
             .catch(error=>{
-                console.log(error);
+                this.err = error.response.data;
+                var error2 = this.err;
+
+                if(error2.fullname) this.inError(error2.fullname);
+                if(error2.username) this.inError(error2.username);
+                if(error2.email) this.inError(error2.email);
+                if(error2.address) this.inError(error2.address);
+                if(error2.phone) this.inError(error2.phone);
+                if(error2.age) this.inError(error2.age);
                 // this.err = error.reponse.status;
             })
+        },
+        inError:function(er){
+            const { emitEvent } = useEventBus();
+            for(var i=0;i<er.length;i++) emitEvent('eventError',er[i]);
         }
-            
     }
 }
 </script>

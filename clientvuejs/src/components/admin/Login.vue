@@ -19,11 +19,8 @@
           </form>
       </div>
     </div>
-  <Notification></Notification>
+    <Notification></Notification>
 
-
-
-    
   </div>
 </template>
 
@@ -39,12 +36,11 @@ export default {
     },
     data(){
         return {
-            loginAdmin:{
-				email:'',
-				password:''
-			},
-			error:null,
-      
+          loginAdmin:{
+            email:'',
+            password:''
+          },
+          error:null,
       }
     },
     methods: {
@@ -56,7 +52,7 @@ export default {
         .then( data => {
           // console.log("login success !");
           // alert("Đăng nhập thành công !");
-          window.localStorage.setItem('admin',JSON.stringify(data));
+          this.setdata(data);
           this.error = null ;
 
           const { emitEvent } = useEventBus();
@@ -79,12 +75,35 @@ export default {
           // console.log("login false !");
         })
       },
+      setdata:function(data){
+        // console.log(data);
+        var admin = {
+            id:null,
+            fullname:'',
+            username:'',
+            email: '',
+            phone: '',
+            age:null,
+            gender:null,
+            address:'',
+            role:'',
+            access_token:'',
+            refreshToken:'',
+            created_at:null,
+            updated_at:null,
+            email_verified_at:null,
+          }
+          admin = data.user;
+          admin.access_token = data.access_token;
+          window.localStorage.setItem('admin',JSON.stringify(admin));
+      },
       logoClick:function(){
           this.$router.push({name:'UserComp'});
       },
       adminlogin:function(){
           window.location=window.location.href;
       }
+
     },
     mounted(){
         window.document.title='MetaShop | Login';
@@ -110,7 +129,7 @@ export default {
   padding-top: 10px;
   padding-left: 30px;
   padding-right: 30px;
-  height: 800px;
+  height: 577px;
  }
  body{
    display: flex;
