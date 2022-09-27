@@ -6,8 +6,8 @@
                     <img src="https://scontent.fhan2-2.fna.fbcdn.net/v/t39.30808-6/301678115_1498049667305947_5629003224171269722_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=174925&_nc_ohc=S8s02QE6SugAX9INJu2&_nc_ht=scontent.fhan2-2.fna&oh=00_AT_PYQy-O06OS1Iwodw1k9YErHEcKV7GFIQtecgtg0D08g&oe=63378486">
                 </div>
                 <div id="pr2">
-                    <div id="name">{{admin.fullname}}</div>
-                    <div id="role">{{admin.role}}</div>
+                    <div id="name">{{inf.fullname}}</div>
+                    <div id="role">{{inf.role}}</div>
                 </div>
             </div>
             <div>
@@ -80,6 +80,10 @@ export default {
                 updated_at:null,
                 email_verified_at:null,
             },
+            inf:{
+                role:'',
+                fullname:'',
+            },
             err:{
                 fullname:[],
                 email:[],
@@ -100,6 +104,8 @@ export default {
     },
     mounted(){
         this.admin = JSON.parse(window.localStorage.getItem('admin'));
+        this.inf.fullname = this.admin.fullname;
+        this.inf.role = this.admin.role;
         // console.log(this.admin);
     },
     methods:{
@@ -112,6 +118,8 @@ export default {
                 emitEvent('eventSuccess','Edit Information Success !');
 
                 window.localStorage.setItem('admin',iadmin);
+                this.inf.fullname = this.admin.fullname;
+                this.inf.role = this.admin.role;
                 this.err = null;
             }) 
             .catch(error=>{
