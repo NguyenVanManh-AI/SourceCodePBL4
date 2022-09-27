@@ -13,7 +13,13 @@
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.0",
-        "laravel/tinker": "^2.0"
+        "laravel/sanctum": "^2.15",
+        "laravel/socialite": "^5.5",
+        "laravel/tinker": "^2.0",
+        "nesbot/carbon": "^2.62",
+        "socialiteproviders/google": "^4.1",
+        "tomfordrumm/jwt-auth": "dev-develop",
+        "tymon/jwt-auth": "^1.0"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",
