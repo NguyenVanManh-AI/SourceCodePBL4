@@ -107,12 +107,15 @@ export default {
         this.inf.fullname = this.admin.fullname;
         this.inf.role = this.admin.role;
         // console.log(this.admin);
+
+        // var s = "{\"name\":[\"The name field is required.\"],\"email\":[\"The email field is required.\"],\"password\":[\"The password field is required.\"]}";
+        // console.log(JSON.parse(s.replace('\ ','')));
     },
     methods:{
         saveInfor:function(){
             let iadmin = JSON.stringify(this.admin);
             BaseRequest.patch('api/auth/update-infor',this.admin)
-            .then( (data) =>{
+            .then( () =>{
                 // console.log(data);
                 const { emitEvent } = useEventBus();
                 emitEvent('eventSuccess','Edit Information Success !');
