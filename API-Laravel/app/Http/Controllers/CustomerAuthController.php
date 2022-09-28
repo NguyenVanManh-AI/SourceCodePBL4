@@ -69,9 +69,14 @@ class CustomerAuthController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|between:2,100',
-            'email' => 'required|string|email|max:100|unique:customers',
-            'password' => 'required|string|min:6',
+            'fullname' => 'required|string|between:2,100',
+            'email' => 'required|string|email|max:100|unique:users',
+            'username' => 'required|string|max:100|unique:users',
+            'password' => 'required|string|confirmed|min:6',
+            'address' => 'required|string|min:1',
+            'phone' => 'required|min:9|numeric',
+            'age' => 'required|numeric|min:18',
+            'gender' => 'required|in:1,0',
         ]);
 
         if ($validator->fails()) {
