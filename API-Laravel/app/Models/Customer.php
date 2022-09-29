@@ -12,9 +12,17 @@ class Customer extends Authenticatable implements JWTSubject
     use HasFactory;
 
     protected $fillable = [
-        'name',
+        'fullname',
         'email',
+        'username',
         'password',
+        'address',
+        'date_of_birth',
+        'gender',
+        'phone',
+        'url_img',
+        'status',
+        'google_id'
     ];
 
     /**
@@ -25,6 +33,11 @@ class Customer extends Authenticatable implements JWTSubject
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    // protected $hidden = [
+    //     'password',
+    //     'remember_token',
+    // ];
 
 
     /**

@@ -17,11 +17,11 @@ class NotifyMail extends Mailable
      * @return void
      */
 
-    public $code;
-    public function __construct($_code)
+    public $token;
+    public function __construct($_token)
     {
         //
-        $this->code = $_code;
+        $this->token = $_token;
 
     }
  
@@ -32,6 +32,7 @@ class NotifyMail extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.contentMail',['__code' => $this->code]);
+        $url = url('http://localhost:8080/admin/reset-password?token=' . $this->token);
+        return $this->view('emails.contentMail',['__url' => $url]);
     }
 }

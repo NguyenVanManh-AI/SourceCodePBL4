@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -109,18 +110,8 @@ class AuthController extends Controller
         return response()->json(auth('admin_api')->user());
     }
 
-    // Delete one Admin or Supper Admin 
-    public function deleteAdmin(Request $request) {
-        if($request->rolelogin == 'supper admin'){
-            $user = User::find($request->id);
-            $user->delete();
-            return response()->json([
-                'message' => 'Delete admin successfully',
-            ], 201);
-        }
-    }
-
     // Information Admins 
+    // Supper admin Lấy ra tất cả admin  
     public function allAdmins(Request $request) {
         if($request->rolelogin == 'supper admin'){
             $users = User::where('id','!=',$request->idlogin)->get(); // lấy tất cả ngoại trừ cái đứa đăng nhập 
@@ -134,16 +125,53 @@ class AuthController extends Controller
         ], 400);
     }
 
-    public function editRole(Request $request) {
+    // Delete one Admin or Supper Admin 
+    public function deleteAdmin(Request $request,$id) {
         if($request->rolelogin == 'supper admin'){
-            $user = User::find($request->id);
-            $user->update('role',$request->role);
+            $user = User::find($id);
+            $user->delete();
             return response()->json([
                 'message' => 'Delete admin successfully',
             ], 201);
         }
     }
 
+    // Supper admin chỉnh sửa role 
+    public function editRole(Request $request) {
+        if($request->rolelogin == 'supper admin'){
+            $user = User::find($request->id);
+            $user->role = $request->role;
+            $user->save();
+
+            return response()->json([
+                'message' => 'Edit Role Admin successfully',
+            ], 201);
+        }
+    }
+
+
+    // Admin lấy ra tất cả user 
+    public function allUsers() {
+        $users = Customer::all(); 
+        return response()->json([
+            'message' => 'Get all users information successfully !',
+            'user' => $users
+        ], 201);
+    }
+
+    
+    // Admin block hoặc unblock user 
+    public function editStatus(Request $request) {
+        $customer = Customer::find($request->id);
+        $customer->status = $request->status;
+        $customer->save();
+
+        // $customers = Customer::all();
+        return response()->json([
+            'message' => 'Change Status User successfully !',
+            // 'customers' => $customers,
+        ], 201);
+    }
 
 
 
