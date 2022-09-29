@@ -34,12 +34,12 @@ class AuthController extends Controller
 
     public function register(Request $request){
 
-        if($request->rolelogin == 'supper admin'){
+        if($request->rolelogin == 'super admin'){
             $validator = Validator::make($request->all(), [
                 'fullname' => 'required|string|between:2,100',
                 'email' => 'required|string|email|max:100|unique:users',
                 'password' => 'required|string|min:6',
-                'role' => 'required|in:admin,supper admin',
+                'role' => 'required|in:admin,super admin',
             ]);
     
             if($validator->fails()){
@@ -122,9 +122,9 @@ class AuthController extends Controller
     }
 
     // Information Admins 
-    // Supper admin Lấy ra tất cả admin  
+    // super admin Lấy ra tất cả admin  
     public function allAdmins(Request $request) {
-        if($request->rolelogin == 'supper admin'){
+        if($request->rolelogin == 'super admin'){
             $users = User::where('id','!=',$request->idlogin)->get(); // lấy tất cả ngoại trừ cái đứa đăng nhập 
             return response()->json([
                 'message' => 'Get all admins information successfully !',
@@ -136,9 +136,9 @@ class AuthController extends Controller
         ], 400);
     }
 
-    // Delete one Admin or Supper Admin 
+    // Delete one Admin or super Admin 
     public function deleteAdmin(Request $request,$id) {
-        if($request->rolelogin == 'supper admin'){
+        if($request->rolelogin == 'super admin'){
             $user = User::find($id);
             $user->delete();
             return response()->json([
@@ -147,9 +147,9 @@ class AuthController extends Controller
         }
     }
 
-    // Supper admin chỉnh sửa role 
+    // super admin chỉnh sửa role 
     public function editRole(Request $request) {
-        if($request->rolelogin == 'supper admin'){
+        if($request->rolelogin == 'super admin'){
             $user = User::find($request->id);
             $user->role = $request->role;
             $user->save();

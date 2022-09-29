@@ -8,7 +8,7 @@
                 </div>
                 <div id="pr2">
                     <div id="name">{{inf.fullname}}</div>
-                    <div id="role">{{inf.role}}</div>
+                    <div id="role"><i class="fa-solid fa-shield" style="color:#0085FF"></i> {{inf.role}}</div>
                 </div>
             </div>
             <div>
@@ -208,13 +208,16 @@ export default {
             })
         },
         changeforpw(){
-            console.log(this.changepw);
+            // console.log(this.changepw);
             BaseRequest.post('api/admin/change-password?id='+this.admin.id,this.changepw)
-            .then( (data) =>{
-                console.log(data);
-
+            .then( () =>{
+                // console.log(data);
                 var cl = window.document.getElementById('close'); // Nếu thành công thì cho nó tự động đóng form 
                 cl.click();
+
+                this.changepw.current_password='';
+                this.changepw.new_password='';
+                this.changepw.new_password_confirmation='';
 
                 const { emitEvent } = useEventBus();
                 emitEvent('eventSuccess','Change For Password Success !');

@@ -4,7 +4,7 @@
       <img src="../../assets/logo.png" alt="menu-logo" class="menu-logo icon" style="" @click="compadmin">
       <!-- <i v-else class="bx icon" :class="menuIcon"/> -->
       <div class="logo_name" @click="compadmin"> Meta Shop </div>
-      <i style="color: #0085FF;" class="bx" :class="isOpened ? 'bx-menu-alt-right' : 'bx-menu'" id="btn" @click="isOpened = !isOpened"/>
+      <i style="color: #0085FF;" class="bx" :class="isOpened ? 'bx-menu-alt-right' : 'bx-menu'" id="btn" @click="openN"/>
     </div>
     <div style="display: flex ; flex-direction:column; justify-content: space-between; flex-grow: 1; max-height: calc(100% - 60px); ">
       <div id="my-scroll" style="margin: 6px 14px 0 14px;">
@@ -332,6 +332,9 @@
     },
     methods:{
 
+      openN:function(){
+        this.isOpened = !this.isOpened
+      },
       dashboard:function(){
         for(var i=0;i<this.colors.length;i++) this.colors[i] = false;
         this.colors[0]=true;
