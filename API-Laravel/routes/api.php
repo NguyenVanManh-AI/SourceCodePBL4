@@ -49,6 +49,7 @@ Route::prefix('admin')->controller(AuthController::class)->group(function () { /
         Route::patch('edit-role', 'editRole');// lấy tất cả admin 
         Route::get('all-user', 'allUsers'); // admin lấy tất cả user 
         Route::patch('edit-status', 'editStatus'); // admin block hoặc unblock user , status : 1 là ok còn 0 là bị block 
+        Route::post('upfile', 'upfile'); 
     });
 });
 
@@ -56,7 +57,6 @@ Route::prefix('admin')->controller(AuthController::class)->group(function () { /
 Route::prefix('customer')->controller(CustomerAuthController::class)->group(function () {
 
     Route::post('login', 'login');
-    Route::post('login-google', 'loginGoogle');
     Route::post('register', 'register');
 
     Route::post('reset-password', 'App\Http\Controllers\ResetPasswordController@sendMail2');
@@ -64,6 +64,7 @@ Route::prefix('customer')->controller(CustomerAuthController::class)->group(func
 
     Route::middleware('auth:customer_api')->group(function () {
         Route::post('logout', 'logout');
+        Route::post('change-password', 'changePassword');// vẫn cần token , vẫn phải thông qua customer_api
         Route::patch('update-profile', 'updateProfile');// cạp nhật thông tin cá nhân 
         Route::post('me', 'me');
     });

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Validator;
 use Exception;
-
+use Hash;
 
 // login Google , use thêm Auth để hỗ trợ đăng nhập không password 
 use Illuminate\Support\Facades\Auth;
@@ -215,6 +215,47 @@ class CustomerAuthController extends Controller
             'token_type' => 'bearer',
             'expires_in' => auth()->guard('customer_api')->factory()->getTTL() * 60
         ]);
+    }
+
+
+    // change Password for Customer  
+    public function changePassword(Request $request) {
+
+        $user = Customer::find($request->id);
+        // mật khẩu trong database và mật khẩu nhập vào phải giống nhau 
+        if (!(Hash::check($request->get('current_password'), $user->password))) {
+            return response()->json([
+                'message' => 'Your current password does not matches with the password.',
+            ],400);
+        }
+
+        if(strcmp($request->get('current_password'), $request->get('new_password')) == 0){
+            return response()->json([
+                'message' => 'New Password cannot be same as your current password. ',
+                // mật khẩu mới không được giống với mật khẩu hiện tại (mật khẩu cũ)
+            ],400);
+        }
+
+        // mật khẩu mới và confirm phải giống nhau 
+        if($request->get('new_password') != $request->get('new_password_confirmation')){
+            return response()->json([
+                'message' => 'Your new password does not matches with the new password confirm.',
+            ],400);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'current_password' => 'required',
+            'new_password' => 'required|string|min:6',
+        ]);
+        if($validator->fails()){
+            return response()->json($validator->errors(), 400);
+        }
+
+        //Change Password
+        $user->update(['password' => bcrypt($request->get('new_password'))]);
+        return response()->json([
+            'message' => "Password successfully changed !",
+        ],200);
     }
 
 

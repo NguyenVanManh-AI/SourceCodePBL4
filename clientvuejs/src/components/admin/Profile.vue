@@ -3,7 +3,8 @@
         <div id="head">
             <div id="pr">
                 <div>
-                    <img src="https://scontent.fhan2-2.fna.fbcdn.net/v/t39.30808-6/301678115_1498049667305947_5629003224171269722_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=174925&_nc_ohc=S8s02QE6SugAX9INJu2&_nc_ht=scontent.fhan2-2.fna&oh=00_AT_PYQy-O06OS1Iwodw1k9YErHEcKV7GFIQtecgtg0D08g&oe=63378486">
+                    <img src='../../assets/avatar.png' v-if="this.admin.url_img == null">
+                    <img :src=url_img v-if="this.admin.url_img  != null">
                 </div>
                 <div id="pr2">
                     <div id="name">{{inf.fullname}}</div>
@@ -11,28 +12,73 @@
                 </div>
             </div>
             <div>
-                <button type="submit" class="mt-4 btn-pers" id="login_button" >Change Password</button>
+                <button type="button" class="mt-4 btn-pers" data-toggle="modal" data-target="#exampleModal"  >Change Password</button>
+
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Change Password</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">Current Password</label>
+                                <input v-model="changepw.current_password" type="password" class="form-control" id="current_pw">
+                            </div>
+                            <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">New Password</label>
+                                <input v-model="changepw.new_password" type="password" class="form-control" id="new_pw">
+                            </div>
+                            <div class="form-group">
+                                <label for="message-text" class="col-form-label">Confrim New Password</label>
+                                <input  v-model="changepw.new_password_confirmation" type="password" class="form-control" id="cf_new_pw">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="close">Close</button>
+                        <button type="button" class="btn btn-primary" @click="changeforpw()">Change Password</button>
+                    </div>
+                    </div>
+                </div>
+                </div>
+
             </div>
         </div>
         <div id="details">
-
             <div style="color:gray"><i class="fa-solid fa-pen-to-square"></i> Edit Profile</div>
             <div style="color:gray;margin-top: 30px;margin-bottom: 20px;"><i class="fa-solid fa-user"></i> USER INFORMATION</div>
             <form class="col-7 p-0" @submit.prevent="saveInfor">
                 <div class="dt1">
                     <div><label>Username</label><input v-model="admin.username" placeholder="Username" style="width:260px" type="text" class="form-control" ></div>
                     <div><label>Full Name</label><input v-model="admin.fullname" placeholder="Full Name" style="width:300px" type="text" class="form-control" ></div>
-                    <div><label>Date of birth</label><input style="width:200px" type="date" class="form-control" ></div>
+                    <div><label>Date of birth</label><input v-model="admin.date_of_birth" style="width:200px" type="date" format="YYYY MM DD" class="form-control" ></div>
                 </div>
                 
                 <div style="color:gray;margin-top: 30px;margin-bottom: 20px;"><i class="fa-solid fa-mobile-screen-button"></i> CONTACT INFORMATION</div>
                 <div class="dt1">
-                    <div><label>Address</label><input v-model="admin.address" placeholder="Address" style="width:820px" type="text" class="form-control" ></div>
+                    <div><label>Address</label><input v-model="admin.address" placeholder="Address" style="width:655px" type="text" class="form-control" ></div>
+                    <div>
+                        <label>Gender</label>
+                        <div style="border:1px solid #ced4da;padding:4px;border-radius:0.25rem;display:flex;height: 38px;">
+                            <div class="form-check form-check-inline">
+                                <input v-model="admin.gender" class="form-check-input" type="radio" name="inlineRadioOptions" id="male" value="1">
+                                <label style="color: #0085FF;" class="form-check-label" for="inlineRadio1">Male</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input v-model="admin.gender" class="form-check-input" type="radio" name="inlineRadioOptions" id="female" value="0">
+                                <label style="color: #0085FF;" class="form-check-label" for="inlineRadio2">FeMale</label>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
                 <div class="dt1" >
                     <div><label>Email</label><input v-model="admin.email" placeholder="Email" style="width:280px" type="email" class="form-control" ></div>
                     <div><label>Number Phone</label><input v-model="admin.phone" placeholder="Number Phone" style="width:220px" type="text" class="form-control" ></div>
-                    <div><label>Avatar</label><input style="width:260px" type="file" class="form-control" ></div>
+                    <div><label>Avatar</label><input @change="handleOnchange" style="width:260px" type="file" class="form-control" ></div>
                 </div>
                 <div class="dt1">
                     <div>
@@ -53,6 +99,7 @@
 import BaseRequest from '../../restful/admin/core/BaseRequest';
 import useEventBus from '../../composables/useEventBus'
 import Notification from './Notification'
+import config from '../../config.js'
 
 export default {
     name : "ProfileAdmin",
@@ -64,13 +111,21 @@ export default {
     },
     data(){
         return{
+
+            changepw:{
+                // id:1,
+                current_password:'',
+                new_password:'',
+                new_password_confirmation:'',
+            },
             admin:{
                 id:null,
                 fullname:'',
                 username:'',
                 email: '',
                 phone: '',
-                age:null,
+                date_of_birth:null,
+                url_img:null,
                 gender:null,
                 address:'',
                 role:'',
@@ -92,6 +147,7 @@ export default {
                 phone:[],
                 age:[],
             },
+            url_img:''
         }
     },
     setup(){
@@ -106,6 +162,7 @@ export default {
         this.admin = JSON.parse(window.localStorage.getItem('admin'));
         this.inf.fullname = this.admin.fullname;
         this.inf.role = this.admin.role;
+        this.url_img = config.API_URL + '/' + this.admin.url_img; 
         // console.log(this.admin);
 
         // var s = "{\"name\":[\"The name field is required.\"],\"email\":[\"The email field is required.\"],\"password\":[\"The password field is required.\"]}";
@@ -113,19 +170,31 @@ export default {
     },
     methods:{
         saveInfor:function(){
-            let iadmin = JSON.stringify(this.admin);
-            BaseRequest.patch('api/auth/update-infor',this.admin)
+            var iadmin = JSON.stringify(this.admin);
+            BaseRequest.patch('api/admin/update-profile',this.admin)
             .then( () =>{
                 // console.log(data);
+
+                window.localStorage.setItem('admin',iadmin);
+
+                if(this.image){ // chỉ khi chọn ảnh mới thực hiện hàm upfile 
+                    this.upload(); // upfile 
+                }
+
                 const { emitEvent } = useEventBus();
                 emitEvent('eventSuccess','Edit Information Success !');
 
-                window.localStorage.setItem('admin',iadmin);
                 this.inf.fullname = this.admin.fullname;
                 this.inf.role = this.admin.role;
                 this.err = null;
+
+                setTimeout(()=>{
+                    window.location=window.location.href;
+                }, 1500);
+
             }) 
             .catch(error=>{
+                console.log(error);
                 this.err = error.response.data;
                 var error2 = this.err;
 
@@ -138,10 +207,50 @@ export default {
                 // this.err = error.reponse.status;
             })
         },
+        changeforpw(){
+            console.log(this.changepw);
+            BaseRequest.post('api/admin/change-password?id='+this.admin.id,this.changepw)
+            .then( (data) =>{
+                console.log(data);
+
+                var cl = window.document.getElementById('close'); // Nếu thành công thì cho nó tự động đóng form 
+                cl.click();
+
+                const { emitEvent } = useEventBus();
+                emitEvent('eventSuccess','Change For Password Success !');
+
+                // setTimeout(()=>{
+                //     window.location=window.location.href;
+                // }, 1500);
+            }) 
+            .catch(error=>{
+                // console.log(error);
+                const { emitEvent } = useEventBus();
+                emitEvent('eventError',error.response.data.message);
+            })
+        },
         inError:function(er){
             const { emitEvent } = useEventBus();
             for(var i=0;i<er.length;i++) emitEvent('eventError',er[i]);
-        }
+        },
+		handleOnchange(e){
+			this.image = e.target.files[0];
+		},
+		upload(){
+			const formData = new FormData;
+            formData.set('photo',this.image);
+			BaseRequest.post('api/admin/upfile?id='+this.admin.id,formData)
+			.then( data=>{
+                this.admin.url_img = data.link;
+                window.localStorage.setItem('admin',JSON.stringify(this.admin)); // cập nhật lại link ảnh (admin.url_img)
+                const { emitEvent } = useEventBus();
+                emitEvent('eventSuccess','Up Avatar Success !');
+			})
+			.catch(() => {
+                const { emitEvent } = useEventBus();
+                emitEvent('eventError','Up Avatar Failse !');
+			})
+		}
     }
 }
 </script>
@@ -169,8 +278,10 @@ export default {
 }
 #head img {
     width: 80px;
+    height: 80px;
     border-radius: 10px;
     margin-right: 20px;
+    object-fit: cover;
 }
 
 #pr{

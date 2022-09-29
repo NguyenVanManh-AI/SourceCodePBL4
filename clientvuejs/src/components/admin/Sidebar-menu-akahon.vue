@@ -129,8 +129,8 @@
           <!-- <img v-if="profileImg" :src="profileImg" alt="profileImg"> -->
           <!-- <i v-else class="bx bxs-user-rectangle"/> -->
           <div class="name_job"> 
-            <div class="name">{{ profileName }}</div>
-            <div class="job">{{ profileRole }}</div>
+            <div class="name">{{ inf.fullname }}</div>
+            <div class="job">{{ inf.role }}</div>
           </div>
         </div>
         <i v-if="isExitButton" class="bx bx-log-out" id="log_out" @click="logout"/>
@@ -252,14 +252,6 @@
         type: String,
         default: require('../../assets/img/photo.jpg'),
       },
-      profileName: {
-        type: String,
-        default: 'Nguyen Van Manh',
-      },
-      profileRole: {
-        type: String,
-        default: 'Supper Admin',
-      },
       isExitButton: {
         type: Boolean,
         default: true,
@@ -314,7 +306,28 @@
     data() {
       return {
         isOpened: false,
-        colors:[false,false,false,false,false,false,false,false,false,false,false]
+        colors:[false,false,false,false,false,false,false,false,false,false,false],
+        admin:{
+          id:null,
+          fullname:'',
+          username:'',
+          email: '',
+          phone: '',
+          date_of_birth:null,
+          url_img:null,
+          gender:null,
+          address:'',
+          role:'',
+          access_token:'',
+          refreshToken:'',
+          created_at:null,
+          updated_at:null,
+          email_verified_at:null,
+        },
+        inf:{
+            role:'',
+            fullname:'',
+        },
       }
     },
     methods:{
@@ -393,7 +406,10 @@
       }
     },
     mounted() {
-      this.isOpened = this.isMenuOpen
+      this.isOpened = this.isMenuOpen;
+      this.admin = JSON.parse(window.localStorage.getItem('admin'));
+      this.inf.fullname = this.admin.fullname;
+      this.inf.role = this.admin.role;
     },
     computed: {
       cssVars() {

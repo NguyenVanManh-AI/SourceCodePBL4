@@ -46,9 +46,9 @@ export default {
     methods: {
       login:function(){
           // window.localStorage.setItem('admin',JSON.stringify(this.admin));
-        console.log(this.loginAdmin);
+        // console.log(this.loginAdmin);
         var v = this.loginAdmin;
-        LoginRequest.post('api/auth/login',this.loginAdmin)
+        LoginRequest.post('api/admin/login',this.loginAdmin)
         .then( data => {
           // console.log("login success !");
           // alert("Đăng nhập thành công !");
@@ -68,6 +68,7 @@ export default {
         .catch( error => {
           this.loginAdmin = v; // để nó không reset ô input đi . 
           this.error = error;
+          // console.log(error);
 
           const { emitEvent } = useEventBus();
           emitEvent('eventError',error.response.data.error);
@@ -83,7 +84,8 @@ export default {
             username:'',
             email: '',
             phone: '',
-            age:null,
+            date_of_birth:null,
+            url_img:null,
             gender:null,
             address:'',
             role:'',
@@ -94,7 +96,7 @@ export default {
             email_verified_at:null,
           }
           admin = data.user;
-          admin.access_token = data.access_token;
+          admin.access_token = data.message.original.access_token;
           window.localStorage.setItem('admin',JSON.stringify(admin));
       },
       logoClick:function(){

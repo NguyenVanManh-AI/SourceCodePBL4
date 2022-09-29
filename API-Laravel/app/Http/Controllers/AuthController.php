@@ -6,13 +6,16 @@ use App\Models\User;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\File;
+use SebastianBergmann\Environment\Console;
+use Exception;
+use Hash;
 
 class AuthController extends Controller
 {
 
     public function __construct() {
-        $this->middleware('auth:admin_api', ['except' => ['login', 'register','sendcode','verycode','upfile','loginGoogle','getfile',
-        'testGet','testPost','realTime']]);
+        $this->middleware('auth:admin_api', ['except' => ['login', 'register','getfile','realTime']]);
     }
 
     public function login(Request $request)
@@ -58,22 +61,16 @@ class AuthController extends Controller
         ],400);
     }
 
-    public function changePassword()
-    {
-        print_r('doi mat khau');
-        // return response()->json(auth('admin_api')->user());
-    }
-
     public function updateProfile(Request $request)
     {
         try {
+
             $validator = Validator::make($request->all(), [
                 'fullname' => 'string|between:2,100',
                 'email' => 'string|email|max:100',
                 'username' => 'string|max:100',
                 'address' => 'string|min:1',
                 'phone' => 'min:9|numeric',
-                'url_img' => 'string|min:0',
                 'date_of_birth' => 'date',
                 'gender' => 'in:1,0',
             ]);
@@ -82,6 +79,20 @@ class AuthController extends Controller
                  return response()->json($validator->errors(), 400);
             }
     
+            $u = User::where('id','!=',$request->id)->where('email',$request->email)->first();
+            if($u){
+                return response()->json([
+                    'email' => ['Email already exists'],
+                ],401);
+            }
+
+            $u2 = User::where('id','!=',$request->id)->where('username',$request->username)->first();
+            if($u2){
+                return response()->json([
+                    'username' => ['Username already exists'],
+                ],401);
+            }
+
             $user =User::find($request->id);
             $user->update($request->all());
             // $user->fullname = $request['fullname'];
@@ -220,5 +231,58 @@ class AuthController extends Controller
         ]);
     }
 
+    // change Password for Admin   
+    public function changePassword(Request $request) {
+
+        $user = User::find($request->id);
+        // mật khẩu trong database và mật khẩu nhập vào phải giống nhau 
+        if (!(Hash::check($request->get('current_password'), $user->password))) {
+            return response()->json([
+                'message' => 'Your current password does not matches with the password.',
+            ],400);
+        }
+
+        if(strcmp($request->get('current_password'), $request->get('new_password')) == 0){
+            return response()->json([
+                'message' => 'New Password cannot be same as your current password. ',
+                // mật khẩu mới không được giống với mật khẩu hiện tại (mật khẩu cũ)
+            ],400);
+        }
+
+        // mật khẩu mới và confirm phải giống nhau 
+        if($request->get('new_password') != $request->get('new_password_confirmation')){
+            return response()->json([
+                'message' => 'Your new password does not matches with the new password confirm.',
+            ],400);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'current_password' => 'required',
+            'new_password' => 'required|string|min:6',
+        ]);
+        if($validator->fails()){
+            return response()->json($validator->errors(), 400);
+        }
+
+        //Change Password
+        $user->update(['password' => bcrypt($request->get('new_password'))]);
+        return response()->json([
+            'message' => "Password successfully changed !",
+        ],200);
+    }
+
+    public function upfile(Request $request) {
+        $pathToFile = $request->file('photo')->store('images','public');
+        $user = User::find($request->id);
+
+        $filename = $user->url_img;
+        if($filename) File::delete($filename); // xóa ảnh cũ đi (nếu có)(còn ai không có thì thôi) 
+        $user->update(['url_img' => 'storage/'.$pathToFile]);
+        return response()->json([
+        //     "message"=>"Great! Successfully upload file !",
+            "link"=> 'storage/'.$pathToFile
+        ],200);
+    } 
+    
     
 }
