@@ -142,7 +142,7 @@ class AuthController extends Controller
             $user = User::find($id);
             $user->delete();
             return response()->json([
-                'message' => 'Delete admin successfully',
+                'message' => 'Delete admin successfully !',
             ], 201);
         }
     }
@@ -155,7 +155,7 @@ class AuthController extends Controller
             $user->save();
 
             return response()->json([
-                'message' => 'Edit Role Admin successfully',
+                'message' => 'Edit Role Admin successfully !',
             ], 201);
         }
     }

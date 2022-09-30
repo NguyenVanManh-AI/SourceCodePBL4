@@ -1,6 +1,7 @@
 const axios = require('axios');
 import config from '../../../config.js'
-// import router from './../router/routes' 
+import router from './../../../router/routes' 
+import useEventBus from '../../../composables/useEventBus'
 
 let dataAdmin = window.localStorage.getItem('admin');
 let admin = null;
@@ -38,14 +39,17 @@ export default {
 				// if(error.response.status == 503){
 				// 	window.location.href = '/503';
 				// }
-				let errors = {
-					message : error.message,
-					status : error.response.status
+				if(error.response.status == 401) this.hadleError401();
+				else {
+					let errors = {
+						message : error.message,
+						status : error.response.status
+					}
+					window.localStorage.setItem('error',JSON.stringify(errors));
+					// router.push({name:'CompError'});
+					// router.push({name:'NotFound'});
+					reject(error);
 				}
-				window.localStorage.setItem('error',JSON.stringify(errors));
-				// router.push({name:'CompError'});
-				// router.push({name:'NotFound'});
-				reject(error);
 			})
 		});
 	},
@@ -62,13 +66,15 @@ export default {
 				resolve(response.data);
 			})
 			.catch( error => {
-				let errors = {
-					message : error.message,
-					status : error.response.status
+				if(error.response.status == 401) this.hadleError401();
+				else {
+					let errors = {
+						message : error.message,
+						status : error.response.status
+					}
+					window.localStorage.setItem('error',JSON.stringify(errors));
+					reject(error);
 				}
-				window.localStorage.setItem('error',JSON.stringify(errors));
-				// router.push({name:'NotFound'});
-				reject(error);
 			})
 		})
 	},
@@ -85,13 +91,15 @@ export default {
 				resolve(response.data);
 			})
 			.catch( error => {
-				let errors = {
-					message : error.message,
-					status : error.response.status
+				if(error.response.status == 401) this.hadleError401();
+				else {
+					let errors = {
+						message : error.message,
+						status : error.response.status
+					}
+					window.localStorage.setItem('error',JSON.stringify(errors));
+					reject(error);
 				}
-				window.localStorage.setItem('error',JSON.stringify(errors));
-				// router.push({name:'NotFound'});
-				reject(error);
 			})
 		})
 	},
@@ -108,13 +116,15 @@ export default {
 				resolve(response.data);
 			})
 			.catch( error => {
-				let errors = {
-					message : error.message,
-					status : error.response.status
+				if(error.response.status == 401) this.hadleError401();
+				else {
+					let errors = {
+						message : error.message,
+						status : error.response.status
+					}
+					window.localStorage.setItem('error',JSON.stringify(errors));
+					reject(error);
 				}
-				window.localStorage.setItem('error',JSON.stringify(errors));
-				// router.push({name:'NotFound'});
-				reject(error);
 			})
 		})
 	},
@@ -130,15 +140,36 @@ export default {
 				resolve(response.data);
 			})
 			.catch( error => {
-				let errors = {
-					message : error.message,
-					status : error.response.status
+				if(error.response.status == 401) this.hadleError401();
+				else {
+					let errors = {
+						message : error.message,
+						status : error.response.status
+					}
+					window.localStorage.setItem('error',JSON.stringify(errors));
+					reject(error);
 				}
-				window.localStorage.setItem('error',JSON.stringify(errors));
-				// router.push({name:'NotFound'});
-				reject(error);
 			})
 		})
+	},
+
+	// Sau một thời gian thì token hết hiệu lực hoặc nếu như người dùng cố gắng hack bằng cách 
+	// thêm biến admin :{} vào localSotage thì cũng vô ích vì nếu như token sau thì sẽ trả về lỗi 401 và cho về lại trang login 
+	// Ta không lo lưu biến admin tại localStorage vì mỗi lần RESTful đều có yêu cầu accesss_token 
+	// nếu token sai thì không làm được gì cả chính vì thế chắc chắn phải đăng nhập mới làm được 
+	hadleError401(){
+		const { emitEvent } = useEventBus();
+		emitEvent('eventError401','Unauthorized 401');
+		window.localStorage.removeItem('admin');
+
+		setTimeout(()=>{
+			router.push({name:"LoginAdmin"});
+			window.localStorage.removeItem('error');
+			window.location=window.location.href;
+		}, 1500);
 	}
+
+	// hadleError401(){ để ntn thì mới lấy được biến router đã import còn nếu để hadleError401:function() thì không được 
+	// chú ý là removeItem() chứ không phải là remove() => tránh nhầm 
 }
 

@@ -108,7 +108,20 @@ import useEventBus from '../../composables/useEventBus'
           4000
         );
       })
+
+      onEvent('eventError401',(meassage)=>{
+        this.$notify(
+          {
+            group: "bottom",
+            title: "Error",
+            text: meassage
+          },
+          4000
+        );
+      })
+
     },
+    
     methods: {
       onClickTop() {
         this.$notify(

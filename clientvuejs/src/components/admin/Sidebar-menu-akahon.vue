@@ -112,8 +112,8 @@
             </li>
           </span>
 
-          <div class="line"></div>
-          <span>
+          <div class="line" v-if="this.admin.role=='super admin'"></div>
+          <span v-if="this.admin.role=='super admin'">
             <li @click="administrator">
               <a :class="{adefault:true,aclick:colors[10]}"><i class="fa-solid fa-user-shield"></i><span class="links_name">Administrator</span></a>
               <span class="tooltip">Administrator</span>

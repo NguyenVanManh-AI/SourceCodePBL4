@@ -18,21 +18,21 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Change Password</h5>
+                        <h5 class="modal-title" id="exampleModalLabel"><i class="fa-brands fa-keycdn"></i> Change Password</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body">
                         <form>
                             <div class="form-group">
-                                <label for="recipient-name" class="col-form-label">Current Password</label>
+                                <label for="recipient-name" class="col-form-label"><i class="fa-solid fa-key"></i> Current Password</label>
                                 <input v-model="changepw.current_password" type="password" class="form-control" id="current_pw">
                             </div>
                             <div class="form-group">
-                                <label for="recipient-name" class="col-form-label">New Password</label>
+                                <label for="recipient-name" class="col-form-label"><i class="fa-solid fa-key"></i> New Password</label>
                                 <input v-model="changepw.new_password" type="password" class="form-control" id="new_pw">
                             </div>
                             <div class="form-group">
-                                <label for="message-text" class="col-form-label">Confrim New Password</label>
+                                <label for="message-text" class="col-form-label"><i class="fa-solid fa-key"></i> Confrim New Password</label>
                                 <input  v-model="changepw.new_password_confirmation" type="password" class="form-control" id="cf_new_pw">
                             </div>
                         </form>
@@ -59,7 +59,7 @@
                 
                 <div style="color:gray;margin-top: 30px;margin-bottom: 20px;"><i class="fa-solid fa-mobile-screen-button"></i> CONTACT INFORMATION</div>
                 <div class="dt1">
-                    <div><label>Address</label><input v-model="admin.address" placeholder="Address" style="width:655px" type="text" class="form-control" ></div>
+                    <div><label>Address</label><input v-model="admin.address" placeholder="Address" style="width:652px" type="text" class="form-control" ></div>
                     <div>
                         <label>Gender</label>
                         <div style="border:1px solid #ced4da;padding:4px;border-radius:0.25rem;display:flex;height: 38px;">
@@ -69,7 +69,7 @@
                             </div>
                             <div class="form-check form-check-inline">
                                 <input v-model="admin.gender" class="form-check-input" type="radio" name="inlineRadioOptions" id="female" value="0">
-                                <label style="color: #0085FF;" class="form-check-label" for="inlineRadio2">FeMale</label>
+                                <label style="color: #0085FF;" class="form-check-label" for="inlineRadio2">Women</label>
                             </div>
                         </div>
 
@@ -97,9 +97,9 @@
 <script scoped>
 
 import BaseRequest from '../../restful/admin/core/BaseRequest';
-import useEventBus from '../../composables/useEventBus'
-import Notification from './Notification'
-import config from '../../config.js'
+import useEventBus from '../../composables/useEventBus';
+import Notification from './Notification';
+import config from '../../config.js';
 
 export default {
     name : "ProfileAdmin",
@@ -159,12 +159,14 @@ export default {
 
     },
     mounted(){
+
         this.admin = JSON.parse(window.localStorage.getItem('admin'));
         this.inf.fullname = this.admin.fullname;
         this.inf.role = this.admin.role;
         this.url_img = config.API_URL + '/' + this.admin.url_img; 
-        // console.log(this.admin);
+        window.document.title = "Meta Shop | "+this.inf.fullname;
 
+        // console.log(this.admin);
         // var s = "{\"name\":[\"The name field is required.\"],\"email\":[\"The email field is required.\"],\"password\":[\"The password field is required.\"]}";
         // console.log(JSON.parse(s.replace('\ ','')));
     },
