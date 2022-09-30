@@ -41,19 +41,19 @@
                                 <form>
                                     <div class="form-group">
                                         <label for="recipient-name" class="col-form-label">Full Name</label>
-                                        <input v-mode="addAdmin.fullname" type="text" class="form-control" id="current_pw">
+                                        <input v-model="addadmin.fullname" type="text" class="form-control" >
                                     </div>
                                     <div class="form-group">
                                         <label for="recipient-name" class="col-form-label">Email</label>
-                                        <input v-mode="addAdmin.email" type="email" class="form-control">
+                                        <input v-model="addadmin.email" type="email" class="form-control">
                                     </div>
                                     <div class="form-group">
                                         <label for="message-text" class="col-form-label"><i class="fa-solid fa-key"></i> Password</label>
-                                        <input v-mode="addAdmin.password" type="password" class="form-control" >
+                                        <input v-model="addadmin.password" type="password" class="form-control" >
                                     </div>
                                     <div class="form-group">
                                         <label for="message-text" class="col-form-label"> Role</label>
-                                        <select class="form-control form-control-sm" v-mode="addAdmin.role">
+                                        <select class="form-control form-control-sm" v-model="addadmin.role">
                                             <option value="super admin">Super Admin</option>
                                             <option value="admin">Admin</option>
                                         </select>
@@ -61,8 +61,8 @@
                                 </form>
                             </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" id="close" v-on="closeModelAccount">Close</button>
-                                    <button type="button" class="btn btn-outline-primary" v-on="addAccount">Add Account</button>
+                                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" id="closeAdd" @click="closeModelAccount">Close</button>
+                                    <button type="button" class="btn btn-outline-primary" @click="addAccount">Add Account</button>
                                 </div>
                             </div>
                         </div>
@@ -183,13 +183,18 @@ export default {
             },
             domain:config.API_URL,
             idDelete:null,
-            addAdmin:{
+            addadmin:{
                 rolelogin:'',
                 fullname:'',
                 email:'',
                 password:'',
-                role:''
-            }
+                role:'admin'
+            },
+            err:{
+                fullname:[],
+                email:[],
+                password:[]
+            },
         }
     },
     mounted(){
@@ -254,7 +259,7 @@ export default {
             // alert(this.idDelete);
         },
         deleteAdmin:function(){
-            alert(this.idDelete);
+            // alert(this.idDelete);
             var closedl = window.document.getElementById('closedl');
 
             BaseRequest.delete('api/admin/'+this.idDelete+'?rolelogin='+this.admin.role)
@@ -270,21 +275,45 @@ export default {
                 closedl.click();
                 const { emitEvent } = useEventBus();
                 emitEvent('eventError','Delete Admin False !');
-                setTimeout(()=>{window.location=window.location.href;}, 1500);
+                // setTimeout(()=>{window.location=window.location.href;}, 1500);
             })
         },
         closeModelAccount:function(){
-            console.log(this.addAdmin);
-            // this.addAccount.fullname = '';
-            // this.addAccount.email = '';
-            // this.addAccount.password = '';
-            // this.addAccount.role = 'admin';
+            // console.log(this.addadmin);
+            this.addadmin.fullname = '';
+            this.addadmin.email = '';
+            this.addadmin.password = '';
+            this.addadmin.role = 'admin';
             // console.log(this.addAdmin);
         },
         addAccount:function(){
-            // this.addAdmin.role = 'super admin';
-            console.log(this.addAdmin);
-        }
+            var closeAdd = window.document.getElementById('closeAdd');
+            this.addadmin.rolelogin = this.admin.role;
+            BaseRequest.post('api/admin/register',this.addadmin)
+            .then((data)=>{
+                console.log(data);
+                closeAdd.click();
+                const { emitEvent } = useEventBus();
+                emitEvent('eventSuccess',data.message);
+                setTimeout(()=>{window.location=window.location.href;}, 1500);
+            })
+            .catch((error)=>{
+                console.log(error);
+                closeAdd.click();
+                const { emitEvent } = useEventBus();
+                emitEvent('eventError','Delete Admin False !');
+                this.err = error.response.data;
+                var error2 = this.err;
+                if(error2.fullname) this.inError(error2.fullname);
+                if(error2.username) this.inError(error2.username);
+                if(error2.email) this.inError(error2.email);
+                // setTimeout(()=>{window.location=window.location.href;}, 1500);
+            })
+        },
+        inError:function(er){
+            const { emitEvent } = useEventBus();
+            for(var i=0;i<er.length;i++) emitEvent('eventError',er[i]);
+        },
     },
     watch:{
 
