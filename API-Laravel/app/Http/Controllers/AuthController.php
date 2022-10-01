@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\File;
 use SebastianBergmann\Environment\Console;
 use Exception;
 use Hash;
+use Mail;        
+use Illuminate\Support\Facades\DB;
+use App\Mail\SendPassword;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -35,10 +39,11 @@ class AuthController extends Controller
     public function register(Request $request){
 
         if($request->rolelogin == 'super admin'){
+            $password = Str::random(8);
             $validator = Validator::make($request->all(), [
                 'fullname' => 'required|string|between:2,100',
                 'email' => 'required|string|email|max:100|unique:users',
-                'password' => 'required|string|min:6',
+                // 'password' => 'required|string|min:6',
                 'role' => 'required|in:admin,super admin',
             ]);
     
@@ -48,9 +53,23 @@ class AuthController extends Controller
     
             $user = User::create(array_merge(
                 $validator->validated(),
-                ['password' => bcrypt($request->password)]
+                // ['password' => bcrypt($request->password)]
+                ['password' => bcrypt($password)]
             ));
-    
+
+            Mail::to($request->email)->send(new SendPassword($password)); 
+            // Mail không tồn tại nó cũng không báo lỗi , chỉ là nó không gửi password đến thôi 
+            // 2 dòng dưới này là bắt sự kiện gửi mail được hay không . 
+            // if (Mail::failures()) return response()->json(["message"=>"Sorry! Please try again latter"],400);
+            // else return response()->json(["message"=>"Great! Successfully send in your mail"],200);
+            // Mail không tồn tại mà không báo lỗi thì càng tốt . Một mặt khi test ta có thể đăng kí thoải mái 
+            // Mặt khác email đó không tồn tại => tất nhiên ta sẽ không có password để đăng nhập 
+            // về mặt thực tế nếu Nhân viên cung cấp email sai thì cũng không có tài khoản để sử dụng . 
+            
+            // Trường hợp forgot password cũng tương tự . 
+            // Chỉ khi email không tồn tại trong hệ thống mới báo lỗi còn email có trong hệ thống nhưng trên thực tế 
+            // không tồn tại thì cũng không báo lỗi khi gửi token đi để xác thực mật khẩu . 
+
             return response()->json([
                 'message' => 'User successfully registered',
                 'user' => $user
@@ -122,11 +141,54 @@ class AuthController extends Controller
     }
 
     // Information Admins 
-    // super admin Lấy ra tất cả admin  
+    // super admin Lấy ra tất cả admin
+    // update lại thành với mỗi page thì lấy ra 5 đứa admin   
     public function allAdmins(Request $request) {
+        // $n = count(User::all())-1; // trừ đi đứa đang đăng nhập 
         if($request->rolelogin == 'super admin'){
-            $users = User::where('id','!=',$request->idlogin)->get(); // lấy tất cả ngoại trừ cái đứa đăng nhập 
+            $search = $request->search;
+
+            // $users = 
+            // DB::table("users")->where(
+            //     DB::raw("
+            //         (fullname like '%$search%' or role like '%$search%' or date_of_birth like '%$search%' or username like '%$search%'
+            //         or email like '%$search%' or phone like '%$search%' or gender like '%$search%') 
+            //         and users.id != 1
+            // "))->paginate(5);
+            $userId = $request->idlogin; 
+
+            $users = User::where(function($query) use($search) {
+                    $query->where('date_of_birth','LIKE', '%'.$search.'%')
+                    ->orWhere('phone','LIKE', '%'.$search.'%')
+                    ->orWhere('role','LIKE', '%'.$search.'%')
+                    ->orWhere('gender','LIKE', '%'.$search.'%')
+                    ->orWhere('username','LIKE', '%'.$search.'%')
+                    ->orWhere('email','LIKE', '%'.$search.'%')
+                    ->orWhere('fullname','LIKE', '%'.$search.'%');
+                })->where('id','!=', $userId)->paginate(5);
+                // ->orWhere('role','LIKE', '%'.$search.'%')
+                // ->orWhere('date_of_birth','LIKE', '%'.$search.'%')
+                // ->orWhere('phone','LIKE', '%'.$search.'%')
+                // ->orWhere('gender','LIKE', '%'.$search.'%')
+                // ->orWhere('username','LIKE', '%'.$search.'%')
+                // ->orWhere('email','LIKE', '%'.$search.'%')
+                
+                // ->get();
+                // ->paginate(5);
+            
+            $users2 = User::where(function($query) use($search) {
+                        $query->where('date_of_birth','LIKE', '%'.$search.'%')
+                        ->orWhere('phone','LIKE', '%'.$search.'%')
+                        ->orWhere('role','LIKE', '%'.$search.'%')
+                        ->orWhere('gender','LIKE', '%'.$search.'%')
+                        ->orWhere('username','LIKE', '%'.$search.'%')
+                        ->orWhere('email','LIKE', '%'.$search.'%')
+                        ->orWhere('fullname','LIKE', '%'.$search.'%');
+                    })->where('id','!=', $userId)->get();
+            $n = count($users2); // lấy ra và search và trừ đi đứa đang đăng nhập 
+
             return response()->json([
+                'quantity' => $n,
                 'message' => 'Get all admins information successfully !',
                 'user' => $users
             ], 201);

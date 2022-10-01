@@ -3,16 +3,16 @@
         <div id="big">
             <div id="head">
                 <div>
-                    <div><span @click="home" id="home">Pages</span> / Administrator</div>
+                    <div><span @click="home" id="home">Pages</span> / <span @click="spadministrator" id="spadministrator">Administrator</span></div>
                     <div style="font-weight: bold">Administrator</div>
                 </div>
                 <div id="search">
                     <div>
                         <div class="input-group">
                             <div class="input-group-prepend">
-                            <span class="input-group-text" id="validationTooltipUsernamePrepend"><i class="fa-solid fa-magnifying-glass"></i></span>
+                            <span @click="clicksearch" class="input-group-text" id="validationTooltipUsernamePrepend"><i class="fa-solid fa-magnifying-glass"></i></span>
                             </div>
-                            <input style="width:400px;border-top-right-radius: 6px;border-bottom-right-radius: 6px;" type="text" class="form-control" id="validationTooltipUsername" placeholder="Search Information Admin" aria-describedby="validationTooltipUsernamePrepend" required>
+                            <input v-model="searchad" style="width:400px;border-top-right-radius: 6px;border-bottom-right-radius: 6px;" type="text" class="form-control" id="validationTooltipUsername" placeholder="Search Information Admin" aria-describedby="validationTooltipUsernamePrepend" required>
                             <div class="invalid-tooltip">
                                 Please choose a unique and valid username.
                             </div>
@@ -40,19 +40,15 @@
                             <div class="modal-body">
                                 <form>
                                     <div class="form-group">
-                                        <label for="recipient-name" class="col-form-label">Full Name</label>
+                                        <label for="recipient-name" class="col-form-label"><i class="fa-solid fa-signature"></i> Full Name</label>
                                         <input v-model="addadmin.fullname" type="text" class="form-control" >
                                     </div>
                                     <div class="form-group">
-                                        <label for="recipient-name" class="col-form-label">Email</label>
+                                        <label for="recipient-name" class="col-form-label"><i class="fa-solid fa-envelope"></i> Email</label>
                                         <input v-model="addadmin.email" type="email" class="form-control">
                                     </div>
                                     <div class="form-group">
-                                        <label for="message-text" class="col-form-label"><i class="fa-solid fa-key"></i> Password</label>
-                                        <input v-model="addadmin.password" type="password" class="form-control" >
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="message-text" class="col-form-label"> Role</label>
+                                        <label for="message-text" class="col-form-label"><i class="fa-solid fa-circle-check"></i> Role</label>
                                         <select class="form-control form-control-sm" v-model="addadmin.role">
                                             <option value="super admin">Super Admin</option>
                                             <option value="admin">Admin</option>
@@ -85,7 +81,7 @@
                         </thead>
                         <tbody v-for="(ad,index) in admins" :key="index">
                             <tr>
-                                <th scope="row">{{index+1}}</th>
+                                <th scope="row">{{(pageN-1)*5+index+1}}</th>
                                 <td>
                                     <div class="cell1">
                                         <div>
@@ -111,6 +107,20 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <div id="divpaginate">
+                        <paginate class="pag" id="nvm"
+                            :page-count="Math.ceil(this.quantity/5)"
+                            :page-range="3"
+                            :margin-pages="2"
+                            :click-handler="clickCallback"
+                            :initial-page="this.pageN"
+                            :prev-text="'Prev'"
+                            :next-text="'Next'"
+                            :container-class="'pagination'"
+                            :page-class="'page-item'">
+                        </paginate>
+                    </div>
                 </div>
             </div>
         </div>
@@ -151,11 +161,13 @@ import BaseRequest from '../../restful/admin/core/BaseRequest';
 import useEventBus from '../../composables/useEventBus'
 import Notification from './Notification'
 import config from '../../config.js'
+import Paginate from 'vuejs-paginate-next';
 
 export default {
     name:"ManagementAdmin",
     components:{
         Notification,
+        paginate: Paginate
     },
     setup() {
         
@@ -163,6 +175,9 @@ export default {
     data(){
         return {
             url_img:'',
+            quantity:null,
+            searchad:'',
+            pageN:1,
             admins:null,
             admin:{
                 id:null,
@@ -187,7 +202,6 @@ export default {
                 rolelogin:'',
                 fullname:'',
                 email:'',
-                password:'',
                 role:'admin'
             },
             err:{
@@ -202,10 +216,27 @@ export default {
         this.admin = JSON.parse(window.localStorage.getItem('admin'));
         this.url_img = config.API_URL + '/' + this.admin.url_img; 
 
-        BaseRequest.get('api/admin/all-admin?idlogin='+this.admin.id+'&rolelogin='+this.admin.role)
+        let urlParams = new URLSearchParams(window.location.search);
+        if(urlParams.has('page')) {
+            this.pageN = urlParams.get('page');
+            if(this.pageN == 0) this.pageN = 1;
+            // alert(this.pageN);
+        }
+        else {
+            this.pageN = 1;
+        }
+
+        // Nếu như có biến search 
+        if(urlParams.has('search')) {
+            this.searchad = urlParams.get('search');
+            this.pageN = 1;
+        }
+
+        BaseRequest.get('api/admin/all-admin?idlogin='+this.admin.id+'&rolelogin='+this.admin.role+'&page='+this.pageN+'&search='+this.searchad)
         .then( (data) =>{
             // console.log(data);
-            this.admins = data.user ;
+            this.quantity = data.quantity;
+            this.admins = data.user.data ;
             const { emitEvent } = useEventBus();
             emitEvent('eventSuccess','Get All Admin Success !');
 
@@ -214,7 +245,7 @@ export default {
             // }, 1500);
         }) 
         .catch(error=>{
-            console.log(error);
+            // console.log(error);
             const { emitEvent } = useEventBus();
             emitEvent('eventError',error.response.data.message);
 
@@ -229,6 +260,10 @@ export default {
     methods:{
         home:function(){
             this.$router.push({name:'DashboardAdmin'});
+        },
+        spadministrator:function(){
+            this.$router.push({name:'ManagementAdmin'});
+            this.searchad='';
         },
         profile:function(){
             this.$router.push({name:'ProfileAdmin'});
@@ -291,17 +326,17 @@ export default {
             this.addadmin.rolelogin = this.admin.role;
             BaseRequest.post('api/admin/register',this.addadmin)
             .then((data)=>{
-                console.log(data);
+                // console.log(data);
                 closeAdd.click();
                 const { emitEvent } = useEventBus();
                 emitEvent('eventSuccess',data.message);
                 setTimeout(()=>{window.location=window.location.href;}, 1500);
             })
             .catch((error)=>{
-                console.log(error);
+                // console.log(error);
                 closeAdd.click();
                 const { emitEvent } = useEventBus();
-                emitEvent('eventError','Delete Admin False !');
+                emitEvent('eventError','Add Admin False !');
                 this.err = error.response.data;
                 var error2 = this.err;
                 if(error2.fullname) this.inError(error2.fullname);
@@ -314,9 +349,68 @@ export default {
             const { emitEvent } = useEventBus();
             for(var i=0;i<er.length;i++) emitEvent('eventError',er[i]);
         },
+        clickCallback:function(pageNum){
+            BaseRequest.get('api/admin/all-admin?idlogin='+this.admin.id+'&rolelogin='+this.admin.role+'&page='+pageNum+'&search='+this.searchad)
+            .then( (data) =>{
+                // console.log(data);
+                this.quantity = data.quantity;
+                this.pageN = pageNum;
+                // let urlParams = new URLSearchParams(window.location.search);
+                // urlParams.set('page', this.pageN);
+                // window.location.search.set('page',this.pageN);
+                this.admins = data.user.data ;
+                const { emitEvent } = useEventBus();
+                emitEvent('eventSuccess','Get All Admin Success !');
+
+                // setTimeout(()=>{
+                //     window.location=window.location.href;
+                // }, 1500);
+            }) 
+            .catch(error=>{
+                // console.log(error);
+                const { emitEvent } = useEventBus();
+                emitEvent('eventError',error.response.data.message);
+
+                // Nếu là admin thì không vào được quản trị và không get được thì cho về trang chủ 
+                setTimeout(()=>{
+                    this.$router.push({name:'DashboardAdmin'}); 
+                }, 1500);
+            })
+        },
+        clicksearch:function(){
+            window.location = window.location.pathname+"?search="+this.searchad;
+        }
     },
     watch:{
+        searchad:function(){
+            // console.log(this.searchad);
+            this.pageN = 1 ;
+            BaseRequest.get('api/admin/all-admin?idlogin='+this.admin.id+'&rolelogin='+this.admin.role+'&page='+this.pageN+'&search='+this.searchad)
+            .then( (data) =>{
+                // console.log(data);
+                this.quantity = data.quantity;
+                // let urlParams = new URLSearchParams(window.location.search);
+                // urlParams.set('page', this.pageN);
+                // window.location.search.set('page',this.pageN);
+                this.admins = data.user.data ;
+                // const { emitEvent } = useEventBus();
+                // emitEvent('eventSuccess','Get All Admin Success !');
 
+                // setTimeout(()=>{
+                //     window.location=window.location.href;
+                // }, 1500);
+            }) 
+            .catch(error=>{
+                // console.log(error);
+                const { emitEvent } = useEventBus();
+                emitEvent('eventError',error.response.data.message);
+
+                // Nếu là admin thì không vào được quản trị và không get được thì cho về trang chủ 
+                setTimeout(()=>{
+                    this.$router.push({name:'DashboardAdmin'}); 
+                }, 1500);
+            })
+        }
     }
 }
 </script>
@@ -348,6 +442,10 @@ export default {
 }
 #home {
     color: #0085FF;
+    cursor: pointer;
+}
+#spadministrator{
+    color: #3a9efb;
     cursor: pointer;
 }
 #big {
@@ -427,7 +525,8 @@ export default {
   text-transform: uppercase;
   /* letter-spacing: 2.5px; */
   font-weight: 700;
-  color: #000;
+  /* color: #000; */
+  color: #0085FF;
   background-color: #fff;
   border: none;
   border-radius: 45px;
@@ -474,5 +573,21 @@ export default {
 
 #exampleModalAddAdmin .btn {
     transition: all 1s ease;
+}
+
+
+#divpaginate{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    position:absolute; /* giúp cho bao nhiêu dòng nó cũng không bị nhảy lên hay nhảy xuống */
+    bottom: 20px; /* nếu ít dòng thì nó nhảy lên , nếu nhiều dòng thì nó thụt xuống nên mình cho nó cố định luôn */
+}
+
+#validationTooltipUsernamePrepend{
+    cursor: pointer;
+}
+#validationTooltipUsernamePrepend:hover{
+    color: #0085FF;
 }
 </style>

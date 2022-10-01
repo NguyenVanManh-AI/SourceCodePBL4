@@ -14,7 +14,33 @@
             <div class="input-form"><input type="email" v-model="loginAdmin.email" required><div class="underline"></div><label>Email</label></div><br>
             <div class="input-form"><input type="password" required v-model="loginAdmin.password"><div class="underline"></div><label>Password</label></div><br>
             <!-- <div class="alert alert-danger" v-if="error">{{error.response.data.error}}</div> -->
-            <a class="text-primary" href="#">Forgot your password ? </a><br>
+            <a class="text-primary" href="#" data-toggle="modal" data-target="#exampleModalForgotPassword">Forgot your password ? </a><br>
+
+            <!-- Model Forgot Password -->
+            <div class="modal fade" id="exampleModalForgotPassword" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel"><i class="fa-brands fa-keycdn"></i> Add Account Admin</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      </div>
+                      <div class="modal-body">
+                          <form>
+                              <div class="form-group">
+                                  <label for="recipient-name" class="col-form-label"><i class="fa-solid fa-envelope"></i> Email</label>
+                                  <input v-model="resetPassword.email" type="email" class="form-control">
+                              </div>
+                          </form>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" id="closePW" >Close</button>
+                          <button type="button" class="btn btn-outline-primary" @click="rspw">Submit</button>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Model Forgot Password -->
+
             <button type="submit" class="mt-4 btn-pers" id="login_button" >Login</button>
           </form>
       </div>
@@ -25,6 +51,7 @@
 </template>
 
 <script>
+import BaseRequest from '../../restful/admin/core/BaseRequest';
 import LoginRequest from '../../restful/admin/requests/LoginRequest'
 import useEventBus from '../../composables/useEventBus'
 import Notification from './Notification'
@@ -39,6 +66,9 @@ export default {
           loginAdmin:{
             email:'',
             password:''
+          },
+          resetPassword:{
+            email:''
           },
           error:null,
       }
@@ -104,6 +134,34 @@ export default {
       },
       adminlogin:function(){
           window.location=window.location.href;
+      },
+      rspw:function(){
+        BaseRequest.post('api/admin/reset-password',this.resetPassword)
+        .then( () => { // chỉ cần email có trong hệ thống là nó không lỗi , còn thực tế tồn tại hay không không quan trọng 
+            // console.log("login success !");
+            // alert("Đăng nhập thành công !");
+            this.error = null ;
+            var closePW = window.document.getElementById('closePW');
+            closePW.click();
+            this.resetPassword.email = '';
+            const { emitEvent } = useEventBus();
+            emitEvent('eventSuccess','We have e-mailed your password reset link !');
+
+            setTimeout(()=>{
+                // console.log(data);
+                // this.$router.push({name:'DashboardAdmin'}); 
+                // window.location=window.location.href;
+            }, 1000);
+        })
+        .catch( error => {
+            this.error = error;
+            // console.log(error);
+
+            const { emitEvent } = useEventBus();
+            emitEvent('eventError','Reset password failed !');
+            // console.log(error.response.data.error);
+            // console.log("login false !");
+        })
       }
 
     },

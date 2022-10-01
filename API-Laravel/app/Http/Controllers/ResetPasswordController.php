@@ -31,19 +31,27 @@ class ResetPasswordController extends Controller
     // Admin Forgot Password by Email
     public function sendMail(Request $request,User $user)
     {
-        $user = User::where('email', $request->email)->firstOrFail();
-        $passwordReset = PasswordReset::updateOrCreate([
-            'email' => $user->email,
-        ], [
-            'token' => Str::random(60),
-        ]);
-        if ($passwordReset) {
-            $user->notify(new ResetPasswordRequest($passwordReset->token));
+        $user = User::where('email', $request->email)->first();
+        if($user){
+            $passwordReset = PasswordReset::updateOrCreate([
+                'email' => $user->email,
+            ], [
+                'token' => Str::random(60),
+            ]);
+            // $token = Str::random(60);
+            // $passwordReset = PasswordReset::where('email',$user->email)->first();
+            // if($passwordReset) $passwordReset->update(['token' => $token]);
+            // else $passwordReset = PasswordReset::create(['email' => $user->email,'token' => $token]);
+
+            if ($passwordReset) {
+                $user->notify(new ResetPasswordRequest($passwordReset->token));
+            }
+            return response()->json([
+                'message' => 'We have e-mailed your password reset link!'
+            ]);
         }
-  
-        return response()->json([
-        'message' => 'We have e-mailed your password reset link!'
-        ]);
+        return response()->json(['message' => 'Email does not match any account !']);
+
     }
 
     public function reset(Request $request, $token)

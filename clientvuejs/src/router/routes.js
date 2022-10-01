@@ -1,10 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
 // import useEventBus from '../composables/useEventBus'
+import useEventBus from '../composables/useEventBus'
+
 
 
 // admin
 import AdminComp from './../components/Admin'
 import LoginAdmin from './../components/admin/Login'
+import ResetPasswordAdmin from './../components/admin/ResetPassword'
 import DashboardAdmin from './../components/admin/Dashboard'
 import ProfileAdmin from './../components/admin/Profile'
 
@@ -58,6 +61,7 @@ const routes = [
         name:'AdminComp',
         children : [
             {path:'login',name:'LoginAdmin',component:LoginAdmin},
+            {path:'reset-password',name:'ResetPasswordAdmin',component:ResetPasswordAdmin},
             {path:'dashboard',name:'DashboardAdmin',component:DashboardAdmin},
             {path:'profile-admin',name:'ProfileAdmin',component:ProfileAdmin},
 
@@ -103,19 +107,21 @@ router.beforeEach((to,from,next)=>{
         if(requiredlogin && !user){
             if(to.path != "/main"){
                 next({name:'LoginUser'});
-                alert("Bạn chưa đăng nhập !");
+                const { emitEvent } = useEventBus();
+                emitEvent('eventError401',"Bạn chưa đăng nhập !");
             }
         }
     }
 
     if(to.path.includes('/admin')){
-        let excludePages = ['/admin/login','/admin/dashboard'];
+        let excludePages = ['/admin/login','/admin/dashboard','/admin/reset-password'];
         let requiredlogin = !excludePages.includes(to.path);
         let admin = localStorage.getItem('admin');
         if(requiredlogin && !admin){
             if(to.path != "/admin"){
                 next({name:'LoginAdmin'});
-                alert("Admin chưa đăng nhập !");
+                const { emitEvent } = useEventBus();
+                emitEvent('eventError401',"Admin chưa đăng nhập !");
             }
         }
     }
