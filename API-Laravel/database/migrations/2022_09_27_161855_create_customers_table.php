@@ -25,6 +25,7 @@ class CreateCustomersTable extends Migration
             $table->boolean('gender')->nullable();
             $table->boolean('status')->nullable();
             $table->string('phone')->nullable();
+            $table->string('url_img')->nullable();
             $table->string('google_id')->nullable();
             $table->rememberToken();
             $table->timestamps();

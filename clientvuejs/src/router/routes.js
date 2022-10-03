@@ -114,7 +114,7 @@ router.beforeEach((to,from,next)=>{
     }
 
     if(to.path.includes('/admin')){
-        let excludePages = ['/admin/login','/admin/dashboard','/admin/reset-password'];
+        let excludePages = ['/admin/login','/admin/reset-password'];
         let requiredlogin = !excludePages.includes(to.path);
         let admin = localStorage.getItem('admin');
         if(requiredlogin && !admin){

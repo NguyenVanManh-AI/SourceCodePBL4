@@ -158,35 +158,62 @@ class AuthController extends Controller
             $userId = $request->idlogin; 
 
             $users = User::where(function($query) use($search) {
-                    $query->where('date_of_birth','LIKE', '%'.$search.'%')
-                    ->orWhere('phone','LIKE', '%'.$search.'%')
-                    ->orWhere('role','LIKE', '%'.$search.'%')
-                    ->orWhere('gender','LIKE', '%'.$search.'%')
-                    ->orWhere('username','LIKE', '%'.$search.'%')
-                    ->orWhere('email','LIKE', '%'.$search.'%')
-                    ->orWhere('fullname','LIKE', '%'.$search.'%');
-                })->where('id','!=', $userId)->paginate(5);
-                // ->orWhere('role','LIKE', '%'.$search.'%')
-                // ->orWhere('date_of_birth','LIKE', '%'.$search.'%')
-                // ->orWhere('phone','LIKE', '%'.$search.'%')
-                // ->orWhere('gender','LIKE', '%'.$search.'%')
-                // ->orWhere('username','LIKE', '%'.$search.'%')
-                // ->orWhere('email','LIKE', '%'.$search.'%')
-                
-                // ->get();
-                // ->paginate(5);
+                $query->where('date_of_birth','LIKE', '%'.$search.'%')
+                ->orWhere('phone','LIKE', '%'.$search.'%')
+                ->orWhere('address','LIKE', '%'.$search.'%')
+                ->orWhere('role','LIKE', '%'.$search.'%')
+                ->orWhere('gender','LIKE', '%'.$search.'%')
+                ->orWhere('username','LIKE', '%'.$search.'%')
+                ->orWhere('email','LIKE', '%'.$search.'%')
+                ->orWhere('fullname','LIKE', '%'.$search.'%');
+            })->where('id','!=', $userId)->paginate(5);
+            // ->orWhere('role','LIKE', '%'.$search.'%')
+            // ->orWhere('date_of_birth','LIKE', '%'.$search.'%')
+            // ->orWhere('phone','LIKE', '%'.$search.'%')
+            // ->orWhere('gender','LIKE', '%'.$search.'%')
+            // ->orWhere('username','LIKE', '%'.$search.'%')
+            // ->orWhere('email','LIKE', '%'.$search.'%')
+            
+            // ->get();
+            // ->paginate(5);
             
             $users2 = User::where(function($query) use($search) {
-                        $query->where('date_of_birth','LIKE', '%'.$search.'%')
-                        ->orWhere('phone','LIKE', '%'.$search.'%')
-                        ->orWhere('role','LIKE', '%'.$search.'%')
-                        ->orWhere('gender','LIKE', '%'.$search.'%')
-                        ->orWhere('username','LIKE', '%'.$search.'%')
-                        ->orWhere('email','LIKE', '%'.$search.'%')
-                        ->orWhere('fullname','LIKE', '%'.$search.'%');
-                    })->where('id','!=', $userId)->get();
-            $n = count($users2); // lấy ra và search và trừ đi đứa đang đăng nhập 
+                $query->where('date_of_birth','LIKE', '%'.$search.'%')
+                ->orWhere('phone','LIKE', '%'.$search.'%')
+                ->orWhere('address','LIKE', '%'.$search.'%')
+                ->orWhere('role','LIKE', '%'.$search.'%')
+                ->orWhere('gender','LIKE', '%'.$search.'%')
+                ->orWhere('username','LIKE', '%'.$search.'%')
+                ->orWhere('email','LIKE', '%'.$search.'%')
+                ->orWhere('fullname','LIKE', '%'.$search.'%');
+            })->where('id','!=', $userId)->get();
 
+
+            // Thêm whreNull vì một số tài khoản được super admin tạo nhưng chưa vào udpate information 
+            if($search == 'female'){
+                $users = User::where('id','!=', $userId)
+                    ->where(function ($query) {
+                        $query->where('gender','=','0')->orWhereNull('gender');
+                    })->paginate(5);
+
+                $users2 = User::where('id','!=', $userId)
+                    ->where(function ($query) {
+                        $query->where('gender','=','0')->orWhereNull('gender');
+                    })->get();
+            }
+            if($search == 'male'){
+                $users = User::where('id','!=', $userId)
+                    ->where(function ($query) {
+                        $query->where('gender','=','1')->orWhereNull('gender');
+                    })->paginate(5);
+                    
+                $users2 = User::where('id','!=', $userId)
+                    ->where(function ($query) {
+                        $query->where('gender','=','1')->orWhereNull('gender');
+                    })->get();
+            }
+            
+            $n = count($users2); // lấy ra và search và trừ đi đứa đang đăng nhập 
             return response()->json([
                 'quantity' => $n,
                 'message' => 'Get all admins information successfully !',
@@ -224,14 +251,63 @@ class AuthController extends Controller
 
 
     // Admin lấy ra tất cả user 
-    public function allUsers() {
-        $users = Customer::all(); 
+    public function allUsers(Request $request) {
+        // gender và status kiểu bolean nên true false hoặc 1 0 nhưng khi lưu vào database thì chỉ có 1 0 
+        // nên việc tìm kiếm sẽ khó khăn => làm cách này 
+        $search = $request->search;
+
+        $customers = Customer::where(function($query) use($search) {
+            $query->where('date_of_birth','LIKE', '%'.$search.'%')
+            ->orWhere('phone','LIKE', '%'.$search.'%')
+            ->orWhere('address','LIKE', '%'.$search.'%')
+            ->orWhere('status','LIKE', '%'.$search.'%')
+            ->orWhere('gender','LIKE', '%'.$search.'%')
+            ->orWhere('username','LIKE', '%'.$search.'%')
+            ->orWhere('email','LIKE', '%'.$search.'%')
+            ->orWhere('fullname','LIKE', '%'.$search.'%')
+            ->orWhere('google_id','LIKE', '%'.$search.'%');
+        })->paginate(5);
+
+        $customers2 = Customer::where(function($query) use($search) {
+            $query->where('date_of_birth','LIKE', '%'.$search.'%')
+            ->orWhere('phone','LIKE', '%'.$search.'%')
+            ->orWhere('address','LIKE', '%'.$search.'%')
+            ->orWhere('status','LIKE', '%'.$search.'%')
+            ->orWhere('gender','LIKE', '%'.$search.'%')
+            ->orWhere('username','LIKE', '%'.$search.'%')
+            ->orWhere('email','LIKE', '%'.$search.'%')
+            ->orWhere('fullname','LIKE', '%'.$search.'%')
+            ->orWhere('google_id','LIKE', '%'.$search.'%');
+        })->get();
+
+        // status 
+        if($search == 'block'){
+            $customers = Customer::where('status','=','0')->paginate(5);
+            $customers2 = Customer::where('status','=','0')->get();
+        }
+        if($search == 'unblock'){
+            $customers = Customer::where('status','=','1')->paginate(5);
+            $customers2 = Customer::where('status','=','1')->get();
+        }
+
+        // gender
+        // vì những tài khoản đăng nhập bằng google có gender null nên mình phải thêm TH null nữa 
+        if($search == 'female'){
+            $customers = Customer::where('gender','=','0')->orWhereNull('gender')->paginate(5);
+            $customers2 = Customer::where('gender','=','0')->orWhereNull('gender')->get();
+        }
+        if($search == 'male'){
+            $customers = Customer::where('gender','=','1')->orWhereNull('gender')->paginate(5);
+            $customers2 = Customer::where('gender','=','1')->orWhereNull('gender')->get();
+        }
+
+        $n = count($customers2); 
         return response()->json([
+            'quantity' => $n,
             'message' => 'Get all users information successfully !',
-            'user' => $users
+            'user' => $customers
         ], 201);
     }
-
     
     // Admin block hoặc unblock user 
     public function editStatus(Request $request) {
