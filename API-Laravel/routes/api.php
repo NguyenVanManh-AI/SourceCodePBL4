@@ -5,7 +5,8 @@ use App\Http\Controllers\CustomerAuthController;
 use App\Http\Controllers\CustomerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductController; 
+use App\Http\Controllers\CategoryController; 
 
 
 
@@ -25,6 +26,21 @@ Route::prefix('products')->controller(ProductController::class)->group(function 
         Route::get('/', 'getAllProduct');
         Route::get('/{id}', 'show');
     });
+});
+
+// Category 
+Route::prefix('categorys')->controller(CategoryController::class)->group(function () {
+    Route::middleware('auth:admin_api')->group(function () {
+        Route::post('/', 'allCategorys');
+        Route::post('/add', 'add');
+        Route::patch('edit/{id}', 'edit');
+        Route::delete('/{id}', 'delete');
+    });
+
+    // Route::middleware('auth:customer_api')->group(function () {
+    //     Route::get('/', 'getAllProduct');
+    //     Route::get('/{id}', 'show');
+    // });
 });
 
 Route::get('get-all', 'App\Http\Controllers\ProductController@getAll');

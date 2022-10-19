@@ -199,10 +199,11 @@ export default {
    background: linear-gradient(to right, #EF629F, #EECDA3);
  }
  .container{
-   width: 450px;
-   background: #fff;
-   padding: 30px;
-   box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+  border-radius: 36px;
+  width: 450px;
+  background: #fff;
+  padding: 30px;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
  }
  .container .input-form{
    height: 40px;
@@ -296,6 +297,11 @@ export default {
     color: gray;
     margin-left: 20px;
     cursor: pointer;
+}
+#title:hover{
+  text-decoration-color: #0085FF;
+  text-decoration: underline;
+  color: #0085FF;
 }
 
 

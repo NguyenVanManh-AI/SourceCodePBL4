@@ -27,7 +27,7 @@
 
             <div id="table">
                 <div id="toptable">
-                    <div style="color: gray;font-size: 1rem;padding-top: 10px;"><i class="fa-solid fa-user-shield"></i> Customer Table</div>
+                    <div style="color: gray;font-size: 1rem;padding-top: 10px;"><i class="fa-solid fa-users-gear"></i> Customer Table</div>
                 </div>
 
                 <div id="bodytable">

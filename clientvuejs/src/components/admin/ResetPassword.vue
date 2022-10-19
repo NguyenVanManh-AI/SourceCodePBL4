@@ -128,6 +128,7 @@ body{
     background: linear-gradient(to right, #EF629F, #EECDA3);
 }
 .container{
+    border-radius: 26px;
     width: 450px;
     background: #fff;
     padding: 30px;
@@ -225,6 +226,11 @@ body{
     color: gray;
     margin-left: 20px;
     cursor: pointer;
+}
+#title:hover{
+    text-decoration: underline;
+    text-decoration-color: #0085FF;
+    color: #0085FF;
 }
 
 
