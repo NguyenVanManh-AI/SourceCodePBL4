@@ -7,17 +7,6 @@
                     <div style="font-weight: bold">Category</div>
                 </div>
                 <div id="search">
-                    <div>
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                            <span @click="clicksearch" class="input-group-text" id="validationTooltipUsernamePrepend"><i class="fa-solid fa-magnifying-glass"></i></span>
-                            </div>
-                            <input v-model="searchad" style="width:400px;border-top-right-radius: 6px;border-bottom-right-radius: 6px;" type="text" class="form-control" id="validationTooltipUsername" placeholder="Search Information Admin" aria-describedby="validationTooltipUsernamePrepend" required>
-                            <div class="invalid-tooltip">
-                                Please choose a unique and valid username.
-                            </div>
-                        </div>
-                    </div>
                     <div id="pr" @click="profile">
                         <img :src="url_img" v-if="admin.url_img!=null">
                         <img src='../../assets/avatar.png' v-if="admin.url_img==null">
@@ -28,9 +17,22 @@
             <div id="table">
                 <div id="toptable">
                     <div style="color: gray;font-size: 1rem;padding-top: 10px;"><i class="fa-solid fa-list"></i> Category Table</div>
-                    <div id="add_button"><button type="submit" class="mt-4 btn-pers" data-toggle="modal" data-target="#exampleModalAddAdmin" ><i class="fa-solid fa-plus"></i></button></div>
-                    <!-- Model Add Admin -->
-                    <div class="modal fade" id="exampleModalAddAdmin" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <!-- search  -->
+                    <div id="search2">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                            <span @click="clicksearch" class="input-group-text" id="validationTooltipUsernamePrepend"><i class="fa-solid fa-magnifying-glass"></i></span>
+                            </div>
+                            <input v-model="searchad" style="width:400px;border-top-right-radius: 6px;border-bottom-right-radius: 6px;" type="text" class="form-control" id="validationTooltipUsername" placeholder="Search Category" aria-describedby="validationTooltipUsernamePrepend" required>
+                            <div class="invalid-tooltip">
+                                Please choose a unique and valid username.
+                            </div>
+                        </div>
+                    </div>              
+                    <!-- search  -->
+                    <div id="add_button"><button type="submit" class="mt-4 btn-pers" data-toggle="modal" data-target="#exampleModalAddCategory" ><i class="fa-solid fa-plus"></i></button></div>
+                    <!-- Model Add Category -->
+                    <div class="modal fade" id="exampleModalAddCategory" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                             <div class="modal-header">
@@ -38,32 +40,21 @@
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                             </div>
                             <div class="modal-body">
-                                <!-- <form>
+                                <form>
                                     <div class="form-group">
-                                        <label for="recipient-name" class="col-form-label"><i class="fa-solid fa-signature"></i> Full Name</label>
-                                        <input v-model="addadmin.fullname" type="text" class="form-control" >
+                                        <label for="recipient-name" class="col-form-label"><i class="fa-solid fa-list"></i> Name Category</label>
+                                        <input v-model="addCate.name" type="text" class="form-control" >
                                     </div>
-                                    <div class="form-group">
-                                        <label for="recipient-name" class="col-form-label"><i class="fa-solid fa-envelope"></i> Email</label>
-                                        <input v-model="addadmin.email" type="email" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="message-text" class="col-form-label"><i class="fa-solid fa-circle-check"></i> Role</label>
-                                        <select class="form-control form-control-sm" v-model="addadmin.role">
-                                            <option value="super admin">Super Admin</option>
-                                            <option value="admin">Admin</option>
-                                        </select>
-                                    </div>
-                                </form> -->
+                                </form>
                             </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" id="closeAdd" @click="closeModelAccount">Close</button>
-                                    <button type="button" class="btn btn-outline-primary" @click="addAccount">Add Account</button>
+                                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" id="closeAdd" >Close</button>
+                                    <button type="button" class="btn btn-outline-primary" @click="addCategory">Add Category</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- Model Add Admin -->
+                    <!-- Model Add Category -->
                 </div>
 
                 <div id="bodytable">
@@ -72,35 +63,14 @@
                         <div class="item-category" v-for="(category,index) in categorys" :key="index" >
                             <div class="name">
                                 <span>
-                                    #{{(pageN-1)*5+index+1}}
+                                    #{{(pageN-1)*21+index+1}}
                                 </span>{{category.name}}</div>
                             <div class="gr">
-                                <button type="button" class="btn btn-outline-primary" @click="openModel(category.id)" data-toggle="modal" data-target="#exampleModalEdit">Edit</button>
+                                <button type="button" class="btn btn-outline-primary" @click="openModel(category.id,category.name)" data-toggle="modal" data-target="#exampleModalEdit">Edit</button>
                                 <button type="button" class="btn btn-outline-danger" @click="deleteCategory(category.id)" >Delete</button>
                             </div>
                         </div>
                     </div>
-
-                    <!-- <table class="table table-hover">
-                        <thead>
-                            <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Name Category</th>
-                            <th scope="col"></th>
-                            <th scope="col"></th>
-                            </tr>
-                        </thead>
-                        <tbody v-for="(category,index) in categorys" :key="index" style="display: inline-block;width: 300px;">
-                            <tr>
-                                <th scope="row">{{(pageN-1)*5+index+1}}</th>
-                                <td>{{category.name}}</td>
-                                <td style=""><button type="button" class="btn btn-outline-primary" @click="editRole(category.id)">Edit</button></td>
-                                <td style=""><button type="button" class="btn btn-outline-danger" @click="openModel(category.id)" data-toggle="modal" data-target="#exampleModalEdit">Delete</button></td>
-                            </tr>
-                        </tbody>
-
-                    </table> -->
-
                     <div id="divpaginate">
                         <paginate class="pag" id="nvm"
                             :page-count="Math.ceil(this.quantity/21)"
@@ -122,6 +92,7 @@
 
         <!-- Model Edit Category -->
         <div class="modal fade" id="exampleModalEdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" @click="resetpage($event)">
+            <!-- truyền vào biến $event -->
             <!-- 
                 Khi hover vào một cái thì .gr hiện lên (top : 0) -> click vào Delete -> model hiện ra nhưng sau khi tắt model đi 
                 thì .gr vẫn chưa về top:60 mà nó vẫn còn top:0 -> fix bằng cách bắt sự kiện khi đóng model thì cho 
@@ -129,19 +100,19 @@
                 resetpage là sự kiện khi click vào vùng phía ngoài của model . 
                 Ngoài ra khi click vào dấu X trên model hay nút Close hay các nút khác nó vẫn thực hiện event này . 
             -->
-            <div class="modal-dialog" role="document" >
-                <div class="modal-content">
-                    <div class="modal-header">
+            <div class="modal-dialog" role="document" id="noclose">
+                <div class="modal-content" id="noclose">
+                    <div class="modal-header" id="noclose">
                         <h5 class="modal-title" id="exampleModalLabel">Edit Category</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body">
-                        <label for="recipient-name" class="col-form-label"><i class="fa-solid fa-list"></i> Name Category</label>
-                        <input v-model="nameCategory" type="text" class="form-control" >
+                    <div class="modal-body" id="noclose">
+                        <label id="noclose" for="recipient-name" class="col-form-label"><i class="fa-solid fa-list"></i> Name Category</label>
+                        <input v-model="nameCategory" type="text" class="form-control" id="noclose" style="font-weight: bold;">
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer" id="noclose">
                         <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" @click="closeEdit" id="closedl">Close</button>
                         <button type="button" class="btn btn-outline-primary" @click="editCategory">Edit</button>
                     </div>
@@ -180,6 +151,9 @@ export default {
             searchad:'',
             pageN:1,
             categorys:null,
+            addCate:{
+                name:''
+            },
             admin:{
                 id:null,
                 fullname:'',
@@ -247,17 +221,21 @@ export default {
 
     methods:{
         resetpage:function(event){
-            if (event) {
-                console.log(event.target.tagName);
-                console.log(event.target.id);
-                console.log(event.target.class);
+            // vì ta đặt sự kiện request lại trang cho cái to nhất nên click bất kì cái nào trong cái đó cũng request lại hết 
+            // nên để fix tiếp ta làm ntn 
+            // ngoại trừ click vào những thằng không liên quan này thì những cái khác click sẽ request lại trang 
+            if (event.target.id == 'noclose' || event.target.id == 'exampleModalLabel') {
+                return ; 
+                // console.log(event.target.tagName);
+                // console.log(event.target.id);
+                // console.log(event.target.class);
             }
             // trong method vẫn dùng forEach bình thường nha 
             // var grs = document.querySelectorAll('.gr')
             // grs.forEach(egr=>{
             //     egr.style="top:60px;";
             // });
-            // setTimeout(()=>{window.location=window.location.href;}, 2000);
+            setTimeout(()=>{window.location=window.location.href;}, 2000);
         },
         home:function(){
             this.$router.push({name:'DashboardAdmin'});
@@ -286,11 +264,13 @@ export default {
                 if(error2.name) this.inError(error2.name);
             })
         },
-        openModel:function(id){
+        openModel:function(id,name){
             this.idEdit = id;
+            this.nameCategory = name;
         },
         closeEdit:function(){
             this.idEdit = null;
+            this.nameEdit = null;
             // alert(this.idDelete);
         },
         deleteCategory:function(id){
@@ -312,18 +292,9 @@ export default {
                 // setTimeout(()=>{window.location=window.location.href;}, 1500);
             })
         },
-        closeModelAccount:function(){
-            // console.log(this.addadmin);
-            this.addadmin.fullname = '';
-            this.addadmin.email = '';
-            this.addadmin.password = '';
-            this.addadmin.role = 'admin';
-            // console.log(this.addAdmin);
-        },
-        addAccount:function(){
+        addCategory:function(){
             var closeAdd = window.document.getElementById('closeAdd');
-            this.addadmin.rolelogin = this.admin.role;
-            BaseRequest.post('api/admin/register',this.addadmin)
+            BaseRequest.post('api/categorys/add',this.addCate)
             .then((data)=>{
                 // console.log(data);
                 closeAdd.click();
@@ -335,12 +306,10 @@ export default {
                 // console.log(error);
                 closeAdd.click();
                 const { emitEvent } = useEventBus();
-                emitEvent('eventError','Add Admin False !');
+                emitEvent('eventError','Add Category False !');
                 this.err = error.response.data;
                 var error2 = this.err;
-                if(error2.fullname) this.inError(error2.fullname);
-                if(error2.username) this.inError(error2.username);
-                if(error2.email) this.inError(error2.email);
+                if(error2.name) this.inError(error2.name);
                 // setTimeout(()=>{window.location=window.location.href;}, 1500);
             })
         },
@@ -349,7 +318,7 @@ export default {
             for(var i=0;i<er.length;i++) emitEvent('eventError',er[i]);
         },
         clickCallback:function(pageNum){
-            BaseRequest.get('api/admin/all-admin?idlogin='+this.admin.id+'&rolelogin='+this.admin.role+'&page='+pageNum+'&search='+this.searchad)
+            BaseRequest.post('api/categorys?page='+pageNum+'&search='+this.searchad)
             .then( (data) =>{
                 // console.log(data);
                 this.quantity = data.quantity;
@@ -357,7 +326,7 @@ export default {
                 // let urlParams = new URLSearchParams(window.location.search);
                 // urlParams.set('page', this.pageN);
                 // window.location.search.set('page',this.pageN);
-                this.admins = data.category.data ;
+                this.categorys = data.category.data ;
                 const { emitEvent } = useEventBus();
                 emitEvent('eventSuccess','Get All Admin Success !');
 
@@ -384,14 +353,14 @@ export default {
         searchad:function(){
             // console.log(this.searchad);
             this.pageN = 1 ;
-            BaseRequest.get('api/admin/all-admin?idlogin='+this.admin.id+'&rolelogin='+this.admin.role+'&page='+this.pageN+'&search='+this.searchad)
+            BaseRequest.post('api/categorys?page='+this.pageN+'&search='+this.searchad)
             .then( (data) =>{
                 // console.log(data);
                 this.quantity = data.quantity;
                 // let urlParams = new URLSearchParams(window.location.search);
                 // urlParams.set('page', this.pageN);
                 // window.location.search.set('page',this.pageN);
-                this.admins = data.category.data ;
+                this.categorys = data.category.data ;
                 // const { emitEvent } = useEventBus();
                 // emitEvent('eventSuccess','Get All Admin Success !');
 
@@ -403,11 +372,6 @@ export default {
                 // console.log(error);
                 const { emitEvent } = useEventBus();
                 emitEvent('eventError',error.response.data.message);
-
-                // Nếu là admin thì không vào được quản trị và không get được thì cho về trang chủ 
-                setTimeout(()=>{
-                    this.$router.push({name:'DashboardAdmin'}); 
-                }, 1500);
             })
         }
     }
@@ -423,6 +387,10 @@ export default {
 
 #search {
     display: flex;
+}
+#search2{
+    margin-right: 100px;
+    margin-top: 4px;
 }
 #pr {
     line-height: 100%;
@@ -630,7 +598,7 @@ export default {
     transition: all 1s ease;
 }
 
-#exampleModalAddAdmin .btn {
+#exampleModalAddCategory .btn {
     transition: all 1s ease;
 }
 
