@@ -15,8 +15,18 @@ class CreateImportDetailsTable extends Migration
     {
         Schema::create('import_details', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('import_id')->nullable();// null khi xóa import đi 
+            $table->foreignId('product_id')->nullable(); // null khi xóa product đi 
+            $table->string('product_name');
+            $table->integer('quantity');
+            $table->float('price');
+            $table->string('provider_tax_id');
             $table->timestamps();
         });
+        // bảng import  1-n import_details 
+        // bảng product 1-n import_details (nhập về các sản phẩm đã có trong danh mục sản phẩm)
+        // mỗi sản phẩm được thêm mới vào có số lượng là 0 , sau khi import_details thì bắt đầu cộng 
+        // thêm số lượng (quantity) đã nhập , bán ra thì trừ đi 
     }
 
     /**

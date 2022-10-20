@@ -26,6 +26,11 @@ class Product extends Model
         return $this->hasMany(Image::class);
     }
 
+    public function importDetails()
+    {
+        return $this->hasMany(ImportDetail::class);
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);

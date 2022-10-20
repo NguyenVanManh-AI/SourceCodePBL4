@@ -15,6 +15,11 @@ class CreateImportsTable extends Migration
     {
         Schema::create('imports', function (Blueprint $table) {
             $table->id();
+            $table->string('importer_name');
+            $table->foreignId('provider_id')->nullable();// null khi xóa nhà cung cấp đi 
+            $table->string('provider_name');
+            $table->string('provider_tax_id');
+            $table->date('import_date');
             $table->timestamps();
         });
     }

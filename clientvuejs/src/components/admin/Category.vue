@@ -55,7 +55,16 @@
                         </div>
                     </div>
                     <!-- Model Add Category -->
+
                 </div>
+
+                <!-- Sort by -->
+                <div id="sortby">
+                    <span style="color: black;font-size: 1rem;padding-top: 10px;padding-right: 10px;"><i class="fa-solid fa-filter"></i> Sorted By  </span> 
+                    <button type="button" :class="{clsort:sortlatest,cldf:!sortlatest}" id="esortlatest" @click="fsortlatest()"><i :class="{'fa-solid':true,'fa-arrow-up-short-wide':!sortlatest,'fa-arrow-down-short-wide':sortlatest}"></i> Latest</button>
+                    <button type="button" :class="{clsort:sortname,cldf:!sortname}" id="esortname" @click="fsortname()"><i :class="{'fa-solid':true, 'fa-arrow-down-a-z':!sortname,'fa-arrow-down-z-a':sortname}"></i> Name</button>
+                </div>
+                <!-- Sort by -->
 
                 <div id="bodytable">
 
@@ -177,6 +186,8 @@ export default {
             err:{
                 name:[],
             },
+            sortlatest:false,
+            sortname:false
         }
     },
     mounted(){
@@ -199,8 +210,19 @@ export default {
             this.searchad = urlParams.get('search');
             this.pageN = 1;
         }
+        
+        // tương tự như khi gửi từ client lên server -> boolean về string hết 
+        // khi ta lấy từ url xuống cũng vậy . về string hết nên để gán được boolean ta làm như dưới 
+        // this.sortlatest = (urlParams.get('sortlatest') === 'true'); this.sortlatest = true nếu biến trên url là 'true'
+        // this.sortlatest = false nếu biến trên url là 'fasle' . Nó không bằng chính giá trị 'true' , 'false'
+        // mà nó là kết quả của việc đem cái trên url đi so sánh với 'true' nếu 'true' = 'true' => true 
+        // tương tự với false 
 
-        BaseRequest.post('api/categorys?page='+this.pageN+'&search='+this.searchad)
+        // Nếu như có biến sortlatest, sortname  
+        if(urlParams.has('sortlatest')) this.sortlatest = (urlParams.get('sortlatest') === 'true');
+        if(urlParams.has('sortname')) this.sortname = (urlParams.get('sortname') === 'true');
+
+        BaseRequest.post('api/categorys?page='+this.pageN+'&search='+this.searchad+'&sortlatest='+this.sortlatest+'&sortname='+this.sortname)
         .then( (data) =>{
             // console.log(data);
             this.quantity = data.quantity;
@@ -220,6 +242,30 @@ export default {
     },
 
     methods:{
+
+        // sort 
+        fsortlatest:function(){
+            this.sortlatest = !this.sortlatest;
+            this.getdatasort();
+        },
+        fsortname:function(){
+            this.sortname = !this.sortname;
+            this.getdatasort();
+        },
+        getdatasort:function(){
+            if(this.pageN == null) this.pageN=1;
+            BaseRequest.post('api/categorys?page='+this.pageN+'&search='+this.searchad+'&sortlatest='+this.sortlatest+'&sortname='+this.sortname)
+            .then( (data) =>{
+                this.quantity = data.quantity;
+                this.categorys = data.category.data ;
+            }) 
+            .catch(error=>{
+                const { emitEvent } = useEventBus();
+                emitEvent('eventError',error.response.data.message);
+            })
+        },
+        // sort 
+
         resetpage:function(event){
             // vì ta đặt sự kiện request lại trang cho cái to nhất nên click bất kì cái nào trong cái đó cũng request lại hết 
             // nên để fix tiếp ta làm ntn 
@@ -318,7 +364,7 @@ export default {
             for(var i=0;i<er.length;i++) emitEvent('eventError',er[i]);
         },
         clickCallback:function(pageNum){
-            BaseRequest.post('api/categorys?page='+pageNum+'&search='+this.searchad)
+            BaseRequest.post('api/categorys?page='+pageNum+'&search='+this.searchad+'&sortlatest='+this.sortlatest+'&sortname='+this.sortname)
             .then( (data) =>{
                 // console.log(data);
                 this.quantity = data.quantity;
@@ -328,7 +374,7 @@ export default {
                 // window.location.search.set('page',this.pageN);
                 this.categorys = data.category.data ;
                 const { emitEvent } = useEventBus();
-                emitEvent('eventSuccess','Get All Admin Success !');
+                emitEvent('eventSuccess','Get All Category Success !');
 
                 // setTimeout(()=>{
                 //     window.location=window.location.href;
@@ -346,14 +392,14 @@ export default {
             })
         },
         clicksearch:function(){
-            window.location = window.location.pathname+"?search="+this.searchad;
+            window.location = window.location.pathname+"?search="+this.searchad+'&sortlatest='+this.sortlatest+'&sortname='+this.sortname;
         }
     },
     watch:{
         searchad:function(){
             // console.log(this.searchad);
             this.pageN = 1 ;
-            BaseRequest.post('api/categorys?page='+this.pageN+'&search='+this.searchad)
+            BaseRequest.post('api/categorys?page='+this.pageN+'&search='+this.searchad+'&sortlatest='+this.sortlatest+'&sortname='+this.sortname)
             .then( (data) =>{
                 // console.log(data);
                 this.quantity = data.quantity;
@@ -410,9 +456,15 @@ export default {
     color: #0085FF;
     cursor: pointer;
 }
+#home:hover {
+    text-decoration: underline;
+}
 #spcategoryadmin{
     color: #3a9efb;
     cursor: pointer;
+}
+#spcategoryadmin:hover {
+    text-decoration: underline;
 }
 #big {
     position: relative;
@@ -450,7 +502,7 @@ export default {
     border-radius: 10px;
     align-items: center;
     width: 93%;
-    height: 710px;
+    height: 780px;
     font-size: 13px;
     /* border: 10px solid red; */
 }
@@ -526,7 +578,6 @@ export default {
 #toptable {
     display: flex;
     padding: 30px 0px 10px 0px;
-    margin-bottom: 30px;
     justify-content: space-between;
     align-items: center;
 }
@@ -618,5 +669,39 @@ export default {
 }
 #validationTooltipUsernamePrepend:hover{
     color: #0085FF;
+}
+
+#sortby{
+    margin-top: 10px;
+    margin-bottom: 30px;
+    width:100%;
+    background-color: #F2F4F6;
+    padding: 10px 0px 10px 30px;
+}
+#esortlatest ,#esortname{
+    margin-right: 20px;
+    outline: none;
+    width:auto;
+    height: 40px;
+    padding: 0px 10px;
+    font-size: 18px;
+    border-radius: 8px;
+    border: 1px solid #0085FF;
+}
+#esortlatest:hover {
+    background-color: #0367c5;
+    color: white;
+}
+#esortname:hover {
+    background-color: #0367c5;
+    color: white;
+}
+.cldf{
+    background-color:white;
+    color: #0085FF;
+}
+.clsort{
+    background-color: #0085FF;
+    color: white;
 }
 </style>

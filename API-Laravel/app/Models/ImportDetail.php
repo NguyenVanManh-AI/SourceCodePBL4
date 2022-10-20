@@ -8,4 +8,23 @@ use Illuminate\Database\Eloquent\Model;
 class ImportDetail extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'id',
+        'import_id',
+        'product_id',
+        'product_name',
+        'quantity',
+        'price',
+        'provider_tax_id'
+    ];
+
+    public function import()
+    {
+        return $this->belongsTo(Import::class);
+    } 
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    } 
 }

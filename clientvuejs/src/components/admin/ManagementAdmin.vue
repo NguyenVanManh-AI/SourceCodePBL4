@@ -444,9 +444,15 @@ export default {
     color: #0085FF;
     cursor: pointer;
 }
+#home:hover{
+    text-decoration: underline;
+}
 #spadministrator{
     color: #3a9efb;
     cursor: pointer;
+}
+#spadministrator:hover{
+    text-decoration: underline;
 }
 #big {
     position: relative;
