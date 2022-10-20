@@ -7,6 +7,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController; 
 use App\Http\Controllers\CategoryController; 
+use App\Http\Controllers\ProviderController; 
+use App\Http\Controllers\ImageController; 
+use App\Http\Controllers\ImportController; 
+use App\Http\Controllers\ImportDetailController; 
+use App\Http\Controllers\OrderDetailController; 
+use App\Http\Controllers\ResetPasswordController; 
+use App\Http\Controllers\SendEmailController; 
+use App\Http\Controllers\ShippingAddressController; 
+use App\Http\Controllers\UserOrderController; 
 
 
 
@@ -42,6 +51,17 @@ Route::prefix('categorys')->controller(CategoryController::class)->group(functio
     //     Route::get('/{id}', 'show');
     // });
 });
+
+// Provider 
+Route::prefix('providers')->controller(ProviderController::class)->group(function () {
+    Route::middleware('auth:admin_api')->group(function () {
+        Route::post('/', 'allProviders');
+        Route::post('/add', 'add');
+        Route::patch('edit/{id}', 'edit');
+        Route::delete('/{id}', 'delete');
+    });
+});
+
 
 Route::get('get-all', 'App\Http\Controllers\ProductController@getAll');
 Route::post('add', 'App\Http\Controllers\ProductController@addp');
