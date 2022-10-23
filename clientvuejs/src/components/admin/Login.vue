@@ -1,20 +1,32 @@
 <template>
   <div id="main">
+
+    <!-- HIỆU ỨNG BACKGROUND HÌNH TRÒN -->
+    <div id="container-inside">
+      <div id="circle-small"></div>
+      <div id="circle-medium"></div>
+      <div id="circle-large"></div>
+      <div id="circle-xlarge"></div>
+      <div id="circle-xxlarge"></div>
+    <!-- HIỆU ỨNG BACKGROUND HÌNH TRÒN -->
+  
     <div id="header">
       <div id="img"><a @click="logoClick"><img src="../../assets/logo.png"></a></div>
       <div id="logo"><a @click="logoClick">Meta Shop</a></div>
       <div id="span"></div>
-      <div id="title" @click="adminlogin"><a>Admin Login</a></div>
+      <div id="title" @click="adminlogin" class="under"><a>Admin Login</a></div>
     </div>
       
     <div id="big">
       <div class="container">
-          <form @submit.prevent="login()" action="http://127.0.0.1:8000/api/auth/login" autocomplete="on">
-            <h4>Login</h4><br>
-            <div class="input-form"><input type="email" v-model="loginAdmin.email" required><div class="underline"></div><label>Email</label></div><br>
-            <div class="input-form"><input type="password" required v-model="loginAdmin.password"><div class="underline"></div><label>Password</label></div><br>
+          <form  @submit.prevent="login()" action="http://127.0.0.1:8000/api/auth/login" >
+            <h4 style="text-transform: uppercase;letter-spacing: 2.5px;font-weight: 700;color:#0085FF;"><i class="fa-solid fa-right-to-bracket"></i> LOGIN</h4><br>
+            <div class="input-form"><input type="email" v-model="loginAdmin.email" required autocomplete="off"><div class="underline"></div><label :class="{fix1:loginAdmin.email.length>0}"><i class="fa-solid fa-envelope"></i> Email</label></div><br>
+            <div class="input-form" id="bigshow"><input :type="passwordType" required v-model="loginAdmin.password" autocomplete="off"><div class="underline"></div><label><i class="fa-solid fa-lock"></i> Password</label>
+              <div id="show"><input type="checkbox" v-model="showpw"></div>
+            </div><br>
             <!-- <div class="alert alert-danger" v-if="error">{{error.response.data.error}}</div> -->
-            <a class="text-primary" href="#" data-toggle="modal" data-target="#exampleModalForgotPassword">Forgot your password ? </a><br>
+            <a class="text-primary under" style="text-decoration: none;" href="#" data-toggle="modal" data-target="#exampleModalForgotPassword" >Forgot your password ? </a><br>
 
             <!-- Model Forgot Password -->
             <div class="modal fade" id="exampleModalForgotPassword" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -48,6 +60,7 @@
     <Notification></Notification>
 
   </div>
+  </div>
 </template>
 
 <script>
@@ -71,6 +84,14 @@ export default {
             email:''
           },
           error:null,
+          showpw:false,
+          passwordType:'password',
+      }
+    },
+    watch:{
+      showpw:function(){
+        if(this.showpw == true) this.passwordType = 'text';
+        else this.passwordType = 'password'; 
       }
     },
     methods: {
@@ -166,23 +187,165 @@ export default {
 
     },
     mounted(){
-        window.document.title='MetaShop | Login';
-        if(window.localStorage.getItem('admin')){
-            this.$router.push({name:"DashboardAdmin"});
-        }
+      window.document.title='MetaShop | Login';
+      if(window.localStorage.getItem('admin')){
+          this.$router.push({name:"DashboardAdmin"});
+      }
     }
 }
 </script>
 
+<!-- Có một bug đó là 
+  cái hiệu ứng ở input nó sẽ bị false khi mà google tự động điền 
+  c1 : fix bằng cách khi mounted() thì auto focus vào nó -> nhưng mà vẫn còn khá xấu với lại nó chỉ focus được một cái 
+  c2 : fix bằng cách cho click vào bất kì vị trí nào trên page cũng được (nhưng trong mounted thì lại cho .click() không được)
+  c3 : dùng thư viện không cho nó tự động điền nữa (không làm mất chức năng lưu password của gg , click vào ô password thì nó cũng 
+  gợi ý tự điền password cho ta thôi)
+  thamkhao : https://stackoverflow.com/questions/61266151/vue-google-chrome-password-autofill-disable
+    
+    >npm i vue-disable-autocomplete
+   
+    import DisableAutocomplete from 'vue-disable-autocomplete';
+    Vue.use(DisableAutocomplete);
+
+    sau đó thêm : autocomplete="off" vào input 
+
+  -->
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
+
+/* @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap'); */
+
+
+/* HIỆU ỨNG BACKGROUND HÌNH TRÒN */
+/* THAMKHAO : https://blog.stackfindover.com/css-background-animation-examples/ */
+/*  */
+#main{
+    background: #00adef;
+    background: -moz-linear-gradient(-45deg, #00adef 0%, #0076e5 100%);
+    background: -webkit-linear-gradient(-45deg, #00adef 0%,#0076e5 100%);
+    background: linear-gradient(135deg, #00adef 0%,#0076e5 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00adef', endColorstr='#0076e5',GradientType=1 );
+    position: relative;
+    height: 700px;
+    width: 100%;
+    margin: 0px auto;
+    padding: 0px auto;
+    overflow: hidden; /* ẩn bớt phần dư của các hình trong đi */
+}
+
+#container-inside {
+    position: relative;
+    min-width: 960px;
+    max-width: 1280px;
+    height: auto;
+    min-height: 100%;
+    margin: 0px auto;
+    padding: 0px auto;
+    overflow: visible;
+}
+
+#circle-small {
+  -webkit-animation: circle-small-scale 3s ease-in-out infinite alternate;
+  animation: circle-small-scale 3s ease-in-out infinite alternate;
+  animation-timing-function: cubic-bezier(.6, 0, .4, 1);
+  animation-delay: 0s;
+  position: absolute;
+  top: 200px;
+  left: -150px;
+  background: #fff;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  opacity: 0.4;
+}
+
+#circle-medium {
+  -webkit-animation: circle-small-scale 3s ease-in-out infinite alternate;
+  animation: circle-small-scale 3s ease-in-out infinite alternate;
+  animation-timing-function: cubic-bezier(.6, 0, .4, 1);
+  animation-delay: 0.3s;
+  position: absolute;
+  top: 50px;
+  left: -300px;
+  background: #fff;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  opacity: 0.3;
+}
+
+#circle-large {
+  -webkit-animation: circle-small-scale 3s ease-in-out infinite alternate;
+  animation: circle-small-scale 3s ease-in-out infinite alternate;
+  animation-timing-function: cubic-bezier(.6, 0, .4, 1);
+  animation-delay: 0.6s;
+  position: absolute;
+  top: -100px;
+  left: -450px;
+  background: #fff;
+  width: 900px;
+  height: 900px;
+  border-radius: 50%;
+  opacity: 0.2;
+}
+
+#circle-xlarge {
+  -webkit-animation: circle-small-scale 3s ease-in-out infinite alternate;
+  animation: circle-small-scale 3s ease-in-out infinite alternate;
+  animation-timing-function: cubic-bezier(.6, 0, .4, 1);
+  animation-delay: 0.9s;
+  position: absolute;
+  top: -250px;
+  left: -600px;
+  background: #fff;
+  width: 1200px;
+  height: 1200px;
+  border-radius: 50%;
+  opacity: 0.1;
+}
+
+#circle-xxlarge {
+  -webkit-animation: circle-small-scale 3s ease-in-out infinite alternate;
+  animation: circle-small-scale 3s ease-in-out infinite alternate;
+  animation-timing-function: cubic-bezier(.6, 0, .4, 1);
+  animation-delay: 1.2s;
+  position: absolute;
+  top: -400px;
+  left: -750px;
+  background: #fff;
+  width: 1500px;
+  height: 1500px;
+  border-radius: 50%;
+  opacity: 0.05;
+}
+
+@-webkit-keyframes circle-small-scale {
+    0% {
+        -webkit-transform: scale(1.0);
+    }
+    100% {
+        -webkit-transform: scale(1.1);
+    }
+}
+
+@keyframes circle-small-scale {
+    0% {
+        transform: scale(1.0);
+    }
+    100% {
+        transform: scale(1.1);
+    }
+}
+
+/* HIỆU ỨNG BACKGROUND HÌNH TRÒN */
+
 
  *{
    margin: 0;
    padding: 0;
    outline: none;
    box-sizing: border-box;
-   font-family: 'Roboto', sans-serif;
+   font-family: sans-serif;
  }
  #main{
   background-color: #F2F4F6;
@@ -198,6 +361,8 @@ export default {
    min-height: 100vh;
    background: linear-gradient(to right, #EF629F, #EECDA3);
  }
+
+ /* input */
  .container{
   border-radius: 36px;
   width: 450px;
@@ -223,6 +388,12 @@ export default {
    font-size: 15px;
    color: #0085FF;
  }
+ .fix1{
+  transform: translateY(-20px);
+   font-size: 15px;
+   color: #0085FF;
+ }
+
  .container .input-form label{
    position: absolute;
    bottom: 10px;
@@ -251,11 +422,24 @@ export default {
  .input-form input:valid ~ .underline:before{
    transform: scaleX(1);
  }
+/* input */
 
-
-
-
-
+/* show password */
+#bigshow{
+  padding-right: 30px;
+  position: relative;
+}
+#show {
+  position: absolute;
+  right: 0px;
+  top:11px;
+  padding:6px;  
+  display: flex;
+  /* border-top-right-radius: 10px; */
+  border-top-left-radius: 10px;
+  align-items: center;
+  border: 2px solid #0085FF;
+}
 
  /* header */
  #header {
@@ -266,6 +450,7 @@ export default {
     margin-bottom: 60px;
     align-items: center;
     border-radius: 16px;
+    position: relative;  /* LÀM NHƯ THẾ NÀY ĐỂ KHÔNG BỊ HIỆU ỨNG background HÌNH TRÒN ĐÈ LÊN PHÍA TRÊN */
 }
 #header #img {
     cursor: pointer;
@@ -291,6 +476,7 @@ export default {
 #big {
     justify-content: center;
     display: flex;
+    position: relative; /* LÀM NHƯ THẾ NÀY ĐỂ KHÔNG BỊ HIỆU ỨNG background HÌNH TRÒN ĐÈ LÊN PHÍA TRÊN */
 }
 #title {
     font-size: 20px;
@@ -299,9 +485,11 @@ export default {
     cursor: pointer;
 }
 #title:hover{
-  text-decoration-color: #0085FF;
+  /* text-decoration-color: #0085FF;
   text-decoration: underline;
-  color: #0085FF;
+  color: #0085FF; */
+  color:#0085FF;
+  transition: color 0.5s ease;
 }
 
 
@@ -337,7 +525,36 @@ export default {
 .btn-pers:active {
   transform: translate(-50%, -1px);
 }
+ /* btn Login */
+
+ /* under */
+.under{
+    position: relative;
+    padding: 0px 0px;
+}
+.under::after{
+    content: ' ';
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 0;
+    height: 2px;
+    background:#0085FF;
+    transition: width 0.3s;
+}
+.under:hover::after {
+    width: 100%;
+    transition: width 0.3s;
+}
+ /* under */
 
 
+/*
+
+:class="{fix1:loginAdmin.email.length>0}"
+fix để khi đã có kí tự thì nó không còn nhảy email xuống đè lên chữ nữa . 
+thanh password thì không bị nhưng email thì lại bị 
+
+*/
 </style>
 

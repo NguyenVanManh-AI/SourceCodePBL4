@@ -26,7 +26,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Other (Product,Category,...)  
 Route::prefix('products')->controller(ProductController::class)->group(function () {
     Route::middleware('auth:admin_api')->group(function () {
-        Route::post('/', 'store');
+        Route::post('/', 'allProducts');
+
         Route::post('update/{id}', 'update');
         Route::delete('/{id}', 'delete');
     });

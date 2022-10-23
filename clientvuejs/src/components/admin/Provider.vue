@@ -3,7 +3,7 @@
         <div id="big">
             <div id="head">
                 <div>
-                    <div><span @click="home" id="home">Pages</span> / <span @click="spprovideradmin" id="spprovideradmin">Provider</span></div>
+                    <div><span @click="home" id="home" class="under">Pages</span> / <span class="under" @click="spprovideradmin" id="spprovideradmin">Provider</span></div>
                     <div style="font-weight: bold">Provider</div>
                 </div>
                 <div id="search">
@@ -98,7 +98,7 @@
                                 <td>{{pr.address}}</td>
                                 <td>{{pr.tax_id_number}}</td>
                                 <td style=""><button type="button" class="btn btn-outline-primary" @click="openModel(pr)" data-toggle="modal" data-target="#exampleModalEdit">Edit</button></td>
-                                <td style=""><button type="button" class="btn btn-outline-danger" @click="openModel(ad.id)" >Delete</button></td>
+                                <td style=""><button type="button" class="btn btn-outline-danger" @click="openModelDelete(pr.id)" data-toggle="modal" data-target="#exampleModalDelete">Delete</button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -154,6 +154,30 @@
             </div>
         </div>
         <!-- Model Edit Category -->
+        <!-- Model Delete Provider -->
+        <div class="modal fade" id="exampleModalDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Warning</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-warning" role="alert">
+                            Are you sure you want to delete this provider ? <br>
+                            This provider will be permanently deleted from the system !
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" id="closedele">Close</button>
+                        <button type="button" class="btn btn-outline-danger" @click="deleteProvider">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Model Delete Provider -->
 
 
         <Notification></Notification>
@@ -226,7 +250,8 @@ export default {
                 tax_id_number:[]
             },
             sortlatest:false,
-            sortname:false
+            sortname:false,
+            idDelete:null,
         }
     },
     mounted(){
@@ -343,20 +368,23 @@ export default {
         openModel:function(provider){
             this.editProvider = provider;
         },
-        deleteCategory:function(id){
+        openModelDelete:function(id){
+            this.idDelete = id; 
+        },
+        deleteProvider:function(){
             // alert(this.idDelete);
-            var closedl = window.document.getElementById('closedl');
-            BaseRequest.delete('api/providers/'+id)
+            var closedele = window.document.getElementById('closedele');
+            BaseRequest.delete('api/providers/'+this.idDelete)
             .then((data)=>{
                 // console.log(data);
-                closedl.click();
+                closedele.click();
                 const { emitEvent } = useEventBus();
                 emitEvent('eventSuccess',data.message);
-                setTimeout(()=>{window.location=window.location.href;}, 1500);
+                setTimeout(()=>{window.location=window.location.href;}, 2000);
             })
             .catch(()=>{
                 // console.log(error);
-                closedl.click();
+                closedele.click();
                 const { emitEvent } = useEventBus();
                 emitEvent('eventError','Delete Provider False !');
                 // setTimeout(()=>{window.location=window.location.href;}, 1500);
@@ -466,6 +494,7 @@ export default {
     margin-right: 100px;
     margin-top: 4px;
     box-shadow: 0px 10px 10px -10px #3b9cf8;
+    /* box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1); */
 }
 #pr {
     line-height: 100%;
@@ -485,15 +514,33 @@ export default {
     color: #0085FF;
     cursor: pointer;
 }
-#home:hover {
+/* #home:hover {
     text-decoration: underline;
-}
+} */
 #spprovideradmin{
     color: #3a9efb;
     cursor: pointer;
 }
-#spprovideradmin:hover {
+/* #spprovideradmin:hover {
     text-decoration: underline;
+} */
+.under{
+    position: relative;
+    padding: 0px 0px;
+}
+.under::after{
+    content: ' ';
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 0;
+    height: 2px;
+    background:#0085FF;
+    transition: width 0.3s;
+}
+.under:hover::after {
+    width: 100%;
+    transition: width 0.3s;
 }
 #big {
     position: relative;
@@ -534,63 +581,6 @@ export default {
     font-size: 13px;
     /* border: 10px solid red; */
 }
-
-.item-category{
-    width:30%;
-    height: 60px;
-    position: relative;
-    overflow: hidden;
-    display: inline-block;
-    margin-left: 20px;
-    box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
-    margin-bottom: 10px;
-    border-radius: 6px;
-}
-@import url('https://fonts.googleapis.com/css2?family=PT+Serif&display=swap');
-.item-category .name {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-content: center;
-    justify-content: center;
-    align-content: center;
-    line-height: 60px;
-    height: 60px;
-    font-size: 16px;
-    font-weight: bold;
-    font-family: 'PT Serif', serif;
-    letter-spacing:2px;
-    word-spacing: 4px;
-}
-.item-category .name span{
-    position: absolute;
-    top:0px;
-    left:10px;
-}
-.item-category .gr {
-    position: absolute;
-    top:60px;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-content: center;
-    justify-content: space-between;
-    align-content: center;
-    align-items: center;
-    padding: 0px 12%;
-    height: 60px;
-    background-color: white;
-    transition: top 0.5s ease;
-}
-.item-category .gr .btn{
-    height: 34px;
-    width: 90px;
-    font-size: 16px;
-}
-.item-category:hover .gr{ 
-    top:0px
-}
-/* hover vào thằng cha nào thì thằng con nó chịu ảnh hưởng thôi */
 
 
 #bodytable .btn {

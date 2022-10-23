@@ -16,6 +16,7 @@ import CustomerAdmin from './../components/admin/Customer'
 import ManagementAdmin from './../components/admin/ManagementAdmin'
 import OrderAdmin from './../components/admin/Order'
 import ProductAdmin from './../components/admin/Product'
+import ProductAdd from './../components/admin/ProductAdd'
 import ProviderAdmin from './../components/admin/Provider'
 import StatisticalAdmin from './../components/admin/Statistical'
 import ProductDetails from './../components/admin/ProductDetails'
@@ -70,6 +71,7 @@ const routes = [
             {path:'management-admin',name:'ManagementAdmin',component:ManagementAdmin},
             {path:'order',name:'OrderAdmin',component:OrderAdmin},
             {path:'product',name:'ProductAdmin',component:ProductAdmin},
+            {path:'product/add',name:'ProductAdd',component:ProductAdd},
             {path:'product/:id',name:'ProductDetails',component:ProductDetails},
             {path:'provider',name:'ProviderAdmin',component:ProviderAdmin},
             {path:'statistical',name:'StatisticalAdmin',component:StatisticalAdmin},

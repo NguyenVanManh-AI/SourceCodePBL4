@@ -3,8 +3,8 @@
         <div id="big">
             <div id="head">
                 <div>
-                    <div><span @click="home" id="home">Pages</span> / <span @click="spcategoryadmin" id="spcategoryadmin">Category</span></div>
-                    <div style="font-weight: bold">Category</div>
+                    <div><span @click="home" id="home" class="under">Pages</span> / <span class="under" @click="spcategoryadmin" id="spcategoryadmin">Category</span></div>
+                    <div style="font-weight: bold" class="ef">Category</div>
                 </div>
                 <div id="search">
                     <div id="pr" @click="profile">
@@ -75,8 +75,8 @@
                                     #{{(pageN-1)*21+index+1}}
                                 </span>{{category.name}}</div>
                             <div class="gr">
-                                <button type="button" class="btn btn-outline-primary" @click="openModel(category.id,category.name)" data-toggle="modal" data-target="#exampleModalEdit">Edit</button>
-                                <button type="button" class="btn btn-outline-danger" @click="deleteCategory(category.id)" >Delete</button>
+                                <button type="button" class="btn btn-outline-primary" @click="openModel(category.id,category.name)" data-toggle="modal" data-target="#exampleModalEdit"><i class="fa-solid fa-pencil"></i> Edit</button>
+                                <button type="button" class="btn btn-outline-danger" @click="deleteCategory(category.id)" ><i class="fa-solid fa-trash"></i> Delete</button>
                             </div>
                         </div>
                     </div>
@@ -183,6 +183,7 @@ export default {
             domain:config.API_URL,
             idEdit:null,
             nameCategory:null,
+            nameCategory2:null,
             err:{
                 name:[],
             },
@@ -294,6 +295,7 @@ export default {
             this.$router.push({name:'ProfileAdmin'});
         },
         editCategory:function(){
+            if(this.nameCategory == this.nameCategory2) return ;
             var s = {name:this.nameCategory}
             BaseRequest.patch('api/categorys/edit/'+this.idEdit,s)
             .then((data)=>{
@@ -313,6 +315,7 @@ export default {
         openModel:function(id,name){
             this.idEdit = id;
             this.nameCategory = name;
+            this.nameCategory2 = name;
         },
         closeEdit:function(){
             this.idEdit = null;
@@ -456,16 +459,36 @@ export default {
     color: #0085FF;
     cursor: pointer;
 }
-#home:hover {
+/* #home:hover {
     text-decoration: underline;
+} */
+
+.under{
+    position: relative;
+    padding: 0px 0px;
 }
+.under::after{
+    content: ' ';
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 0;
+    height: 2px;
+    background:#0085FF;
+    transition: width 0.3s;
+}
+.under:hover::after {
+    width: 100%;
+    transition: width 0.3s;
+}
+
 #spcategoryadmin{
     color: #3a9efb;
     cursor: pointer;
 }
-#spcategoryadmin:hover {
+/* #spcategoryadmin:hover {
     text-decoration: underline;
-}
+} */
 #big {
     position: relative;
     background-color: white;
@@ -475,6 +498,10 @@ export default {
     background-color: #0085FF;
     height: 80px;
     margin-top: 50px;
+}
+.ef {
+    -webkit-animation: pulse 2s cubic-bezier(.4,0,.6,1) infinite!important;
+    animation: pulse 2s cubic-bezier(.4,0,.6,1) infinite!important;
 }
 #head {
     position: absolute;
@@ -488,6 +515,7 @@ export default {
     border-radius: 10px;
     align-items: center;
     width: 93%;
+
 }
 
 #table {
@@ -530,9 +558,8 @@ export default {
     height: 60px;
     font-size: 16px;
     font-weight: bold;
-    font-family: 'PT Serif', serif;
-    letter-spacing:2px;
-    word-spacing: 4px;
+    letter-spacing:1px;
+    word-spacing: 1px;
 }
 .item-category .name span{
     position: absolute;

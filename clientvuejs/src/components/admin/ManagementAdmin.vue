@@ -3,7 +3,7 @@
         <div id="big">
             <div id="head">
                 <div>
-                    <div><span @click="home" id="home">Pages</span> / <span @click="spadministrator" id="spadministrator">Administrator</span></div>
+                    <div><span @click="home" id="home" class="under">Pages</span> / <span class="under" @click="spadministrator" id="spadministrator">Administrator</span></div>
                     <div style="font-weight: bold">Administrator</div>
                 </div>
                 <div id="search">
@@ -444,15 +444,33 @@ export default {
     color: #0085FF;
     cursor: pointer;
 }
-#home:hover{
+/* #home:hover{
     text-decoration: underline;
-}
+} */
 #spadministrator{
     color: #3a9efb;
     cursor: pointer;
 }
-#spadministrator:hover{
+/* #spadministrator:hover{
     text-decoration: underline;
+} */
+.under{
+    position: relative;
+    padding: 0px 0px;
+}
+.under::after{
+    content: ' ';
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 0;
+    height: 2px;
+    background:#0085FF;
+    transition: width 0.3s;
+}
+.under:hover::after {
+    width: 100%;
+    transition: width 0.3s;
 }
 #big {
     position: relative;
@@ -596,4 +614,6 @@ export default {
 #validationTooltipUsernamePrepend:hover{
     color: #0085FF;
 }
+
+
 </style>

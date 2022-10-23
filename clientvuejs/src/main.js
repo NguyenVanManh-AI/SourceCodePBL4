@@ -21,6 +21,8 @@ let gauthClientId = "779842371071-gn56d5d8o7l8blerqn3nb75v3vnhsbqf.apps.googleus
 import Notifications from "vue3-vt-notifications";
 import "tailwindcss/dist/tailwind.css";
 
+import DisableAutocomplete from 'vue-disable-autocomplete';
+
 const app = createApp(App);
 // const app = createApp(UserComp);
 
@@ -37,4 +39,5 @@ app.use(storeConfigs)
 app.use(Paginate)
 app.use( quillEditor )
 app.use( Notifications )
+app.use(DisableAutocomplete);
 app.mount('#app')
