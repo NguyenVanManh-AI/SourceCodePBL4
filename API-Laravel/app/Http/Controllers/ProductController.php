@@ -9,6 +9,8 @@ use App\Models\ImportDetail; // xóa product đi thì cũng set cho product_id c
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -16,6 +18,85 @@ class ProductController extends Controller
         // $this->middleware('auth:customer_api', ['except' => ['getAllProduct', 'getAll','addp','verycode','upfile','loginGoogle','getfile',
         // 'testGet','testPost','realTime']]);
         $this->middleware('auth:admin_api', ['except' => ['upfile']]);
+    }
+
+    public function getCategory(Request $request){
+        $search = $request->search;
+        $category = Category::where('name','LIKE', '%'.$search.'%')->get();
+        return response()->json([
+            'message' => 'Get Category successfully !',
+            'category' => $category
+        ], 201);
+    }
+
+    public function add(Request $request)
+    {
+        // if($request->category_id == "null") $request->category_id = null;
+        
+        $validator = Validator::make($request->all(), [
+            'name'=>'required|string',
+            'warranty_period'=>'required|date',
+            'description'=>'required|string',
+            'category_id'=>'numeric|nullable', // hoặc là có thể null hoặc là phải là số "6" hoặc 6 đều được 
+            'price'=>'required|numeric',  
+            'material'=>'required|string',
+            'dimension'=>'required|string'
+        ]);
+
+        if($validator->fails()){
+            return response()->json($validator->errors(), 400);
+        }
+
+        $bytes = random_bytes(10);
+        $transaction_id = (bin2hex($bytes)); // hash (random ra uri)
+
+        $product = Product::create(array_merge(
+            $validator->validated(),
+            ['quantity' => 0,'uri' => $transaction_id] // tạo mới sản phẩm (chưa nhập kho thì cho số lượng là 0)  
+        ));
+
+        return response()->json([
+            'message' => 'Add Product successfully !',
+            'product' => $product
+        ], 201);
+    }
+
+    // thực tế thì dưới client có 10 cái ảnh thì mình phải gọi 10 lệnh api upfile từng cái ảnh một 
+    public function upfile(Request $request) {// photo là dưới client gửi lên 
+        $pathToFile = $request->file('photo')->store('products','public'); // lưu vào folder products
+        DB::table('images')->insert([
+            'product_id'=>$request->id,
+            'image_path'=> 'storage/'.$pathToFile
+        ]);
+        return response()->json([
+            "link"=> 'storage/'.$pathToFile
+        ],200);
+    } 
+
+    public function delete($id)
+    {
+        try {
+            $product =  Product::find($id);
+            if ($product) {
+                ImportDetail::where("product_id",$id)->update(['product_id'=>null]);  // set null cho ImportDetail
+                $imgs = Image::where("product_id",$id)->get(); // với ảnh thì không set null mà xóa hết các ảnh liên quan của product đó
+                if($imgs){ // lấy ra các img có product_id đó (nếu có) và lặp qua từng cái 
+                    foreach($imgs as $img){
+                        File::delete($img->image_path); // xóa ảnh 
+                        $i = Image::find($img->id);     // xóa hàng dữ liệu đó 
+                        $i->delete();
+                    }
+                }
+                $product->delete(); // xong hết rồi mới xóa product đó 
+                return response()->json([
+                    'message' => 'Delete Product successfully !',
+                ], 201);
+            }
+        } catch (QueryException $e) {
+            return response()->json([
+                'message' => 'Delete Product false !',
+            ], 400);
+        }
     }
 
     public function allProducts(Request $request) {
@@ -81,7 +162,41 @@ class ProductController extends Controller
             'categories.*','categories.id as category_id','categories.name as category_name'
         )->get();
 
-
+        // vừa là chưa được phân loại nhưng trong những cái chưa được phân loại category đó
+        // ta cũng phải search các thông tin của product được  
+        if($request->unclassified == 'true'){ 
+            $products = Product::leftJoin('categories', function($join) {
+                $join->on('products.category_id', '=', 'categories.id');
+            })->orderBy($col1,$orderb1)->orderBy($col2,$orderb2)->where(function($query) use($search) {
+            $query->where('products.name','LIKE', '%'.$search.'%')
+            ->orWhere('quantity','LIKE', '%'.$search.'%')
+            ->orWhere('warranty_period','LIKE', '%'.$search.'%')
+            ->orWhere('description','LIKE', '%'.$search.'%')
+            ->orWhere('price','LIKE', '%'.$search.'%')
+            ->orWhere('material','LIKE', '%'.$search.'%')
+            ->orWhere('dimension','LIKE', '%'.$search.'%');
+            })->whereNull('products.category_id')
+            ->select(
+                'products.*','products.id as product_id','products.name as product_name',
+                'categories.*','categories.id as category_id','categories.name as category_name'
+            )->paginate(10);
+    
+            $products2 = Product::leftJoin('categories', function($join) {
+                $join->on('products.category_id', '=', 'categories.id');
+            })->orderBy($col1,$orderb1)->orderBy($col2,$orderb2)->where(function($query) use($search) {
+                $query->where('products.name','LIKE', '%'.$search.'%')
+                ->orWhere('quantity','LIKE', '%'.$search.'%')
+                ->orWhere('warranty_period','LIKE', '%'.$search.'%')
+                ->orWhere('description','LIKE', '%'.$search.'%')
+                ->orWhere('price','LIKE', '%'.$search.'%')
+                ->orWhere('material','LIKE', '%'.$search.'%')
+                ->orWhere('dimension','LIKE', '%'.$search.'%');
+            })->whereNull('products.category_id')
+            ->select(
+                'products.*','products.id as product_id','products.name as product_name',
+                'categories.*','categories.id as category_id','categories.name as category_name'
+            )->get();
+        }
         // XỬ LÝ LẤY RA CÁC BỘ ẢNH TƯƠNG ỨNG 
         $idps = []; // mảng lưu các giá trị product_id 
 
@@ -194,25 +309,7 @@ class ProductController extends Controller
     //     ], 201);
     // }
 
-    // public function addp(Request $request)
-    // {
-    //     $validator = Validator::make($request->all(), [
-    //         'title' => 'required|string|min:10',
-    //         'content' => 'required|string|min:6',
-    //     ]);
 
-    //     if($validator->fails()){
-    //         return response()->json($validator->errors(), 400);
-    //     }
-
-    //     $article = Product::create($request->all());
-
-
-    //     return response()->json([
-    //         'message' => 'User successfully registered',
-    //         'user' => $article
-    //     ], 201);
-    // }
 
     // public function show($id)
     // {

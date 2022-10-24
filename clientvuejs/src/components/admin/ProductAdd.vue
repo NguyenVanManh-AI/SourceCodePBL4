@@ -27,89 +27,77 @@
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Product Name</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" placeholder="Product Name">
+                            <input v-model="addProduct.name" type="text" class="form-control" placeholder="Product Name">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Import Product Images <i class="fa-regular fa-image"></i></label>
+                        <div class="col-sm-10">
+                            <FilePicker></FilePicker>
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Description</label>
-                        <div class="col-sm-8">
-                            <textarea class="form-control" id="exampleFormControlTextarea1" placeholder="Description" rows="6"></textarea>
+                        <div class="col-sm-10">
+                            <textarea v-model="addProduct.description" class="form-control" id="exampleFormControlTextarea1" placeholder="Description" rows="6"></textarea>
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Dimension</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" placeholder="Dimension">
+                            <input type="text" v-model="addProduct.dimension" class="form-control" placeholder="Dimension . Ex: 16.1 x 10.2 x 0.8 inch">
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Material</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" placeholder="Product Material">
+                            <input type="text" v-model="addProduct.material" class="form-control" placeholder="Material">
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Price</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" placeholder="Price">
+                        <div class="col-sm-4">
+                            <input type="number" v-model="addProduct.price" class="form-control" placeholder="Price , max = 999999999999" min="0" max="999999999999">
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Warranty Period</label>
                         <div class="col-sm-4" style="display: flex;">
-                            <input type="number" class="form-control" placeholder="1" min="1" max="1000"> <label class="col-sm-2 col-form-label">(Month)</label>
+                            <input v-model="addProduct.warranty_period" style="width:200px" type="date" format="YYYY MM DD" class="form-control" >
+                            <!-- <input type="number" v-model="product_month" class="form-control" placeholder="1" min="1" max="1000"> <label class="col-sm-2 col-form-label">(Month)</label> -->
                             <!-- để ý là input có type gì thì nó quy định type đó cho mình luôn , ví dụ email thì phải nhập đủ email
                             hoặc nếu là number thì phải là số không cho nhập chữ -> rất là tiện -->
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-sm-2 col-form-label">Price</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" placeholder="Price">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Category Name</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" placeholder="Search Category Name" style="margin-bottom: 10px;">
-                            <select multiple class="form-control" >
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                                <option>5</option>
-                                <option>5</option>
-                                <option>5</option>
-                                <option>5</option>
-                                <option>5</option>
-                                <option>5</option>
-                                <option>5</option>
-                                <option>5</option>
-                                <option>5</option>
-                                <option>5</option>
-                                <option>5</option>
-                                <option>5</option>
-                                <option>5</option>
-                                <option>5</option>
-                                <option>5</option>
-                                <option>5</option>
-                                <option>5</option>
-                                <option>5</option>
+                            <div class="input-group" style="margin-bottom: 10px;">
+                                <div class="input-group-prepend">
+                                <span @click="clicksearch" class="input-group-text" id="search_category_name"><i class="fa-solid fa-magnifying-glass"></i></span>
+                                </div>
+                                <input v-model="searchad" style="width:400px;border-top-right-radius: 6px;border-bottom-right-radius: 6px;" type="text" class="form-control" placeholder="Search Category Name" required>
+                            </div>
+                            <select multiple class="form-control" v-model="category_id">
+                                <option value="null" @click="searchad='Chưa phân loại'">Chưa phân loại</option>
+                                <option v-for="(category,index) in categorys" :key="index" :value="category.id" @click="searchad=category.name">{{category.name}}</option>
                             </select>
                         </div>
-                    </div>
 
-                </div>                    
+                    </div>
+                </div>     
+                <div class="dt1">
+                    <button type="submit" class="mt-4 btn-pers" @click="funcAddProduct"><i class="fa-solid fa-paper-plane"></i> Add </button>
+                </div>               
             </div>                    
-            <p style="position: absolute;top:1200px;font-size: 1px;">s</p>
+            <p style="position: absolute;top:1400px;font-size: 1px;">s</p>
             <Notification></Notification>
         </div>
     </div>
@@ -117,15 +105,17 @@
 
 <script>
 
-// import BaseRequest from '../../restful/admin/core/BaseRequest';
+import BaseRequest from '../../restful/admin/core/BaseRequest';
 import useEventBus from '../../composables/useEventBus'
 import Notification from './Notification'
 import config from '../../config.js'
+import FilePicker from './FilePicker.vue';
 
 export default {
     name:"ProductAdmin",
     components:{
         Notification,
+		FilePicker
     },
     setup() {
         
@@ -153,12 +143,43 @@ export default {
                 email_verified_at:null,
             },
             domain:'',
+            searchad:'',
+            categorys:'',
+            addProduct:{
+                name:'',
+                warranty_period:'',
+                description:'',
+                category_id:null,
+                price:0,
+                material:'',
+                dimension:''
+            },
+            category_id:'',
+            err:{
+                name:[],
+                warranty_period:[],
+                description:[],
+                category_id:[],
+                price:[],
+                material:[],
+                dimension:[]
+            },
         }
     },
     mounted(){
         this.domain = config.API_URL;
         this.admin = JSON.parse(window.localStorage.getItem('admin'));
         this.url_img = config.API_URL + '/' + this.admin.url_img; 
+
+        BaseRequest.get('api/products/getcategory?search=')
+        .then( (data) =>{
+            // console.log(data);
+            this.categorys = data.category ;
+        }) 
+        .catch(error=>{
+            const { emitEvent } = useEventBus();
+            emitEvent('eventError',error.response.data.message);
+        })
     },
 
     methods:{
@@ -174,18 +195,84 @@ export default {
         profile:function(){
             this.$router.push({name:'ProfileAdmin'});
         },
+        funcAddProduct:function(){
+            if(this.category_id != "null" && this.category_id.length>0) this.addProduct.category_id = this.category_id[0];
+
+            console.log(this.addProduct);
+            BaseRequest.post('api/products/add',this.addProduct)
+            .then( (data) =>{
+
+                const { emitEvent } = useEventBus();
+                emitEvent('eventUpfile',data.product.id);
+                setTimeout(()=>{emitEvent('eventResetUpfile',data.product.id);}, 2000);
+
+                this.addProduct.name='';
+                this.addProduct.warranty_period='';
+                this.addProduct.description='';
+                this.addProduct.category_id='null';
+                this.addProduct.price=0;
+                this.addProduct. material='';
+                this.addProduct.dimension='';
+
+                this.searchad = '';
+
+                emitEvent('eventSuccess',data.message);
+
+            }) 
+            .catch(error=>{
+                console.log(error);
+                const { emitEvent } = useEventBus();
+                emitEvent('eventError','Add Product false !');
+                this.err = error.response.data;
+                var error2 = this.err;
+                if(error2.name) this.inError(error2.name);
+                if(error2.warranty_period) this.inError(error2.warranty_period);
+                if(error2.description) this.inError(error2.description);
+                if(error2.category_id) this.inError(error2.category_id);
+                if(error2.price) this.inError(error2.price);
+                if(error2.material) this.inError(error2.material);
+                if(error2.dimension) this.inError(error2.dimension);
+            })
+        },
         inError:function(er){
             const { emitEvent } = useEventBus();
             for(var i=0;i<er.length;i++) emitEvent('eventError',er[i]);
         },
     },
     watch:{
-        
+        searchad:function(){
+            BaseRequest.get('api/products/getcategory?search='+this.searchad)
+            .then( (data) =>{
+                this.categorys = data.category ;
+            }) 
+            .catch(error=>{
+                const { emitEvent } = useEventBus();
+                emitEvent('eventError',error.response.data.message);
+            })
+        }
     }
 }
 </script>
 
 <style scoped>
+.dt1 input {
+    color: #0085FF;
+}
+.dt1 {
+    width: 100%;
+    align-content: center;
+    display: flex;
+    margin-bottom: 20px;
+    justify-content: center;
+    padding-left: 90px;
+}
+
+#search_category_name{
+    cursor: pointer;
+}
+#search_category_name:hover {
+    color: #0085FF;
+}
 .col-form-label{
     color: black;
     font-weight: bold;
@@ -285,7 +372,7 @@ export default {
     justify-content: space-between;
     padding: 0px 30px;
     margin: 10px 30px;
-    background-color: white;
+    background-image: linear-gradient(120deg, #f5f9f7 0%, #e3effc 100%);
     /* box-shadow: 0px 10px 10px -10px gray; */
     /* box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset; */
     box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
@@ -295,7 +382,6 @@ export default {
     font-size: 13px;
     /* border: 10px solid red; */
 }
-
 
 #bodytable .btn {
     font-size: 12px;
@@ -330,7 +416,7 @@ export default {
 .btn-pers {
   position: relative;
   /* left: 50%; */
-  padding: 16px 16px;
+  padding: 16px 36px;
   /* font-size: 12px; */
   text-transform: uppercase;
   /* letter-spacing: 2.5px; */

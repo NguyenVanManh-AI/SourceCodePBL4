@@ -26,6 +26,8 @@ class CreateProductsTable extends Migration
             $table->string('uri')->unique();
             $table->timestamps();
         });
+        // LƯU Ý : Ở đây kiểu float nhưng đôi lúc vào database kiểu double -> vào đổi lại nếu không khi lưu dữ liệu có giá trị lớn 
+        // sẽ gây lỗi 
     }
 
     /**

@@ -410,9 +410,9 @@ class AuthController extends Controller
     }
 
     public function upfile(Request $request) {
-        $pathToFile = $request->file('photo')->store('images','public');
-        $user = User::find($request->id);
+        $pathToFile = $request->file('photo')->store('images','public'); // lưu ảnh mới vào 
 
+        $user = User::find($request->id); // tìm và xóa ảnh cũ đi (nếu có)
         $filename = $user->url_img;
         if($filename) File::delete($filename); // xóa ảnh cũ đi (nếu có)(còn ai không có thì thôi) 
         $user->update(['url_img' => 'storage/'.$pathToFile]);

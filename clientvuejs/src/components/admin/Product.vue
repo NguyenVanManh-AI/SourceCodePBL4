@@ -30,14 +30,15 @@
                         </div>
                     </div>              
                     <!-- search  -->
-                    <div id="add_button"><button type="submit" class="mt-4 btn-pers" ><i class="fa-solid fa-plus"></i> </button></div>
+                    <div id="add_button"><button type="submit" class="mt-4 btn-pers" @click="addProduct"><i class="fa-solid fa-plus"></i> </button></div>
                 </div>
 
                 <!-- Sort by -->
                 <div id="sortby">
-                    <span style="color: black;font-size: 1rem;padding-top: 10px;padding-right: 10px;"><i class="fa-solid fa-filter"></i> Sorted By  </span> 
+                    <span style="color: black;font-size: 1rem;padding-top: 10px;padding-right: 10px;"><i class="fa-solid fa-filter"></i> Sorted By  </span>
                     <button type="button" :class="{clsort:sortlatest,cldf:!sortlatest}" id="esortlatest" @click="fsortlatest()"><i :class="{'fa-solid':true,'fa-arrow-up-short-wide':!sortlatest,'fa-arrow-down-short-wide':sortlatest}"></i> Latest</button>
                     <button type="button" :class="{clsort:sortname,cldf:!sortname}" id="esortname" @click="fsortname()"><i :class="{'fa-solid':true, 'fa-arrow-down-a-z':!sortname,'fa-arrow-down-z-a':sortname}"></i> Name</button>
+                    <button type="button" :class="{clsort:unclassified,cldf:!unclassified}" id="eunclassified" @click="funclassified()"><i :class="{'fa-solid':true, 'fa-cubes':!unclassified,'fa-cube':unclassified}"></i> Unclassified</button>
                 </div>
                 <!-- Sort by -->
 
@@ -59,7 +60,7 @@
                                 <th scope="row">{{(pageN-1)*10+index+1}}</th>
                                 <td>{{pr.product_name}}</td>
                                 <td>
-                                    <div :id="'carouselExampleControls'+index" class="carousel slide" data-ride="carousel">
+                                    <div :id="'carouselExampleControls'+index" class="carousel slide" data-ride="carousel" v-if="images[index][0]">
                                         <div class="carousel-inner">
                                             <div class="carousel-item active imgproduct"> 
                                                 <img class="d-block w-100" :src="domain+'/'+images[index][0].image_path" >
@@ -78,9 +79,10 @@
                                         </a>
                                     </div>
                                 </td>
-                                <td>{{pr.category_name}}</td>
-                                <td style=""><button type="button" class="btn btn-outline-primary" @click="openModel(pr)" data-toggle="modal" data-target="#exampleModalEdit">View Detail</button></td>
-                                <td style=""><button type="button" class="btn btn-outline-danger" @click="openModelDelete(pr.id)" data-toggle="modal" data-target="#exampleModalDelete">Delete</button></td>
+                                <td v-if="!pr.category_name">Chưa Phân Loại</td>
+                                <td v-if="pr.category_name">{{pr.category_name}}</td>
+                                <td style=""><button type="button" class="btn btn-outline-primary" @click="openModel(pr)" data-toggle="modal" data-target="#exampleModalEdit"><i class="fa-solid fa-bars-staggered"></i> View Detail</button></td>
+                                <td style=""><button type="button" class="btn btn-outline-danger" @click="openModelDelete(pr.product_id)" data-toggle="modal" data-target="#exampleModalDelete"><i class="fa-solid fa-trash"></i> Delete</button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -120,7 +122,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" id="closedele">Close</button>
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" id="colsedele">Close</button>
                         <button type="button" class="btn btn-outline-danger" @click="deleteProduct">Delete</button>
                     </div>
                 </div>
@@ -179,6 +181,7 @@ export default {
             domain:'',
             sortlatest:false,
             sortname:false,
+            unclassified:false,
             idDelete:null,
         }
     },
@@ -213,8 +216,9 @@ export default {
         // Nếu như có biến sortlatest, sortname  
         if(urlParams.has('sortlatest')) this.sortlatest = (urlParams.get('sortlatest') === 'true');
         if(urlParams.has('sortname')) this.sortname = (urlParams.get('sortname') === 'true');
+        if(urlParams.has('unclassified')) this.unclassified = (urlParams.get('unclassified') === 'true');
 
-        BaseRequest.post('api/products?page='+this.pageN+'&search='+this.searchad+'&sortlatest='+this.sortlatest+'&sortname='+this.sortname)
+        BaseRequest.post('api/products?page='+this.pageN+'&search='+this.searchad+'&sortlatest='+this.sortlatest+'&sortname='+this.sortname+'&unclassified='+this.unclassified)
         .then( (data) =>{
             // console.log(data);
             this.quantity = data.quantity;
@@ -236,6 +240,9 @@ export default {
 
     methods:{
 
+        addProduct:function(){
+            this.$router.push({name:'ProductAdd'});
+        },
         // sort 
         fsortlatest:function(){
             this.sortlatest = !this.sortlatest;
@@ -245,9 +252,13 @@ export default {
             this.sortname = !this.sortname;
             this.getdatasort();
         },
+        funclassified:function(){
+            this.unclassified = !this.unclassified;
+            this.getdatasort();
+        },
         getdatasort:function(){
             if(this.pageN == null) this.pageN=1;
-            BaseRequest.post('api/products?page='+this.pageN+'&search='+this.searchad+'&sortlatest='+this.sortlatest+'&sortname='+this.sortname)
+            BaseRequest.post('api/products?page='+this.pageN+'&search='+this.searchad+'&sortlatest='+this.sortlatest+'&sortname='+this.sortname+'&unclassified='+this.unclassified)
             .then( (data) =>{
                 this.quantity = data.quantity;
                 this.products = data.product.data ;
@@ -270,23 +281,29 @@ export default {
         profile:function(){
             this.$router.push({name:'ProfileAdmin'});
         },
-        deleteProduct:function(id){
+        openModelDelete:function(id){
+            this.idDelete = id;
+        },
+        deleteProduct:function(){
             // alert(this.idDelete);
-            var colsedele = window.document.getElementById('colsedele');
-            BaseRequest.delete('api/products/'+id)
+            BaseRequest.delete('api/products/'+this.idDelete)
             .then((data)=>{
                 // console.log(data);
+                var colsedele = window.document.getElementById('colsedele');
                 colsedele.click();
+
                 const { emitEvent } = useEventBus();
                 emitEvent('eventSuccess',data.message);
                 setTimeout(()=>{window.location=window.location.href;}, 2000);
             })
             .catch(()=>{
                 // console.log(error);
+                var colsedele = window.document.getElementById('colsedele');
                 colsedele.click();
+
                 const { emitEvent } = useEventBus();
                 emitEvent('eventError','Delete Product False !');
-                // setTimeout(()=>{window.location=window.location.href;}, 1500);
+                setTimeout(()=>{window.location=window.location.href;}, 1500);
             })
         },
         inError:function(er){
@@ -294,7 +311,7 @@ export default {
             for(var i=0;i<er.length;i++) emitEvent('eventError',er[i]);
         },
         clickCallback:function(pageNum){
-            BaseRequest.post('api/products?page='+pageNum+'&search='+this.searchad+'&sortlatest='+this.sortlatest+'&sortname='+this.sortname)
+            BaseRequest.post('api/products?page='+pageNum+'&search='+this.searchad+'&sortlatest='+this.sortlatest+'&sortname='+this.sortname+'&unclassified='+this.unclassified)
             .then( (data) =>{
                 // console.log(data);
                 this.quantity = data.quantity;
@@ -321,14 +338,14 @@ export default {
             })
         },
         clicksearch:function(){
-            window.location = window.location.pathname+"?search="+this.searchad+'&sortlatest='+this.sortlatest+'&sortname='+this.sortname;
+            window.location = window.location.pathname+"?search="+this.searchad+'&sortlatest='+this.sortlatest+'&sortname='+this.sortname+'&unclassified='+this.unclassified;
         }
     },
     watch:{
         searchad:function(){
             // console.log(this.searchad);
             this.pageN = 1 ;
-            BaseRequest.post('api/products?page='+this.pageN+'&search='+this.searchad+'&sortlatest='+this.sortlatest+'&sortname='+this.sortname)
+            BaseRequest.post('api/products?page='+this.pageN+'&search='+this.searchad+'&sortlatest='+this.sortlatest+'&sortname='+this.sortname+'&unclassified='+this.unclassified)
             .then( (data) =>{
                 // console.log(data);
                 this.quantity = data.quantity;
@@ -562,7 +579,7 @@ export default {
     background-color: #F2F4F6;
     padding: 10px 0px 10px 30px;
 }
-#esortlatest ,#esortname{
+#esortlatest ,#esortname, #eunclassified{
     margin-right: 20px;
     outline: none;
     width:auto;
@@ -580,6 +597,10 @@ export default {
     background-color: #0367c5;
     color: white;
 }
+#eunclassified:hover {
+    background-color: #0367c5;
+    color: white;  
+}
 .cldf{
     background-color:white;
     color: #0085FF;
@@ -594,7 +615,7 @@ export default {
 /* Img product */
 
 .imgproduct {
-    width: 300px;
+    width: 280px;
     height: 100px;
 }
 .imgproduct img {
@@ -603,12 +624,13 @@ export default {
     object-fit: contain;
 }
 
-.carousel-control-prev{
+/* .carousel-control-prev{
     margin-left: 10px;
 }
+*/
 .carousel-control-next {
-    margin-right: 30px;
-}
+    margin-right: 10px;
+} 
 .carousel-control-prev-icon{
     background-color: #0085FF;
     border-radius: 6px;
