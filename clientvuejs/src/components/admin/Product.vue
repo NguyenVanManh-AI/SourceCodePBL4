@@ -62,7 +62,7 @@
                                 <td>
                                     <div :id="'carouselExampleControls'+index" class="carousel slide" data-ride="carousel" v-if="images[index][0]">
                                         <div class="carousel-inner">
-                                            <div class="carousel-item active imgproduct"> 
+                                            <div class="carousel-item active imgproduct">  <!-- nhằm đảm bảo luôn có ít nhất 1 ảnh để có slider nên có active cho cái đầu tiên -->
                                                 <img class="d-block w-100" :src="domain+'/'+images[index][0].image_path" >
                                             </div>
                                             <div class="carousel-item imgproduct" v-for="(img,index2) in images[index]" :key="index2">
@@ -81,7 +81,7 @@
                                 </td>
                                 <td v-if="!pr.category_name">Chưa Phân Loại</td>
                                 <td v-if="pr.category_name">{{pr.category_name}}</td>
-                                <td style=""><button type="button" class="btn btn-outline-primary" @click="openModel(pr)" data-toggle="modal" data-target="#exampleModalEdit"><i class="fa-solid fa-bars-staggered"></i> View Detail</button></td>
+                                <td style=""><button type="button" class="btn btn-outline-primary" @click="viewDetail(pr.uri)" ><i class="fa-solid fa-bars-staggered"></i> View Detail</button></td>
                                 <td style=""><button type="button" class="btn btn-outline-danger" @click="openModelDelete(pr.product_id)" data-toggle="modal" data-target="#exampleModalDelete"><i class="fa-solid fa-trash"></i> Delete</button></td>
                             </tr>
                         </tbody>
@@ -239,7 +239,9 @@ export default {
     },
 
     methods:{
-
+        viewDetail:function(uri){
+            this.$router.push({name:'ProductDetails',params:{id:uri}});
+        },
         addProduct:function(){
             this.$router.push({name:'ProductAdd'});
         },

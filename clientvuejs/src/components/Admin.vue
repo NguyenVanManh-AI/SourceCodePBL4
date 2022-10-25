@@ -34,6 +34,13 @@ export default {
 }
 </script>
 
-<style scoped>
-    
+<style>
+/* THÊM CÁI backgound ở component login sau đó tự nhiên nó lỗi nút X (bị lệch qua một bên) ở tất cả các Modal ở tất cả
+các component luôn nên để fix lại thì cho vào style tại cái component to nhất của admin là Admin.vue */
+/* và không để chế độ scoped để nó ảnh hưởng đến tất cả các component */
+.modal-dialog > .modal-content > .modal-header > button {
+    margin-right: 10px;
+    outline: none;
+    margin-top: 0px;
+}
 </style>

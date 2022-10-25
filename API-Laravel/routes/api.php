@@ -28,11 +28,29 @@ Route::prefix('products')->controller(ProductController::class)->group(function 
     Route::middleware('auth:admin_api')->group(function () {
         Route::post('/', 'allProducts');
         Route::get('/getcategory', 'getCategory');
+        Route::get('/{uri}', 'getProduct');
         Route::post('/add', 'add');
         Route::post('/upfile', 'upfile');
-        Route::post('update/{id}', 'update');
+        Route::patch('update/{id}', 'update'); // thật ra ở đây nên truyền vào id thì tốt hơn , truyền vào uri chỉ là làm màu thôi 
         Route::delete('/{id}', 'delete');
     });
+    /* 
+        CHÚ Ý : 
+            Route::get('/getcategory', 'getCategory');
+            Route::get('/{uri}', 'getProduct');
+
+            get : /getcategory phải để trước get: /{uri} để nó đọc qua file api.php có phải là /getcategory không đã rồi mới đến 
+            /{uri} , ví dụ /asdfghjkl1234567890 . 
+            => cùng một phương thức GET và mặc khác uri được hash ra ngẫu nhiên nên không thể là /getcategory
+            => nên cùng một phương thức GET , cùng một api được gửi lên 
+            http://127.0.0.1:8000/api/products/getcategory
+            http://127.0.0.1:8000/api/products/asdfghjkl1234567890
+            => nên phải để nó đọc trước có phải là getcategory thì gọi hàm getCategory
+            còn lại thì gọi hàm getProduct
+
+            nói chung đã có GET : /{uri} -> thì để ý mấy cáci get khác nếu không sẽ gây lỗi 
+
+    */
 
     Route::middleware('auth:customer_api')->group(function () {
         Route::get('/', 'getAllProduct');

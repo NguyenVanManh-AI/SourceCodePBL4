@@ -99,6 +99,63 @@ class ProductController extends Controller
         }
     }
 
+    public function update(Request $request,$id){
+        $validator = Validator::make($request->all(), [
+            'name'=>'required|string',
+            'warranty_period'=>'required|date',
+            'description'=>'required|string',
+            'category_id'=>'numeric|nullable', 
+            'price'=>'required|numeric',  
+            'material'=>'required|string',
+            'dimension'=>'required|string'
+        ]);
+
+        if($validator->fails()){
+            return response()->json($validator->errors(), 400);
+        }
+
+        Product::find($id)->update(array_merge(
+            $validator->validated()
+        ));
+
+        $removeimages = $request->removeimages;
+        if($removeimages){ // nếu có tồn tại mảng các ảnh bị xóa thì mới xóa còn nếu string rỗng thì không có mảng 
+            $idimgs = explode(',', $request->removeimages);
+            foreach($idimgs as $idimg){ // lượt qua tất cả id của ảnh 
+                $i = Image::find($idimg); // lấy ra dòng data của ảnh đó 
+                File::delete($i->image_path); // xóa ảnh đó 
+                $i->delete(); // xóa data của ảnh đó 
+            }
+        }
+
+
+        return response()->json([
+            'message' => 'Edit Product successfully ',
+        ], 201); 
+    }
+
+    // console.log(this.detailsProduct);
+    // ta sẽ chuyển mảng các id của ảnh thành string bằng toString() của js 
+    // khi nối ex : [2] => '2' , [2,3] => '2,3' => khi tách sẽ tách thông quan kí tự ',' 
+    // sau đó trên server , dùng $array = explode(',', $string); để tách chuỗi string thành mảng array 
+
+    public function getProduct(Request $request,$uri){
+        $product = Product::where('uri',$uri)->first();
+        if($product) {
+            $imgs = Image::where('product_id',$product->id)->get();
+            return response()->json([
+                'message' => 'Get Product successfully !',
+                'product' => $product,
+                'images' => $imgs
+            ], 201);
+        }
+        else {
+            return response()->json([
+                'message' => 'Get Product false or product no found !',
+            ], 201);
+        }
+    }
+
     public function allProducts(Request $request) {
 
         // mặc định 

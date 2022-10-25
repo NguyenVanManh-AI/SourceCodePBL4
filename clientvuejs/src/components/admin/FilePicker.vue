@@ -4,13 +4,14 @@
       <!--UPLOAD-->
       <form enctype="multipart/form-data" novalidate v-if="isInitial || isSaving">
         <h1>Upload Files</h1>
+        <br><br>
         <div class="dropbox">
           <input type="file" multiple name="photos" :disabled="isSaving" 
             @change="filesChange($event.target.name, $event.target.files); 
             fileCount = $event.target.files.length" class="input-file">
             
             <p v-if="isInitial">
-              Drag your file(s) here to begin<br> or click to browse
+              Drag your file(s) here to begin<br> or click to browse <i class="fa-regular fa-image"></i>
             </p>
             <p v-if="isSaving">
               Uploading {{ fileCount }} files...
@@ -128,7 +129,7 @@
       },
 
       saveReal(idProduct){
-        console.log(this.images);
+        // console.log(this.images);
         for(var i=0;i<this.num;i++){
           var formData = new FormData;
           formData.set('photo',this.images[i]);
@@ -241,7 +242,7 @@
 <style>
   .upload-card{
     border-radius: 20px;
-    padding: 50px 30px;
+    padding: 10px 30px;
     min-height: 300px;
     min-width: 300px;
 

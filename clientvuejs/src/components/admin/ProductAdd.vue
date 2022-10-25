@@ -85,8 +85,8 @@
                                 </div>
                                 <input v-model="searchad" style="width:400px;border-top-right-radius: 6px;border-bottom-right-radius: 6px;" type="text" class="form-control" placeholder="Search Category Name" required>
                             </div>
-                            <select multiple class="form-control" v-model="category_id">
-                                <option value="null" @click="searchad='Chưa phân loại'">Chưa phân loại</option>
+                            <select multiple class="form-control" v-model="category_id" id="selectcate">
+                                <option value="null" @click="searchad='Chưa phân loại'" v-if="!(searchad.length>0 && searchad!='Chưa phân loại')">Chưa phân loại</option>
                                 <option v-for="(category,index) in categorys" :key="index" :value="category.id" @click="searchad=category.name">{{category.name}}</option>
                             </select>
                         </div>
@@ -112,7 +112,7 @@ import config from '../../config.js'
 import FilePicker from './FilePicker.vue';
 
 export default {
-    name:"ProductAdmin",
+    name:"ProductAdd",
     components:{
         Notification,
 		FilePicker
@@ -211,7 +211,7 @@ export default {
                 this.addProduct.description='';
                 this.addProduct.category_id='null';
                 this.addProduct.price=0;
-                this.addProduct. material='';
+                this.addProduct.material='';
                 this.addProduct.dimension='';
 
                 this.searchad = '';
@@ -255,6 +255,10 @@ export default {
 </script>
 
 <style scoped>
+#selectcate option:hover {
+    background-color: #0085FF;
+    color:white;
+}
 .dt1 input {
     color: #0085FF;
 }
@@ -372,7 +376,7 @@ export default {
     justify-content: space-between;
     padding: 0px 30px;
     margin: 10px 30px;
-    background-image: linear-gradient(120deg, #f5f9f7 0%, #e3effc 100%);
+    background-image: linear-gradient(120deg, white 0%, #d0e7ff 100%);
     /* box-shadow: 0px 10px 10px -10px gray; */
     /* box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset; */
     box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
