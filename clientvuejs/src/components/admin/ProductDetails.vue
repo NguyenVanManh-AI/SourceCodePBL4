@@ -276,15 +276,15 @@ export default {
                 emitEvent('eventUpfile',this.detailsProduct.id);
                 setTimeout(()=>{emitEvent('eventResetUpfile');}, 2000);
 
-                this.detailsProduct.name='';
-                this.detailsProduct.warranty_period='';
-                this.detailsProduct.description='';
-                this.detailsProduct.category_id='null';
-                this.detailsProduct.price=0;
-                this.detailsProduct.material='';
-                this.detailsProduct.dimension='';
+                // this.detailsProduct.name='';
+                // this.detailsProduct.warranty_period='';
+                // this.detailsProduct.description='';
+                // this.detailsProduct.category_id='null';
+                // this.detailsProduct.price=0;
+                // this.detailsProduct.material='';
+                // this.detailsProduct.dimension='';
 
-                this.searchad = '';
+                // this.searchad = '';
 
                 emitEvent('eventSuccess',data.message);
 

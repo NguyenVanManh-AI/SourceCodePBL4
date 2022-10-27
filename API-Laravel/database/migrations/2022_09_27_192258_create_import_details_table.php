@@ -20,7 +20,7 @@ class CreateImportDetailsTable extends Migration
             $table->string('product_name');
             $table->integer('quantity');
             $table->float('price');
-            $table->string('provider_tax_id');
+            $table->float('tax');
             $table->timestamps();
         });
         // bảng import  1-n import_details 

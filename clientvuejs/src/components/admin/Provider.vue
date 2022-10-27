@@ -722,4 +722,7 @@ export default {
     background-color: #0085FF;
     color: white;
 }
+.table {
+    background-image: linear-gradient(120deg, white 0%, #edf4fb 100%);
+}
 </style>

@@ -20,6 +20,10 @@ import ProductAdd from './../components/admin/ProductAdd'
 import ProviderAdmin from './../components/admin/Provider'
 import StatisticalAdmin from './../components/admin/Statistical'
 import ProductDetails from './../components/admin/ProductDetails'
+import WareHouse from './../components/admin/Warehouse'
+import WarehouseImport from './../components/admin/WarehouseImport'
+import ImportDetails from './../components/admin/ImportDetails'
+import ImportProduct from './../components/admin/ImportProduct'
 
 // user 
 import UserComp from './../components/User'
@@ -74,6 +78,10 @@ const routes = [
             {path:'product/add',name:'ProductAdd',component:ProductAdd},
             {path:'product/:id',name:'ProductDetails',component:ProductDetails},
             {path:'provider',name:'ProviderAdmin',component:ProviderAdmin},
+            {path:'warehouse',name:'WareHouse',component:WareHouse},
+            {path:'warehouse-import',name:'WarehouseImport',component:WarehouseImport},
+            {path:'warehouse-import/:id',name:'ImportDetails',component:ImportDetails},
+            {path:'import-product',name:'ImportProduct',component:ImportProduct},
             {path:'statistical',name:'StatisticalAdmin',component:StatisticalAdmin},
         ]
     }, 

@@ -353,11 +353,13 @@
         for(var i=0;i<this.colors.length;i++) this.colors[i] = false;
         this.colors[2]=true;
         this.colors[3]=true;
+        this.$router.push({name:'WareHouse'});
       },
       importWarehouse:function(){
         for(var i=0;i<this.colors.length;i++) this.colors[i] = false;
         this.colors[2]=true;
         this.colors[4]=true;
+        this.$router.push({name:'WarehouseImport'});
       },
       category:function(){
         for(var i=0;i<this.colors.length;i++) this.colors[i] = false;

@@ -15,9 +15,8 @@ use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\ResetPasswordController; 
 use App\Http\Controllers\SendEmailController; 
 use App\Http\Controllers\ShippingAddressController; 
-use App\Http\Controllers\UserOrderController; 
-
-
+use App\Http\Controllers\UserOrderController;
+use App\Models\ImportDetail;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -27,6 +26,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::prefix('products')->controller(ProductController::class)->group(function () {
     Route::middleware('auth:admin_api')->group(function () {
         Route::post('/', 'allProducts');
+        Route::post('/getwarehouse', 'allProducts2');
         Route::get('/getcategory', 'getCategory');
         Route::get('/{uri}', 'getProduct');
         Route::post('/add', 'add');
@@ -83,6 +83,23 @@ Route::prefix('providers')->controller(ProviderController::class)->group(functio
     });
 });
 
+// Import Product (Nhập kho) , Thật ra nhập kho một lô hàng viết vào Import hay ImportDetail đều được
+// nhưng nên viết vào Import
+
+Route::prefix('imports')->controller(ImportController::class)->group(function () {
+    Route::middleware('auth:admin_api')->group(function () {
+        Route::post('/add', 'add');
+        Route::get('/idmax', 'getIdmax');
+        Route::get('/getproduct', 'getProduct');
+        Route::get('/getprovider', 'getProvider');
+    });
+});
+
+Route::prefix('importdetails')->controller(ImportDetailController::class)->group(function () {
+    Route::middleware('auth:admin_api')->group(function () {
+        Route::post('/', 'allImportDetails');
+    });
+});
 
 Route::get('get-all', 'App\Http\Controllers\ProductController@getAll');
 Route::post('add', 'App\Http\Controllers\ProductController@addp');

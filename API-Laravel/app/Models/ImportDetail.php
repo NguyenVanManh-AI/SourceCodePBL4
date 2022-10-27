@@ -15,7 +15,7 @@ class ImportDetail extends Model
         'product_name',
         'quantity',
         'price',
-        'provider_tax_id'
+        'tax'
     ];
 
     public function import()

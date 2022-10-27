@@ -406,4 +406,121 @@ class ProductController extends Controller
     // {
     //     Product::latest()->paginate(5);
     // }
+
+    public function allProducts2(Request $request) {
+
+        // mặc định 
+        $col1='products.quantity';
+        $col2='products.name';
+        $orderb1='ASC';
+        $orderb2='ASC';
+
+        $sortquantity = $request->sortquantity;
+        $sortname = $request->sortname;
+        
+        if($sortquantity == 'true' && $sortname == 'true'){
+            // Tên z-a 
+            $col1='products.name';
+            $col2='products.quantity';
+            $orderb1='DESC';
+        }
+        else {
+            // Mới nhất 
+            if($sortquantity == 'true') $orderb1='DESC';
+
+            // Tên a-z
+            if($sortname == 'true'){
+                $col1='products.name';
+                $col2='products.quantity';
+            }
+        }
+
+        $search = $request->search;
+        $products = Product::leftJoin('categories', function($join) {
+            $join->on('products.category_id', '=', 'categories.id');
+          })->orderBy($col1,$orderb1)->orderBy($col2,$orderb2)->where(function($query) use($search) {
+            $query->where('products.name','LIKE', '%'.$search.'%')
+            ->orWhere('categories.name','LIKE', '%'.$search.'%')
+            ->orWhere('quantity','LIKE', '%'.$search.'%')
+            ->orWhere('warranty_period','LIKE', '%'.$search.'%')
+            ->orWhere('description','LIKE', '%'.$search.'%')
+            ->orWhere('price','LIKE', '%'.$search.'%')
+            ->orWhere('material','LIKE', '%'.$search.'%')
+            ->orWhere('dimension','LIKE', '%'.$search.'%');
+        })->select(
+            'products.*','products.id as product_id','products.name as product_name',
+            'categories.*','categories.id as category_id','categories.name as category_name'
+        )->paginate(20);
+
+
+        $products2 = Product::leftJoin('categories', function($join) {
+            $join->on('products.category_id', '=', 'categories.id');
+          })->orderBy($col1,$orderb1)->orderBy($col2,$orderb2)->where(function($query) use($search) {
+            $query->where('products.name','LIKE', '%'.$search.'%')
+            ->orWhere('categories.name','LIKE', '%'.$search.'%')
+            ->orWhere('quantity','LIKE', '%'.$search.'%')
+            ->orWhere('warranty_period','LIKE', '%'.$search.'%')
+            ->orWhere('description','LIKE', '%'.$search.'%')
+            ->orWhere('price','LIKE', '%'.$search.'%')
+            ->orWhere('material','LIKE', '%'.$search.'%')
+            ->orWhere('dimension','LIKE', '%'.$search.'%');
+        })->select(
+            'products.*','products.id as product_id','products.name as product_name',
+            'categories.*','categories.id as category_id','categories.name as category_name'
+        )->get();
+
+        if($request->unclassified == 'true'){ 
+            $products = Product::leftJoin('categories', function($join) {
+                $join->on('products.category_id', '=', 'categories.id');
+            })->orderBy($col1,$orderb1)->orderBy($col2,$orderb2)->where(function($query) use($search) {
+            $query->where('products.name','LIKE', '%'.$search.'%')
+            ->orWhere('quantity','LIKE', '%'.$search.'%')
+            ->orWhere('warranty_period','LIKE', '%'.$search.'%')
+            ->orWhere('description','LIKE', '%'.$search.'%')
+            ->orWhere('price','LIKE', '%'.$search.'%')
+            ->orWhere('material','LIKE', '%'.$search.'%')
+            ->orWhere('dimension','LIKE', '%'.$search.'%');
+            })->whereNull('products.category_id')
+            ->select(
+                'products.*','products.id as product_id','products.name as product_name',
+                'categories.*','categories.id as category_id','categories.name as category_name'
+            )->paginate(20);
+    
+            $products2 = Product::leftJoin('categories', function($join) {
+                $join->on('products.category_id', '=', 'categories.id');
+            })->orderBy($col1,$orderb1)->orderBy($col2,$orderb2)->where(function($query) use($search) {
+                $query->where('products.name','LIKE', '%'.$search.'%')
+                ->orWhere('quantity','LIKE', '%'.$search.'%')
+                ->orWhere('warranty_period','LIKE', '%'.$search.'%')
+                ->orWhere('description','LIKE', '%'.$search.'%')
+                ->orWhere('price','LIKE', '%'.$search.'%')
+                ->orWhere('material','LIKE', '%'.$search.'%')
+                ->orWhere('dimension','LIKE', '%'.$search.'%');
+            })->whereNull('products.category_id')
+            ->select(
+                'products.*','products.id as product_id','products.name as product_name',
+                'categories.*','categories.id as category_id','categories.name as category_name'
+            )->get();
+        }
+        $idps = []; 
+
+        foreach ($products as $product) {
+            array_push($idps,$product->product_id); 
+        }
+
+        $imgs = []; 
+        foreach($idps as $idp){ 
+            $image = Image::where('product_id',$idp)->get(); 
+            array_push($imgs,$image); 
+        }
+
+        $n = count($products2); 
+        return response()->json([
+            'quantity' => $n,
+            'message' => 'Get all providers successfully !',
+            'product' => $products,
+            'img' => $imgs,
+        ], 201);
+
+    }
 }
