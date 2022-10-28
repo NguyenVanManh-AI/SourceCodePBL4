@@ -53,7 +53,7 @@
                                     <th scope="row">{{index+1}}</th>
                                     <td>{{import_detail.product_name}}</td>
                                     <td>{{new Intl.NumberFormat().format(import_detail.quantity)}}</td>
-                                    <td>{{new Intl.NumberFormat().format(import_detail.price)}}</td>
+                                    <td>$ {{new Intl.NumberFormat().format(import_detail.price)}}</td>
                                     <td>{{import_detail.tax}} %</td>
                                     <td>$ {{new Intl.NumberFormat().format(sum_price[index])}}</td>
                                 </tr>
