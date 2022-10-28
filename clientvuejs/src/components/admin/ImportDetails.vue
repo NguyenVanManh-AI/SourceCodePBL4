@@ -25,6 +25,18 @@
                         <div style="color: gray;font-size: 1rem;padding-top: 10px;margin-bottom: 20px;"><i class='bx bxl-dropbox'></i> IMPORT INFORMATION</div>
                     </div>
                     <div id="bodytable">
+
+                        <!-- <div class="row" style="margin-left: 1000px;margin-top: 40px;margin-bottom: 90px; font-size: 16px;">
+                            Form No. A1-02/NS<br>
+                            (Issued together with Circular No. 254/2022/TT - BTC of the Ministry of Finance)
+                        </div>
+                        <div class="row">
+                            <label style="font-weight: bold;margin-left: 600px;font-size: 20px;text-transform: uppercase;">Goods Import Details Receipt</label>
+                        </div> -->
+
+                        <div class="row" style="margin-left: 1px;color: gray;">
+                            <label style="font-weight: bold;font-size: 18px;text-transform: uppercase;">Goods Import Details Receipt</label>
+                        </div>
                         <div class="row">
                             <label style="font-weight: bold;margin-left: 14px;">Importer</label>
                             <label style="font-weight: bold;margin-left: 92px;">: {{importer.importer_name}}</label>
@@ -67,6 +79,10 @@
                             <label style="font-weight: bold;margin-left: 14px;">Import Date <i class="fa-solid fa-calendar-check"></i></label>
                             <label style="font-weight: bold;margin-left: 50px;">: {{importer.import_date}}</label>
                         </div>   
+                        <div class="row" style="font-size: 12px;margin-left: 1px;color: gray;">
+                            Form No. A1-02/NS<br>
+                            (Issued together with Circular No. 254/2022/TT - BTC of the Ministry of Finance)
+                        </div>
 
                         <div id="logo" >
                             <div id="inner">
@@ -89,6 +105,7 @@
             </div>                    
             <p style="position: absolute;top:1000px;font-size: 1px;">s</p>
             <Notification></Notification>
+
         </div>
     </div>
 </template>
@@ -199,6 +216,7 @@ export default {
 }
 #logo {
     position: absolute;
+    /* top:190px; */
     top:0px;
     left:360px;
     transform: rotate(45deg);
@@ -224,7 +242,7 @@ export default {
 #logo2 {
     justify-content: center;
     width: 100%;
-    margin-top: -60px;
+    margin-top: -90px;
     margin-left: 70%;
 }
 #inner2 {
