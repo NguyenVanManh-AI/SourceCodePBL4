@@ -11,7 +11,7 @@ export default {
 
     },
     setup() {
-        
+        document.title = "Meta Shop | Statiscal";
     },
     data(){
         return {

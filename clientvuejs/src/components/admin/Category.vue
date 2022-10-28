@@ -151,7 +151,7 @@ export default {
         paginate: Paginate
     },
     setup() {
-        
+        document.title = "Meta Shop | Category"
     },
     data(){
         return {

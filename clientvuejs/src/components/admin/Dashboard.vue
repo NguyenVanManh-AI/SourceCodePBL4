@@ -10,6 +10,9 @@
       components: {
 
       },
+      setup() {
+        document.title = "Meta Shop | Dashboard";
+      },
       methods: {
 
       },

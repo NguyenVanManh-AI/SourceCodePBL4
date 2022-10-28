@@ -126,7 +126,7 @@ export default {
 		FilePicker
     },
     setup() {
-        
+        document.title = "Meta Shop | Product"
     },
     data(){
         return {
@@ -197,10 +197,12 @@ export default {
 
         // console.log(location.pathname.substring(15)); // '/admin/product/a6a24a00bab1dfb36086' -> cắt từ vị trí 15 sẽ được a6a24a00bab1dfb36086
         this.uriProduct = location.pathname.substring(15);
+
         BaseRequest.get('api/products/'+this.uriProduct)
         .then( (data) =>{
             // console.log(data);
             this.detailsProduct = data.product ;
+            document.title = "Meta Shop | Product - "+this.detailsProduct.name; 
             console.log(this.detailsProduct);
             this.images = data.images;
 

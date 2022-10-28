@@ -107,6 +107,7 @@ export default {
         Notification,
     },
     setup() {
+      document.title = "Meta Shop | Import Details";
     },
     data(){
         return {
@@ -167,7 +168,7 @@ export default {
             const { emitEvent } = useEventBus();
             emitEvent('eventError',error.message);
         })
-
+        document.title = "Meta Shop | Import Details - "+this.idImport;
     },
 
     methods:{

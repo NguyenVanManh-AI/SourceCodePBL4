@@ -118,7 +118,7 @@
         paginate: Paginate
     },
     setup() {
-        
+      document.title = "Meta Shop | Warehouse - Import";
     },
     data(){
         return {

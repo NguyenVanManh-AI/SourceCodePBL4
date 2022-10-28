@@ -74,6 +74,9 @@ export default {
     components: {
       Notification
     },
+    setup() {
+      document.title = "Meta Shop | Login";
+    },
     data(){
         return {
           loginAdmin:{

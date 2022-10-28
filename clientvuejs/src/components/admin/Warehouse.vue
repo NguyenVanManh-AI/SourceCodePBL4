@@ -105,7 +105,7 @@ export default {
       paginate: Paginate
   },
   setup() {
-      
+    document.title = "Meta Shop | Warehouse - Details";
   },
   data(){
       return {

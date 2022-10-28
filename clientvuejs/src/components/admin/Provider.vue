@@ -200,7 +200,7 @@ export default {
         paginate: Paginate
     },
     setup() {
-        
+        document.title = "Meta Shop | Provider";
     },
     data(){
         return {

@@ -170,7 +170,7 @@ export default {
         paginate: Paginate
     },
     setup() {
-        
+      document.title = "Meta Shop | Management Admin";
     },
     data(){
         return {

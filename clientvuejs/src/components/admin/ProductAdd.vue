@@ -118,7 +118,7 @@ export default {
 		FilePicker
     },
     setup() {
-        
+        document.title = "Meta Shop | Add Product";
     },
     data(){
         return {
