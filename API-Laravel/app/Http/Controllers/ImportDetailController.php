@@ -99,6 +99,33 @@ class ImportDetailController extends Controller
 
     }
 
+    public function getDetails(Request $request,$id){
+        $import_detail = ImportDetail::where('import_id',$id)->get();
+
+        if(count($import_detail) <= 0){
+            return response()->json([
+                'message' => 'Get import details false or Import Detail Not Found !',
+            ], 401);
+        }
+
+        $import = Import::find($id);
+
+        $sum_price = [];
+        foreach($import_detail as $product){
+            $sum = 0 ;
+            $sum += $product->quantity*($product->price)*(100 + $product->tax)/100;
+            array_push($sum_price,$sum); 
+        }
+
+        return response()->json([
+            'message' => 'Get import details successfully !',
+            'import_detail' => $import_detail,
+            'sum_price' => $sum_price,
+            'sum' => array_sum($sum_price),
+            'import' => $import
+        ], 201);
+    }
+
     /*
         - Note : 
             + Không để whereDate chung với tìm kiếm vì như thế nó sẽ orWhere những cái tìm kiếm và lấy ra hết resource 

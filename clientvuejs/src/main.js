@@ -22,6 +22,8 @@ import Notifications from "vue3-vt-notifications";
 import "tailwindcss/dist/tailwind.css";
 
 import DisableAutocomplete from 'vue-disable-autocomplete';
+// import  VueHtmlToPaper from './pdf/VueHtmlToPaper'
+import print from 'vue3-print-nb'
 
 const app = createApp(App);
 // const app = createApp(UserComp);
@@ -39,5 +41,7 @@ app.use(storeConfigs)
 app.use(Paginate)
 app.use( quillEditor )
 app.use( Notifications )
-app.use(DisableAutocomplete);
+app.use(DisableAutocomplete)
+// app.use(VueHtmlToPaper)
+app.use(print)
 app.mount('#app')

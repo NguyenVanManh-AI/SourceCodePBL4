@@ -1,6 +1,6 @@
 <template>
     <div>
-        <SidebarMenuAkahon v-if="admin"></SidebarMenuAkahon>
+        <SidebarMenuAkahon v-if="admin" id="noprintpdf"></SidebarMenuAkahon>
         <router-view></router-view>
     </div>
 </template>
@@ -43,4 +43,11 @@ các component luôn nên để fix lại thì cho vào style tại cái compone
     outline: none;
     margin-top: 0px;
 }
+/* @media print{
+    #noprintpdf { 
+        display: none;
+        margin: 0px;
+        padding: 0px; 
+    }
+} */
 </style>

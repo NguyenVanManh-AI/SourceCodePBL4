@@ -98,6 +98,7 @@ Route::prefix('imports')->controller(ImportController::class)->group(function ()
 Route::prefix('importdetails')->controller(ImportDetailController::class)->group(function () {
     Route::middleware('auth:admin_api')->group(function () {
         Route::post('/', 'allImportDetails');
+        Route::get('/{id}', 'getDetails');
     });
 });
 

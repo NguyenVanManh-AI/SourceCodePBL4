@@ -771,6 +771,14 @@
       display: none;
     }
 }
-
-
+/* @media print{
+  .sidebar { 
+    display: none;
+    padding: 0px;
+    margin: 0px;
+  }
+  body {
+    padding:0px;
+  }
+} */
 </style>

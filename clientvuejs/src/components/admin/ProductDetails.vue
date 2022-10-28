@@ -6,7 +6,7 @@
                     <div><span @click="home" id="home" class="under">Pages</span> / <span class="under" @click="spproductadmin" id="spproductadmin">Product</span>
                         / <span class="under" @click="spdetailsProductadmin" id="spdetailsProductadmin">Product Details</span>
                     </div>
-                    <div style="font-weight: bold">Product</div>
+                    <div style="font-weight: bold">Product Details</div>
                 </div>
                 <div id="search">
                     <div id="pr" @click="profile">
