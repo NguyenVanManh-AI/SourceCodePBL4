@@ -57,7 +57,7 @@
                                     <th scope="col">Quantity</th>
                                     <th scope="col">Price</th>
                                     <th scope="col">Tax</th>
-                                    <th scope="col">Money</th>
+                                    <th scope="col">Total Money</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -72,12 +72,12 @@
                             </tbody>
                         </table>   
                         <div class="row">
-                            <label style="font-weight: bold;margin-left: 14px;">Sum Money</label>
+                            <label style="font-weight: bold;margin-left: 14px;">Total Money</label>
                             <label style="font-weight: bold;margin-left: 72px;">: $ {{new Intl.NumberFormat().format(sum)}}</label>
                         </div>
                         <div class="row">
                             <label style="font-weight: bold;margin-left: 14px;">Import Date <i class="fa-solid fa-calendar-check"></i></label>
-                            <label style="font-weight: bold;margin-left: 50px;">: {{importer.import_date}}</label>
+                            <label style="font-weight: bold;margin-left: 54px;">: {{importer.import_date}}</label>
                         </div>   
                         <div class="row" style="font-size: 12px;margin-left: 1px;color: gray;">
                             Form No. A1-02/NS<br>

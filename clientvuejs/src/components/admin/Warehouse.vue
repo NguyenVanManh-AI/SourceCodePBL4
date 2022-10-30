@@ -60,7 +60,7 @@
                               <td>{{pr.product_id}}</td>
                               <!-- <th>{{pr.id}} - {{pr.uri}}</th> -->
                               <td><p class="detaiproduct" style="text-decoration: underline;cursor: pointer;" @click="viewDetail(pr.uri)">{{pr.product_name}}</p></td>
-                              <td>{{pr.quantity}}</td>
+                              <td>{{new Intl.NumberFormat().format(pr.quantity)}}</td>
                           </tr>
                       </tbody>
                   </table>

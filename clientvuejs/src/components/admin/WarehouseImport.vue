@@ -61,7 +61,7 @@
                             <th scope="col">Importer</th>
                             <th scope="col">Provider Name</th>
                             <th scope="col">Import Date</th>
-                            <th scope="col">Sum Money</th>
+                            <th scope="col">Total Money</th>
                             <th scope="col"></th>
                             </tr>
                         </thead>
@@ -72,7 +72,7 @@
                                 <td>{{wareImport.importer_name}}</td>
                                 <td>{{wareImport.provider_name}}</td>
                                 <td>{{wareImport.import_date}}</td>
-                                <td>{{new Intl.NumberFormat().format(sum_prices[index])}}</td>
+                                <td>$ {{new Intl.NumberFormat().format(sum_prices[index])}}</td>
                                 <td style=""><button type="button" class="btn btn-outline-primary" @click="viewDetail(wareImport.id)" ><i class="fa-solid fa-bars-staggered"></i> View Detail</button></td>
                             </tr>
                         </tbody>

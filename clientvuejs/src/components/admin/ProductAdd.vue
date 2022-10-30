@@ -60,9 +60,9 @@
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-sm-2 col-form-label">Price</label>
+                        <label class="col-sm-2 col-form-label">Price ($)</label>
                         <div class="col-sm-4">
-                            <input type="number" v-model="addProduct.price" class="form-control" placeholder="Price , max = 999999999999" min="0" max="999999999999">
+                            <input type="number" v-model="addProduct.price" class="form-control" placeholder="Price ($) , max = 999999999999" min="0" max="999999999999">
                         </div>
                     </div>
 
