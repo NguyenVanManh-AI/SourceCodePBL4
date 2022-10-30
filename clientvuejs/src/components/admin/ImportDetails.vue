@@ -1,5 +1,6 @@
 <template>
     <div id="administrator">
+        <ParticleVue32></ParticleVue32>
         <div id="big">
             <div id="head">
                 <div>
@@ -117,11 +118,13 @@ import useEventBus from '../../composables/useEventBus'
 import Notification from './Notification'
 import config from '../../config.js'
 
+import ParticleVue32 from "./particle/ParticleVue32.vue";
 
 export default {
     name:"ImportDetails",
     components:{
         Notification,
+        ParticleVue32
     },
     setup() {
       document.title = "Meta Shop | Import Details";

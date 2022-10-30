@@ -1,5 +1,6 @@
 <template>
     <div id="administrator">
+        <ParticleVue32></ParticleVue32>
         <div id="big">
             <div id="head">
                 <div>
@@ -111,11 +112,14 @@ import Notification from './Notification'
 import config from '../../config.js'
 import FilePicker from './FilePicker.vue';
 
+import ParticleVue32 from "./particle/ParticleVue32.vue";
+
 export default {
     name:"ProductAdd",
     components:{
         Notification,
-		FilePicker
+		FilePicker,
+        ParticleVue32
     },
     setup() {
         document.title = "Meta Shop | Add Product";

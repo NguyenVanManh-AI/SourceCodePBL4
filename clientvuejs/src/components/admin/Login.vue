@@ -2,12 +2,14 @@
   <div id="main">
 
     <!-- HIỆU ỨNG BACKGROUND HÌNH TRÒN -->
-    <div id="container-inside">
+    <div id="container-inside"> 
       <div id="circle-small"></div>
       <div id="circle-medium"></div>
       <div id="circle-large"></div>
       <div id="circle-xlarge"></div>
       <div id="circle-xxlarge"></div>
+      <ParticleVue3/> <!-- ///+++ -->
+
     <!-- HIỆU ỨNG BACKGROUND HÌNH TRÒN -->
   
     <div id="header">
@@ -15,6 +17,7 @@
       <div id="logo"><a @click="logoClick">Meta Shop</a></div>
       <div id="span"></div>
       <div id="title" @click="adminlogin" class="under"><a>Admin Login</a></div>
+      <div id="typed"> <TypedText></TypedText></div>
     </div>
       
     <div id="big">
@@ -69,10 +72,15 @@ import LoginRequest from '../../restful/admin/requests/LoginRequest'
 import useEventBus from '../../composables/useEventBus'
 import Notification from './Notification'
 
+import ParticleVue3 from "./particle/ParticleVue3.vue";
+import TypedText from "./typedtext/TypedText.vue"
+
 export default {
     name: "LoginAdmin",
     components: {
-      Notification
+      Notification,
+      ParticleVue3,
+      TypedText
     },
     setup() {
       document.title = "Meta Shop | Login";
@@ -222,6 +230,18 @@ export default {
 /* HIỆU ỨNG BACKGROUND HÌNH TRÒN */
 /* THAMKHAO : https://blog.stackfindover.com/css-background-animation-examples/ */
 /*  */
+#typed{
+  width: 300px;
+  height: 100%;
+  font-size: 20px;
+  margin-left: 40%;
+  /* margin-left: 70px; */
+  color: #0085FF;
+  border-left-width: 6px ;
+  border-left-style: solid;
+  border-left-color: #0085FF;
+  padding-left: 6px;
+}
 #main{
     background: #00adef;
     background: -moz-linear-gradient(-45deg, #00adef 0%, #0076e5 100%);

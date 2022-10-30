@@ -1,5 +1,6 @@
 <template>
     <div id="administrator">
+        <ParticleVue32></ParticleVue32>
         <div id="big">
             <div id="head">
                 <div>
@@ -163,11 +164,14 @@ import Notification from './Notification'
 import config from '../../config.js'
 import Paginate from 'vuejs-paginate-next';
 
+import ParticleVue32 from "./particle/ParticleVue32.vue";
+
 export default {
     name:"ManagementAdmin",
     components:{
         Notification,
-        paginate: Paginate
+        paginate: Paginate,
+        ParticleVue32
     },
     setup() {
       document.title = "Meta Shop | Management Admin";
