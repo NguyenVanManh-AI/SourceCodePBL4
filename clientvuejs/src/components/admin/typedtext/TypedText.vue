@@ -17,10 +17,10 @@ export default {
         cursorSpeed: 3000,
         loop: true,
       })
-        .type("Welcome to the admin's page !")
+        .type("Welcome to the admin's page ! ")
         .pause(500)
         .delete()
-        .type("Now Login to use the system !")
+        .type("Now Login to use the system ! ")
         .pause(500)
         .go();
     });
@@ -28,7 +28,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 #typed-text {
   color: #0085FF;
 }

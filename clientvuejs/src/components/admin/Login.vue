@@ -466,6 +466,7 @@ export default {
 
  /* header */
  #header {
+    /* opacity: 0.9; */
     display: flex;
     padding: 6px 30px;
     background-color: white;

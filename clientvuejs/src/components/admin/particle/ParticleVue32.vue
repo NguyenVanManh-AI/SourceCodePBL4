@@ -135,7 +135,7 @@ export default {
 };
 </script>
 
-<style >
+<style scoped>
 .custom {
   height: 100%;
   position: fixed;

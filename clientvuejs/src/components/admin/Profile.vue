@@ -1,5 +1,6 @@
 <template>
     <div id="profile">
+        <ParticleVue32></ParticleVue32>
         <div id="head">
             <div id="pr">
                 <div>
@@ -101,10 +102,13 @@ import useEventBus from '../../composables/useEventBus';
 import Notification from './Notification';
 import config from '../../config.js';
 
+import ParticleVue32 from "./particle/ParticleVue32.vue";
+
 export default {
     name : "ProfileAdmin",
     components: {
-      Notification
+      Notification,
+      ParticleVue32
     },
     created(){
         document.title = "Meta Shop - Admin Profile"
@@ -280,6 +284,7 @@ export default {
     box-shadow: 0px 10px 10px -10px gray;
     border-radius: 10px;
     align-items: center;
+    position: relative;
 }
 #head img {
     width: 80px;
@@ -337,6 +342,7 @@ export default {
     padding: 30px 40px;
     border-radius: 10px;
     margin: 30px 30px;
+    position: relative;
 }
 #details label{
     font-weight: bold;
