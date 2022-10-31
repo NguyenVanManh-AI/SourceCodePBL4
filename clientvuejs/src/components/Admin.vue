@@ -1,5 +1,6 @@
 <template>
     <div>
+        <!-- <ParticleVue32></ParticleVue32> -->
         <SidebarMenuAkahon v-if="admin" id="noprintpdf"></SidebarMenuAkahon>
         <router-view></router-view>
     </div>
@@ -9,11 +10,13 @@
 import SidebarMenuAkahon from './admin/Sidebar-menu-akahon.vue';
 import useEventBus from './../composables/useEventBus'
 
+// import ParticleVue32 from "./admin/particle/ParticleVue32.vue";
 
 export default {
     name: "AdminComp",
     components: {
     SidebarMenuAkahon,
+    // ParticleVue32
 },
     data(){
         return {
@@ -51,4 +54,12 @@ các component luôn nên để fix lại thì cho vào style tại cái compone
         padding: 0px; 
     }
 } */
+
+/* 
+    + bỏ ParticleVue32 vào Admin để nó áp dụng chung cho tất cả các component con . 
+    + nhưng : 
+        + có cái thì bị đè lên (fix bằng cách cho một hoặc những cái to nhất của component con đó là style postion relative )
+        + customer và management admin lại không có => nên bỏ riêng => nhưng lại bị đè lên 
+        => nên thôi bỏ riêng từng cái cho tất cả các component con luôn => được cái nữa là lỡ bị lỗi gì dễ fix . 
+*/
 </style>
