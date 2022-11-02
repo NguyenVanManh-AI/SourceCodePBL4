@@ -67,6 +67,8 @@ Route::prefix('categorys')->controller(CategoryController::class)->group(functio
         Route::delete('/{id}', 'delete');
     });
 
+    Route::get('/allcategory', 'getall');
+
     // Route::middleware('auth:customer_api')->group(function () {
     //     Route::get('/', 'getAllProduct');
     //     Route::get('/{id}', 'show');

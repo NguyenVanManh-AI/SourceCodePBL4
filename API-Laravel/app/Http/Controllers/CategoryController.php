@@ -185,5 +185,11 @@ class CategoryController extends Controller
     // click vào tên (không có mới nhất thì a-z)
     // click vào tên rồi thêm cả mới nhất -> tên cộng sắp xếp từ dưới lên = z-a => HỢP LÝ 
 
-
+    public function getall(){
+        $categorys = Category::all();
+        return response()->json([
+            'message' => 'Get all categorys successfully !',
+            'category' => $categorys
+        ], 201);
+    }
 }

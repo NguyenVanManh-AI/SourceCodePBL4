@@ -63,4 +63,6 @@ export default {
     border: 3px solid transparent;
     background-clip: content-box;
 }
+/*scroll*/
+
 </style>

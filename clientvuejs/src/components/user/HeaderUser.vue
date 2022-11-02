@@ -19,7 +19,7 @@
         </div>
         <div id="search">
           <div class="col-sm-10">
-            <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+            <input type="email" class="form-control" id="inputEmail3" placeholder="Search Information Product on Meta Shop">
           </div>
           <button type="button" @click="clicksearch" class="btn btn-outline-primary"><i class="fa-solid fa-magnifying-glass"></i></button>
         </div>
@@ -30,8 +30,7 @@
           <div id="cart-number">{{this.count}}</div>
           <div id="list-cart">
             cddd
-            <div style="width: 30px;height: 1000px;background-color: red;">
-
+            <div style="width: 30px;height: 1000px;background-color: red;position: relative;">
             </div>
             sbc
           </div>
@@ -39,7 +38,7 @@
         <div id="no-account" v-if="!user">
           <div id="no-ac-icon"><i class="fa-solid fa-user-plus"></i></div>
           <div id="add-ac">
-            <button type="button" class="btn btn-outline-primary" ><i class="fa-solid fa-arrow-right-to-bracket"></i> Login</button>
+            <button type="button" @click="login" class="btn btn-outline-primary" ><i class="fa-solid fa-arrow-right-to-bracket"></i> Login</button>
             <button type="button" class="btn btn-outline-primary"><i class="fa-solid fa-user-plus"></i> Register</button>
           </div>
         </div>
@@ -54,11 +53,14 @@
           </div>
         </div>
       </div>
+      <div id="category">
+
+      </div>
     </div>
 </template>
 <script>
 
-// import BaseRequest from '../../restful/admin/core/BaseRequest';
+import BaseRequest from '../../restful/admin/core/BaseRequest';
 // import useEventBus from '../../composables/useEventBus';
 // import Notification from './Notification';
 import config from '../../config.js';
@@ -67,6 +69,9 @@ export default {
     name: "HeaderUser",
     data(){
       return{
+        prevScrollpos : window.pageYOffset, // header
+
+        categorys:null,
         // user: {
         //     id: 1,
         //     fullname: "Nguyễn Văn Mạnh pro vip vip",
@@ -93,11 +98,40 @@ export default {
     components: {
 
     },
-    methods: {
+    created () {
+        window.addEventListener('scroll', this.handleScroll);  // header
+    },
+    unmounted () {
+        window.removeEventListener('scroll', this.handleScroll); // header
     },
     mounted(){
-      this.url_img = config.API_URL +'/'+ this.user.url_img;
-    }
+      if(this.user != null && this.user.url_img != null) this.url_img = config.API_URL +'/'+ this.user.url_img;
+      BaseRequest.get('api/categorys/allcategory')
+        .then( (data) =>{
+            this.categorys = data.category;
+        }) 
+        .catch(()=>{
+
+        })
+    },
+    methods: {
+      // header
+      handleScroll () {
+        var currentScrollPos = window.pageYOffset;
+        if (this.prevScrollpos > currentScrollPos) {
+            document.getElementById("header").style.top = "0";
+        } else {
+            document.getElementById("header").style.top = "-300px";
+        }
+        this.prevScrollpos = currentScrollPos;
+      },
+      // header
+
+      login:function(){
+        this.$router.push({name:"LoginUser"});
+      },
+      
+    },
 }
 </script>
 
@@ -157,12 +191,16 @@ input:hover{
 #header {
   width: 100%;
   /* height: 100px; */
-  border: 1px solid red;
+  /* border: 1px solid red; */
   /* cố định */
   position: -webkit-sticky;
   position: sticky;
+  /* position: relative; */
   top: 0;
+  background-color: white;
   /* cố định */
+  z-index: 1;
+  transition: top 0.7s ease; /* để cho nó trượt xuống cho mượt */
 }
 
 /* contact */
@@ -196,7 +234,7 @@ input:hover{
   line-height: 30%;
   align-content: center;
   align-items: center;
-  border: 1px solid red;
+  /* border: 1px solid red; */
 }
 #logo img {
   width: 50px;
@@ -270,6 +308,7 @@ input:hover{
   width: 380px;
   height: 400px;
   border: 1px solid #F84B2F;
+  display: block;
 }
 #cart:hover #cart-shopping {
   color: white;
@@ -367,6 +406,10 @@ input:hover{
     sẽ đỡ phải đi style margin cho các button ,... 
     (áp dụng tương tự với button khi hover)
 
+  + Nói thêm : 
+    + Ngoài ra ta có thể thử với cách trong #add-ac chứa thêm một div to nhất , div này chứa tất cả 
+    ban đầu cho nó none , sau đó cho nó block là cách tốt nhất để khỏi phải đi display từng cái 
+
 */
 
 /* have-account */
@@ -424,5 +467,12 @@ input:hover{
   height: 200px;
   border: 1px solid #F84B2F;
 }
+
+#category {
+  height: 6px;
+  background-color: #F84B2F;  
+}
+
+
 
 </style>
