@@ -113,7 +113,7 @@ const router = createRouter({
 
 router.beforeEach((to,from,next)=>{
     if(to.path.includes('/main')){
-        let excludePages = ['/main/login','/main/dashboard','/main/register'];
+        let excludePages = ['/main/login','/main/dashboard','/main/register','/main/reset-password'];
         let requiredlogin = !excludePages.includes(to.path);
         let user = localStorage.getItem('user');
         if(requiredlogin && !user){

@@ -15,6 +15,7 @@ use App\Notifications\ResetPasswordRequest;
 // gui mail cho customer 
 use Mail;
 use App\Mail\NotifyMail;
+use App\Mail\NotifyMailCustomer;
 use Exception;
 
 
@@ -78,7 +79,7 @@ class ResetPasswordController extends Controller
     // Customer Forgot Password by Email
 
     public function sendmailCustomer($token,$email) {
-        Mail::to($email)->send(new NotifyMail($token));
+        Mail::to($email)->send(new NotifyMailCustomer($token));
         if (Mail::failures()) return response()->json(["message"=>"Sorry ! Please try again latter"],400);
         else return response()->json(["message"=>"Great! Successfully send in your mail"],200);
     } 
