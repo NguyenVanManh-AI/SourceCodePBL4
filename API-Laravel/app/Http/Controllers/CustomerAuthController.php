@@ -47,8 +47,8 @@ class CustomerAuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'fullname' => 'required|string|between:2,100',
-            'email' => 'required|string|email|max:100|unique:users',
-            'username' => 'required|string|max:100|unique:users',
+            'email' => 'required|string|email|max:100|unique:customers',
+            'username' => 'required|string|max:100|unique:customers',
             'password' => 'required|string|confirmed|min:6',
             'address' => 'required|string|min:1',
             'date_of_birth' => 'required|string|min:1',
@@ -57,7 +57,8 @@ class CustomerAuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
+            return response()->json($validator->errors(), 400);
+            // return response()->json($validator->errors()->toJson(), 400);
         }
 
         $customer = Customer::create(array_merge(
@@ -161,8 +162,8 @@ class CustomerAuthController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'fullname' => 'string|between:2,100',
-                'email' => 'string|email|max:100',
-                'username' => 'string|max:100',
+                'email' => 'string|email|max:100|unique:customers',
+                'username' => 'string|max:100|unique:customers',
                 'address' => 'string|min:1',
                 'phone' => 'min:9|numeric',
                 'url_img' => 'string|min:0',

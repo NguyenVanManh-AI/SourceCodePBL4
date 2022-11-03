@@ -28,6 +28,7 @@ import ImportProduct from './../components/admin/ImportProduct'
 // user 
 import UserComp from './../components/User'
 import LoginUser from './../components/user/Login'
+import RegisterUser from './../components/user/Register'
 import DashboardUser from './../components/user/Dashboard'
 import InforUser from './../components/user/InforUser'
 
@@ -56,6 +57,7 @@ const routes = [
         name:'UserComp',
         children : [
             {path:'login',name:'LoginUser',component:LoginUser},
+            {path:'register',name:'RegisterUser',component:RegisterUser},
             {path:'dashboard',name:'DashboardUser',component:DashboardUser},
             {path:'infor-user',name:'InforUser',component:InforUser},
         ]
@@ -111,7 +113,7 @@ const router = createRouter({
 
 router.beforeEach((to,from,next)=>{
     if(to.path.includes('/main')){
-        let excludePages = ['/main/login','/main/dashboard'];
+        let excludePages = ['/main/login','/main/dashboard','/main/register'];
         let requiredlogin = !excludePages.includes(to.path);
         let user = localStorage.getItem('user');
         if(requiredlogin && !user){

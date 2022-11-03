@@ -11,7 +11,7 @@ if(dataAdmin){
 
 export default {
 	_getHeaders(){
-		let headers = {};
+		let headers = {}; 
 		if(admin !== null){
 			headers.Authorization = 'Bearer ' + admin.access_token;
 		}

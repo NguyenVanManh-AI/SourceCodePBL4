@@ -54,10 +54,11 @@
                 <div id="lb-gg">
                   <span></span> <label> Or Singin With </label> <span></span>
                 </div>
-                <div id="bt-gg">
+                <div id="bt-gg" @click="loginGoogle">
                   <img src="../../assets/google_logo.png">
                   <span>Sing in with Google</span>
                 </div>
+                <div id="register-here">Do not have an account ?<span @click="registerHere">Register here.</span></div>
               </div>
             </form>
         </div>
@@ -75,6 +76,7 @@
   import Notification from './../admin/Notification'
   
   import ParticleVue3 from "./../admin/particle/ParticleVue3.vue";
+  import config from '../../config.js';
   
   export default {
       name: "LoginUser",
@@ -99,13 +101,66 @@
             passwordType:'password',
         }
       },
-      watch:{
-        showpw:function(){
-          if(this.showpw == true) this.passwordType = 'text';
-          else this.passwordType = 'password'; 
+      mounted(){
+        let urlParams = new URLSearchParams(window.location.search);
+        if(urlParams.has('access_token')) {
+          var access_token = urlParams.get('access_token');
+          var data = {};
+          this.axios.post(config.API_URL + '/api/customer/me',data,
+            {
+              headers : {
+                Authorization : 'Bearer ' + access_token
+              }
+            })
+            .then( response =>{
+              var user = {
+                id:null,
+                fullname:'',
+                username:'',
+                email: '',
+                phone: '',
+                google_id:null,
+                date_of_birth:null,
+                url_img:null,
+                gender:null,
+                address:'',
+                status:null,
+                access_token:'',
+                refreshToken:'',
+                created_at:null,
+                updated_at:null,
+                email_verified_at:null,
+              }
+              user = response.data;
+              user.access_token = access_token;
+              window.localStorage.setItem('user',JSON.stringify(user));
+
+              const { emitEvent } = useEventBus();
+              emitEvent('eventSuccess','Login by Google Success !');
+    
+              setTimeout(()=>{
+                this.$router.push({name:'DashboardUser'}); 
+                window.location=window.location.href;
+              }, 1000);
+              
+            })
+            .catch( () => {
+              const { emitEvent } = useEventBus();
+              emitEvent('eventError','Login by Google failed !');
+              this.$router.push({name:"LoginUser"});
+            })
         }
+
+        window.document.title='MetaShop | Login';
+        if(window.localStorage.getItem('user')){
+            this.$router.push({name:"DashboardUser"});
+        }
+
       },
       methods: {
+        registerHere:function(){
+          this.$router.push({name:'RegisterUser'}); 
+        },
         login:function(){
             // window.localStorage.setItem('admin',JSON.stringify(this.admin));
           // console.log(this.loginUser);
@@ -138,6 +193,9 @@
             // console.log(error.response.data.error);
             // console.log("login false !");
           })
+        },
+        loginGoogle:function(){
+          window.location = config.API_URL + '/auth/google';
         },
         setdata:function(data){
           console.log(data);
@@ -191,14 +249,14 @@
               // console.log("login false !");
           })
         }
-  
       },
-      mounted(){
-        window.document.title='MetaShop | Login';
-        if(window.localStorage.getItem('user')){
-            this.$router.push({name:"DashboardUser"});
+      watch:{
+        showpw:function(){
+          if(this.showpw == true) this.passwordType = 'text';
+          else this.passwordType = 'password'; 
         }
-      }
+      },
+
   }
   </script>
   
@@ -245,6 +303,33 @@
   background-color: #F84B2F !important;
   border-color: #F84B2F ;
 }
+
+
+
+
+/* register-here */
+#register-here{
+    margin-top: 20px;
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    color: gray;
+}
+#register-here span{
+    font-weight: bold;
+    margin-left: 10px;
+    color: black;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+#register-here span:hover{
+    color:#0085FF;
+    text-decoration: underline;
+}
+
+
+
+
 /* RESET COLOR INPUT AND BUTTON */
   #main{
       background: #F84B2F;

@@ -39,8 +39,8 @@
           <div id="no-ac-icon"><i class="fa-solid fa-user-plus"></i></div>
           <div id="add-ac">
             <ul id="add-ac-ul">
-              <li><i @click="login" class="fa-solid fa-arrow-right-to-bracket"></i> Login</li>
-              <li><i class="fa-solid fa-user-plus"></i> Register</li>
+              <li @click="login" ><i class="fa-solid fa-arrow-right-to-bracket"></i> Login</li>
+              <li @click="register"><i class="fa-solid fa-user-plus"></i> Register</li>
             </ul>
           </div>
         </div>
@@ -123,7 +123,6 @@ export default {
           created_at:null,
           updated_at:null,
           email_verified_at:null,
-          access_token:''
         },
         count:123,
         url_img:''
@@ -160,9 +159,11 @@ export default {
         this.prevScrollpos = currentScrollPos;
       },
       // header
-
       login:function(){
         this.$router.push({name:"LoginUser"});
+      },
+      register:function(){
+        this.$router.push({name:"RegisterUser"});
       },
       logoClick:function(){
         this.$router.push({name:"DashboardUser"});
@@ -501,12 +502,14 @@ input:hover{
   position: relative;
 }
 #pr {
+  height: 80px; /* cho chiều dài của nó to bằng thanh hiện tại là khỏe nhất */
   line-height: 100%;
   color: black;
   align-items: center;
   display: flex;
   cursor: pointer;
   margin-left: 20px;
+  /* border: 1px solid red; */
 }
 #pr img{
   object-fit: cover;
@@ -523,6 +526,7 @@ input:hover{
   line-height: 100%;
   color:#0085FF;
   transition: all 0.5s ease;
+  /* border: 1px solid red; */
 }
 
 .network{
@@ -546,11 +550,11 @@ input:hover{
   z-index: 1; /* vì trong header vẫn có slider các kiểu nên cũng phải để */
 }
 #have-account:hover #list-have-acc{
-  top:50px;
+  top:70px;
   opacity: 1;
   width: 260px;
   height: 160px;
-  border: 2px solid white;
+  /* border: 1px solid red; */
 }
 #have-account:hover #pr p{
   color:#F84B2F;
