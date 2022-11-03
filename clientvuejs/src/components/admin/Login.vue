@@ -36,7 +36,7 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                       <div class="modal-header">
-                          <h5 class="modal-title" id="exampleModalLabel"><i class="fa-brands fa-keycdn"></i> Add Account Admin</h5>
+                          <h5 class="modal-title" id="exampleModalLabel"><i class="fa-brands fa-keycdn"></i> Forgot your password !</h5>
                           <button type="button" style="margin-right: 10px;outline: none;margin-top: 3px;" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                       </div>
                       <div class="modal-body">

@@ -38,8 +38,10 @@
         <div id="no-account" v-if="!user">
           <div id="no-ac-icon"><i class="fa-solid fa-user-plus"></i></div>
           <div id="add-ac">
-            <button type="button" @click="login" class="btn btn-outline-primary" ><i class="fa-solid fa-arrow-right-to-bracket"></i> Login</button>
-            <button type="button" class="btn btn-outline-primary"><i class="fa-solid fa-user-plus"></i> Register</button>
+            <ul id="add-ac-ul">
+              <li><i @click="login" class="fa-solid fa-arrow-right-to-bracket"></i> Login</li>
+              <li><i class="fa-solid fa-user-plus"></i> Register</li>
+            </ul>
           </div>
         </div>
         <div id="have-account" v-if="user">
@@ -49,12 +51,40 @@
               <p>{{user.fullname}}</p>
           </div>
           <div id="list-have-acc">
-
+            <ul id="list-have-acc-ul">
+              <li><i class="fa-solid fa-circle-user"></i> My Account </li>
+              <li><i class="fa-solid fa-bag-shopping"></i> Order </li>
+              <li @click="logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout </li>
+            </ul>
           </div>
         </div>
       </div>
       <div id="category">
-
+        <div class="sub-category" style="margin: 0px 30px 0px 30px;">
+          <i class="fa-solid fa-shield"></i> Quality assurance
+        </div>
+        <div id="slide-category">
+          <div id="carouselExampleControlsCategory" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+              <div :class="{'carousel-item':true, 'active':index==0}" v-for="(categorys,index) in categoryss" :key="index">
+                <div class="big-category">
+                  <span class="sp-category" v-for="(category,index2) in categorys" :key="index2"><i class="fa-brands fa-shopify"></i> {{category.name.substr(0, 12)}}<span v-if="category.name.length>12" >...</span>,</span>
+                </div>
+              </div>
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleControlsCategory" role="button" data-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleControlsCategory" role="button" data-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="sr-only">Next</span>
+            </a>
+          </div>
+        </div>
+        <div class="sub-category" style="margin: 0px 10px 0px 5px;width: 300px;">
+          <i class="fa-solid fa-truck-fast"></i> <TypedText2></TypedText2>
+        </div>
       </div>
     </div>
 </template>
@@ -63,40 +93,41 @@
 import BaseRequest from '../../restful/admin/core/BaseRequest';
 // import useEventBus from '../../composables/useEventBus';
 // import Notification from './Notification';
+import TypedText2 from "./../admin/typedtext/TypedText2.vue"
 import config from '../../config.js';
 
 export default {
     name: "HeaderUser",
+    components: {
+      TypedText2,
+    },
     data(){
       return{
         prevScrollpos : window.pageYOffset, // header
 
-        categorys:null,
-        // user: {
-        //     id: 1,
-        //     fullname: "Nguyễn Văn Mạnh pro vip vip",
-        //     email: "buongtaynhenhang99@gmail.com",
-        //     username: "vanmanh1pro",
-        //     email_verified_at: null,
-        //     address: "Hà Nội - Việt NamNam",
-        //     date_of_birth: "2001-09-29",
-        //     gender: 1,
-        //     status: 1,
-        //     phone: "0971404372",
-        //     // url_img: "storage/images/SWw5qAdRDrziCfEcMHaqROFnRBxkoLuYWYL3M6HF.jpg",
-        //     url_img: null,
-        //     google_id: "110656888206613286806",
-        //     remember_token: null,
-        //     created_at: "2022-09-28T06:37:59.000000Z",
-        //     updated_at: "2022-10-15T09:01:54.000000Z"
-        // },
-        user:null,
+        categoryss:null,
+        user:{
+          id:null,
+          fullname:'',
+          username:'',
+          email: '',
+          phone: '',
+          google_id:null,
+          date_of_birth:null,
+          url_img:null,
+          gender:null,
+          address:'',
+          status:null,
+          access_token:'',
+          refreshToken:'',
+          created_at:null,
+          updated_at:null,
+          email_verified_at:null,
+          access_token:''
+        },
         count:123,
         url_img:''
       }
-    },
-    components: {
-
     },
     created () {
         window.addEventListener('scroll', this.handleScroll);  // header
@@ -105,10 +136,13 @@ export default {
         window.removeEventListener('scroll', this.handleScroll); // header
     },
     mounted(){
+
+      this.user = JSON.parse(window.localStorage.getItem('user'));
+
       if(this.user != null && this.user.url_img != null) this.url_img = config.API_URL +'/'+ this.user.url_img;
       BaseRequest.get('api/categorys/allcategory')
         .then( (data) =>{
-            this.categorys = data.category;
+            this.categoryss = data.category;
         }) 
         .catch(()=>{
 
@@ -121,7 +155,7 @@ export default {
         if (this.prevScrollpos > currentScrollPos) {
             document.getElementById("header").style.top = "0";
         } else {
-            document.getElementById("header").style.top = "-300px";
+            document.getElementById("header").style.top = "-400px";
         }
         this.prevScrollpos = currentScrollPos;
       },
@@ -130,7 +164,15 @@ export default {
       login:function(){
         this.$router.push({name:"LoginUser"});
       },
-      
+      logoClick:function(){
+        this.$router.push({name:"DashboardUser"});
+      },
+
+      logout:function(){
+        window.localStorage.removeItem('user');
+        this.$router.push({name:"LoginUser"});
+        window.location = window.origin+'/main/login';
+      }
     },
 }
 </script>
@@ -199,8 +241,9 @@ input:hover{
   top: 0;
   background-color: white;
   /* cố định */
-  z-index: 1;
+  z-index: 1; /* fix khỏi những cái khác */
   transition: top 0.7s ease; /* để cho nó trượt xuống cho mượt */
+  border-bottom:2px solid white ;
 }
 
 /* contact */
@@ -236,6 +279,9 @@ input:hover{
   align-items: center;
   /* border: 1px solid red; */
 }
+#logo {
+  cursor: pointer;
+}
 #logo img {
   width: 50px;
   margin: auto;
@@ -244,7 +290,16 @@ input:hover{
 #logo p {
   font-weight: bold;
   color: #F84B2F;
+  transition: color 0.5s ease;
 }
+#logo:hover p{
+  color: #0085FF;
+}
+
+
+
+
+
 #search{
   margin-left: 60px;
   width: 60%;
@@ -300,6 +355,7 @@ input:hover{
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
   transition: top 0.5s , opacity 1.5s ,width 0.1s, height 0.1s  ;
+  z-index: 1; /* vì trong header vẫn có slider các kiểu nên cũng phải để */
 }
 
 #cart:hover #list-cart{
@@ -342,24 +398,51 @@ input:hover{
   left:-70px;
   width: 0px;
   height: 0px;
-  background-color: white;
+  background-color: #0085FF;
   border-radius: 10px;
   opacity: 0;
   transition: top 0.5s , opacity 1.5s ,width 0.1s, height 0.1s  ;
+  z-index: 1; /* vì trong header vẫn có slider các kiểu nên cũng phải để */
 }
-#add-ac button {
-  margin-top: 10px;
-  margin-left: 20px;
-}
-#add-ac * {
+#add-ac-ul {
+  padding: 0px 0px;
   display: none;
 }
+#add-ac-ul li {
+  cursor: pointer;
+  padding:0px 0px;
+  width: 100%;
+  height: 40px;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  color: white;
+  font-weight: 600;
+  transition: background-color 0.6s ease,color 0.6s ease;
+  border-radius: 6px;
+  margin-top: 6px;
+}
+#add-ac-ul li:hover {
+  background-color: white;
+  color: #0085FF;
+}
+#add-ac-ul li i {
+  margin-right: 10px;
+}
+#no-account:hover #add-ac-ul li{
+  padding:0px 10px;
+}
+#no-account:hover #add-ac-ul{
+  padding: 10px 10px;
+  display: block;
+}
+
 #no-account:hover #add-ac{
   top:60px;
   opacity: 1;
   width: 200px;
-  height: 110px;
-  border: 1px solid #F84B2F;
+  height: 122px;
+  border: 2px solid white;
 }
 #no-account:hover #no-ac-icon{
   color: white;
@@ -438,13 +521,15 @@ input:hover{
   width: 150px;
   overflow: hidden;
   line-height: 100%;
+  color:#0085FF;
+  transition: all 0.5s ease;
 }
 
 .network{
   transition: all 1s ease;
 }
 .network:hover{
-  color: #f4fc97;
+  color: #FFDE59;
 }
 
 /* list-have-acc */
@@ -454,25 +539,89 @@ input:hover{
   left:-16px;
   width: 0px;
   height: 0px;
-  background-color: blue;
+  background-color: #0085FF;
   opacity: 0;
-  border-radius: 20px;
+  border-radius: 10px;
   transition: top 0.5s , opacity 1.5s ,width 0.1s, height 0.1s  ;
+  z-index: 1; /* vì trong header vẫn có slider các kiểu nên cũng phải để */
 }
-
 #have-account:hover #list-have-acc{
   top:50px;
   opacity: 1;
   width: 260px;
-  height: 200px;
-  border: 1px solid #F84B2F;
+  height: 160px;
+  border: 2px solid white;
 }
+#have-account:hover #pr p{
+  color:#F84B2F;
+}
+
+
 
 #category {
-  height: 6px;
   background-color: #F84B2F;  
+  padding: 3px 0px;
+  display: flex;
+}
+#slide-category {
+  color: white;
+  width: 730px;
+  height: 100%;
+}
+.big-category {
+  display: flex;
+  justify-content: space-between ;
+  padding:0px 80px;
+}
+/* .sp-category{
+  text-shadow: #FC0 1px 0 10px;
+} */
+.sp-category{
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.5s ease;
+}
+.sp-category:hover {
+  text-decoration: underline;
+  color: #FFDE59;
+}
+.sub-category {
+  color: white;
+  font-weight: 600;
 }
 
 
-
+/* list-have-acc-ul */
+#list-have-acc-ul {
+  padding: 0px 0px;
+  display: none;
+}
+#list-have-acc-ul li {
+  cursor: pointer;
+  padding:0px 0px;
+  width: 100%;
+  height: 40px;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  color: white;
+  font-weight: 600;
+  transition: background-color 0.6s ease,color 0.6s ease;
+  border-radius: 6px;
+  margin-top: 6px;
+}
+#list-have-acc-ul li:hover {
+  background-color: white;
+  color: #0085FF;
+}
+#list-have-acc-ul li i {
+  margin-right: 10px;
+}
+#have-account:hover #list-have-acc-ul li{
+  padding:0px 10px;
+}
+#have-account:hover #list-have-acc-ul{
+  padding: 7px 10px;
+  display: block;
+}
 </style>

@@ -1,6 +1,7 @@
 const axios = require('axios');
 import config from '../../../config.js'
-// import router from './../router/routes' 
+import router from './../../../router/routes' 
+import useEventBus from '../../../composables/useEventBus'
 
 let dataUser = window.localStorage.getItem('user');
 let user = null;
@@ -29,23 +30,15 @@ export default {
 				resolve(response.data);
 			})
 			.catch( error => {
-				// if(error.response.status == 404){
-				// 	window.location.href = '/401';
-				// }
-				// if(error.response.status == 404){
-				// 	window.location.href = '/404';
-				// }
-				// if(error.response.status == 503){
-				// 	window.location.href = '/503';
-				// }
-				let errors = {
-					message : error.message,
-					status : error.response.status
+				if(error.response.status == 401) this.hadleError401();
+				else {
+					let errors = {
+						message : error.message,
+						status : error.response.status
+					}
+					window.localStorage.setItem('error',JSON.stringify(errors));
+					reject(error);
 				}
-				window.localStorage.setItem('error',JSON.stringify(errors));
-				// router.push({name:'CompError'});
-				// router.push({name:'NotFound'});
-				reject(error);
 			})
 		});
 	},
@@ -62,13 +55,15 @@ export default {
 				resolve(response.data);
 			})
 			.catch( error => {
-				let errors = {
-					message : error.message,
-					status : error.response.status
+				if(error.response.status == 401) this.hadleError401();
+				else {
+					let errors = {
+						message : error.message,
+						status : error.response.status
+					}
+					window.localStorage.setItem('error',JSON.stringify(errors));
+					reject(error);
 				}
-				window.localStorage.setItem('error',JSON.stringify(errors));
-				// router.push({name:'NotFound'});
-				reject(error);
 			})
 		})
 	},
@@ -85,13 +80,15 @@ export default {
 				resolve(response.data);
 			})
 			.catch( error => {
-				let errors = {
-					message : error.message,
-					status : error.response.status
+				if(error.response.status == 401) this.hadleError401();
+				else {
+					let errors = {
+						message : error.message,
+						status : error.response.status
+					}
+					window.localStorage.setItem('error',JSON.stringify(errors));
+					reject(error);
 				}
-				window.localStorage.setItem('error',JSON.stringify(errors));
-				// router.push({name:'NotFound'});
-				reject(error);
 			})
 		})
 	},
@@ -108,13 +105,15 @@ export default {
 				resolve(response.data);
 			})
 			.catch( error => {
-				let errors = {
-					message : error.message,
-					status : error.response.status
+				if(error.response.status == 401) this.hadleError401();
+				else {
+					let errors = {
+						message : error.message,
+						status : error.response.status
+					}
+					window.localStorage.setItem('error',JSON.stringify(errors));
+					reject(error);
 				}
-				window.localStorage.setItem('error',JSON.stringify(errors));
-				// router.push({name:'NotFound'});
-				reject(error);
 			})
 		})
 	},
@@ -130,15 +129,30 @@ export default {
 				resolve(response.data);
 			})
 			.catch( error => {
-				let errors = {
-					message : error.message,
-					status : error.response.status
+				if(error.response.status == 401) this.hadleError401();
+				else {
+					let errors = {
+						message : error.message,
+						status : error.response.status
+					}
+					window.localStorage.setItem('error',JSON.stringify(errors));
+					reject(error);
 				}
-				window.localStorage.setItem('error',JSON.stringify(errors));
-				// router.push({name:'NotFound'});
-				reject(error);
 			})
 		})
+	},
+
+	hadleError401(){
+		const { emitEvent } = useEventBus();
+		emitEvent('eventError401','Unauthorized 401');
+		window.localStorage.removeItem('user');
+
+		setTimeout(()=>{
+			router.push({name:"LoginUser"});
+			window.localStorage.removeItem('error');
+			window.location=window.location.href;
+		}, 1500);
 	}
+
 }
 

@@ -11,32 +11,24 @@
         <ParticleVue3/> <!-- ///+++ -->
   
       <!-- HIỆU ỨNG BACKGROUND HÌNH TRÒN -->
-    
-      <div id="header">
-        <div id="img"><a @click="logoClick"><img src="../../assets/logo.png"></a></div>
-        <div id="logo"><a @click="logoClick">Meta Shop</a></div>
-        <div id="span"></div>
-        <div id="title" @click="adminlogin" class="under"><a>Admin Login</a></div>
-        <div id="typed"> <TypedText></TypedText></div>
-      </div>
-        
+      <br><br>
       <div id="big">
         <div class="container">
             <form  @submit.prevent="login()" action="http://127.0.0.1:8000/api/auth/login" >
-              <h4 style="text-transform: uppercase;letter-spacing: 2.5px;font-weight: 700;color:#0085FF;"><i class="fa-solid fa-right-to-bracket"></i> LOGIN</h4><br>
-              <div class="input-form"><input type="email" v-model="loginAdmin.email" required autocomplete="off"><div class="underline"></div><label :class="{fix1:loginAdmin.email.length>0}"><i class="fa-solid fa-envelope"></i> Email</label></div><br>
-              <div class="input-form" id="bigshow"><input :type="passwordType" required v-model="loginAdmin.password" autocomplete="off"><div class="underline"></div><label><i class="fa-solid fa-lock"></i> Password</label>
-                <div id="show"><input type="checkbox" v-model="showpw"></div>
+              <h4 style="text-transform: uppercase;letter-spacing: 2.5px;font-weight: 700;color:#F84B2F;"><i class="fa-solid fa-right-to-bracket"></i> LOGIN</h4><br>
+              <div class="input-form"><input type="email" v-model="loginUser.email" required autocomplete="off"><div class="underline"></div><label :class="{fix1:loginUser.email.length>0}"><i class="fa-solid fa-envelope"></i> Email</label></div><br>
+              <div class="input-form" id="bigshow"><input :type="passwordType" required v-model="loginUser.password" autocomplete="off"><div class="underline"></div><label><i class="fa-solid fa-lock"></i> Password</label>
+                <div id="show" :class="{bodr:loginUser.password.length>0,bodr2:loginUser.password.length==0}"><input type="checkbox" v-model="showpw"></div>
               </div><br>
               <!-- <div class="alert alert-danger" v-if="error">{{error.response.data.error}}</div> -->
-              <a class="text-primary under" style="text-decoration: none;" href="#" data-toggle="modal" data-target="#exampleModalForgotPassword" >Forgot your password ? </a><br>
+              <a class="under" style="text-decoration: none;color: #F84B2F;" href="#" data-toggle="modal" data-target="#exampleModalForgotPassword" >Forgot your password ? </a><br>
   
               <!-- Model Forgot Password -->
               <div class="modal fade" id="exampleModalForgotPassword" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                   <div class="modal-dialog" role="document">
                       <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel"><i class="fa-brands fa-keycdn"></i> Add Account Admin</h5>
+                            <h5 class="modal-title" id="exampleModalLabel"><i class="fa-brands fa-keycdn"></i> Forgot your password !</h5>
                             <button type="button" style="margin-right: 10px;outline: none;margin-top: 3px;" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         </div>
                         <div class="modal-body">
@@ -57,6 +49,16 @@
               <!-- Model Forgot Password -->
   
               <button type="submit" class="mt-4 btn-pers" id="login_button" >Login</button>
+
+              <div id="login-google">
+                <div id="lb-gg">
+                  <span></span> <label> Or Singin With </label> <span></span>
+                </div>
+                <div id="bt-gg">
+                  <img src="../../assets/google_logo.png">
+                  <span>Sing in with Google</span>
+                </div>
+              </div>
             </form>
         </div>
       </div>
@@ -67,27 +69,25 @@
   </template>
   
   <script>
-  import BaseRequest from '../../restful/admin/core/BaseRequest';
-  import LoginRequest from '../../restful/admin/requests/LoginRequest'
+  import BaseRequest from '../../restful/user/core/BaseRequest';
+  import LoginRequest from '../../restful/user/requests/LoginRequest'
   import useEventBus from '../../composables/useEventBus'
   import Notification from './../admin/Notification'
   
   import ParticleVue3 from "./../admin/particle/ParticleVue3.vue";
-  import TypedText from "./../admin/typedtext/TypedText.vue"
   
   export default {
       name: "LoginUser",
       components: {
         Notification,
         ParticleVue3,
-        TypedText
       },
       setup() {
         document.title = "Meta Shop | Login";
       },
       data(){
           return {
-            loginAdmin:{
+            loginUser:{
               email:'',
               password:''
             },
@@ -108,12 +108,13 @@
       methods: {
         login:function(){
             // window.localStorage.setItem('admin',JSON.stringify(this.admin));
-          // console.log(this.loginAdmin);
-          var v = this.loginAdmin;
-          LoginRequest.post('api/admin/login',this.loginAdmin)
+          // console.log(this.loginUser);
+          var v = this.loginUser;
+          LoginRequest.post('api/customer/login',this.loginUser)
           .then( data => {
             // console.log("login success !");
             // alert("Đăng nhập thành công !");
+            console.log(data);
             this.setdata(data);
             this.error = null ;
   
@@ -122,15 +123,15 @@
   
             setTimeout(()=>{
               // console.log(data);
-              this.$router.push({name:'DashboardAdmin'}); 
+              this.$router.push({name:'DashboardUser'}); 
               window.location=window.location.href;
             }, 1000);
             
           })
           .catch( error => {
-            this.loginAdmin = v; // để nó không reset ô input đi . 
+            this.loginUser = v; // để nó không reset ô input đi . 
             this.error = error;
-            // console.log(error);
+            console.log(error);
   
             const { emitEvent } = useEventBus();
             emitEvent('eventError',error.response.data.error);
@@ -139,36 +140,31 @@
           })
         },
         setdata:function(data){
-          // console.log(data);
-          var admin = {
+          console.log(data);
+          var user = {
               id:null,
               fullname:'',
               username:'',
               email: '',
               phone: '',
+              google_id:null,
               date_of_birth:null,
               url_img:null,
               gender:null,
               address:'',
-              role:'',
+              status:null,
               access_token:'',
               refreshToken:'',
               created_at:null,
               updated_at:null,
               email_verified_at:null,
             }
-            admin = data.user;
-            admin.access_token = data.message.original.access_token;
-            window.localStorage.setItem('admin',JSON.stringify(admin));
-        },
-        logoClick:function(){
-            this.$router.push({name:'UserComp'});
-        },
-        adminlogin:function(){
-            window.location=window.location.href;
+            user = data.user;
+            user.access_token = data.message.original.access_token;
+            window.localStorage.setItem('user',JSON.stringify(user));
         },
         rspw:function(){
-          BaseRequest.post('api/admin/reset-password',this.resetPassword)
+          BaseRequest.post('api/customer/reset-password',this.resetPassword)
           .then( () => { // chỉ cần email có trong hệ thống là nó không lỗi , còn thực tế tồn tại hay không không quan trọng 
               // console.log("login success !");
               // alert("Đăng nhập thành công !");
@@ -199,8 +195,8 @@
       },
       mounted(){
         window.document.title='MetaShop | Login';
-        if(window.localStorage.getItem('admin')){
-            this.$router.push({name:"DashboardAdmin"});
+        if(window.localStorage.getItem('user')){
+            this.$router.push({name:"DashboardUser"});
         }
       }
   }
@@ -230,23 +226,31 @@
   /* HIỆU ỨNG BACKGROUND HÌNH TRÒN */
   /* THAMKHAO : https://blog.stackfindover.com/css-background-animation-examples/ */
   /*  */
-  #typed{
-    width: 300px;
-    height: 100%;
-    font-size: 20px;
-    margin-left: 40%;
-    /* margin-left: 70px; */
-    color: #0085FF;
-    border-left-width: 6px ;
-    border-left-style: solid;
-    border-left-color: #0085FF;
-    padding-left: 6px;
-  }
+  /* RESET COLOR INPUT AND BUTTON */
+
+/* thay đổi màu cho button */
+.btn-outline-primary,  .btn-outline-primary:active, .btn-outline-primary:visited {
+  border-color: #F84B2F ;
+  color: #F84B2F ;
+  outline-color: #F84B2F;
+}
+.btn{
+  transition: all 0.6s ease;
+}
+.btn:focus, .btn:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+.btn-outline-primary:hover{
+  background-color: #F84B2F !important;
+  border-color: #F84B2F ;
+}
+/* RESET COLOR INPUT AND BUTTON */
   #main{
-      background: #00adef;
-      background: -moz-linear-gradient(-45deg, #00adef 0%, #0076e5 100%);
-      background: -webkit-linear-gradient(-45deg, #00adef 0%,#0076e5 100%);
-      background: linear-gradient(135deg, #00adef 0%,#0076e5 100%);
+      background: #F84B2F;
+      background: -moz-linear-gradient(-45deg, #F84B2F 0%, #0076e5 100%);
+      background: -webkit-linear-gradient(-45deg, #F84B2F 0%,#0076e5 100%);
+      background: linear-gradient(135deg, #F84B2F 0%,#0076e5 100%);
       filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00adef', endColorstr='#0076e5',GradientType=1 );
       position: relative;
       height: 700px;
@@ -409,12 +413,12 @@
    .input-form input:valid ~ label{
      transform: translateY(-20px);
      font-size: 15px;
-     color: #0085FF;
+     color: #F84B2F;
    }
    .fix1{
     transform: translateY(-20px);
      font-size: 15px;
-     color: #0085FF;
+     color: #F84B2F;
    }
   
    .container .input-form label{
@@ -436,7 +440,7 @@
      content: "";
      height: 100%;
      width: 100%;
-     background: #0085FF;
+     background: #F84B2F;
      transform: scaleX(0);
      transform-origin: center;
      transition: transform 0.3s ease;
@@ -461,40 +465,23 @@
     /* border-top-right-radius: 10px; */
     border-top-left-radius: 10px;
     align-items: center;
-    border: 2px solid #0085FF;
+  }
+  .bodr2{
+    border: 2px solid transparent;
+  }
+  .bodr{
+    border: 2px solid #F84B2F;
   }
   
-   /* header */
-   #header {
-      /* opacity: 0.9; */
-      display: flex;
-      padding: 6px 30px;
-      background-color: white;
-      box-shadow: 0px 10px 10px -10px gray;
-      margin-bottom: 60px;
-      align-items: center;
-      border-radius: 16px;
-      position: relative;  /* LÀM NHƯ THẾ NÀY ĐỂ KHÔNG BỊ HIỆU ỨNG background HÌNH TRÒN ĐÈ LÊN PHÍA TRÊN */
-  }
-  #header #img {
-      cursor: pointer;
-  }
-  #header img {
-      width: 80px;
-  }
-  #span {
-      border: 1px solid gray;
-      background-color: gray;
-      height: 80px;
-      margin-left: 20px;
-  }
+
+
   
   @import url('https://fonts.googleapis.com/css2?family=Reem+Kufi+Ink');
   
   #logo {
       font-size: 30px;
       font-family: 'Reem Kufi Ink', sans-serif;
-      color: #0085FF;
+      color: #F84B2F;
       cursor: pointer;
   }
   #big {
@@ -502,20 +489,7 @@
       display: flex;
       position: relative; /* LÀM NHƯ THẾ NÀY ĐỂ KHÔNG BỊ HIỆU ỨNG background HÌNH TRÒN ĐÈ LÊN PHÍA TRÊN */
   }
-  #title {
-      font-size: 20px;
-      color: gray;
-      margin-left: 20px;
-      cursor: pointer;
-  }
-  #title:hover{
-    /* text-decoration-color: #0085FF;
-    text-decoration: underline;
-    color: #0085FF; */
-    color:#0085FF;
-    transition: color 0.5s ease;
-  }
-  
+
   
   
   
@@ -540,8 +514,8 @@
   }
   
   .btn-pers:hover {
-    background-color: #0085FF;
-    box-shadow: 0px 15px 20px rgba(46, 138, 229, 0.4);
+    background-color: #F84B2F;
+    box-shadow: 0px 15px 20px #f7cbc4;
     color: #fff;
     transform: translate(-50%, -7px);
   }
@@ -563,7 +537,7 @@
       bottom: -4px;
       width: 0;
       height: 2px;
-      background:#0085FF;
+      background:#F84B2F;
       transition: width 0.3s;
   }
   .under:hover::after {
@@ -575,11 +549,61 @@
   
   /*
   
-  :class="{fix1:loginAdmin.email.length>0}"
+  :class="{fix1:loginUser.email.length>0}"
   fix để khi đã có kí tự thì nó không còn nhảy email xuống đè lên chữ nữa . 
   thanh password thì không bị nhưng email thì lại bị 
   
   */
+  #login-google {
+    margin-top: 40px;
+  }
+  #lb-gg{
+    color: gray;
+    width: 100%;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+  #lb-gg label {
+    margin: 0px 6px;
+  }
+  #lb-gg span{
+    display: inline-block;
+    width: 30%;
+    height: 1px;
+    background-color: gray;
+  }
+  #bt-gg {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    border:1px solid #0085FF;
+    padding-top:6px ;
+    color: #0085FF;
+    font-weight: 600;
+    padding-bottom:6px ;
+    width: 60%;
+    margin: auto;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.5s ease;
+  }
+  #bt-gg img {
+    width: 10%;
+    object-fit: cover;
+    margin-right: 10px;
+    border-radius: 20px;
+    background-color: white;
+    border: 2px solid white;
+  }
+  #bt-gg:hover {
+    color: white;
+    background-color: #0085FF;
+  }
   </style>
   
   

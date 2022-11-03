@@ -186,7 +186,20 @@ class CategoryController extends Controller
     // click vào tên rồi thêm cả mới nhất -> tên cộng sắp xếp từ dưới lên = z-a => HỢP LÝ 
 
     public function getall(){
-        $categorys = Category::all();
+        $allcategorys = Category::all();
+        $n = count($allcategorys);
+        $m = ceil($n/5); 
+        $categorys = [];
+        $arr = [];
+        for($i=0;$i<$n;$i++){
+            if($i!=0 && $i%5==0) {
+                array_push($categorys,$arr);
+                $arr = [];
+            }
+            array_push($arr,$allcategorys[$i]);
+            if($i==$n-1) array_push($categorys,$arr); // những phần tử còn lại (nhỏ hơn 5)
+        }
+
         return response()->json([
             'message' => 'Get all categorys successfully !',
             'category' => $categorys
