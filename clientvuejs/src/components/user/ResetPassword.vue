@@ -1,32 +1,20 @@
 <template>
 <div id="main">
-    <div id="header">
-        <div id="img"><a @click="logoClick"><img src="../../assets/logo.png"></a></div>
-        <div id="logo"><a @click="logoClick">Meta Shop</a></div>
-        <div id="span"></div>
-        <div id="title" @click="adminlogin"><a>Admin Reset Password</a></div>
-        <div id="pagelogin">
-            <button type="button" @click="pagelogin" class="mt-4 btn-pers" >Login Admin</button>
-        </div>
-    </div>
-    
+    <ParticleVue33></ParticleVue33>
     <div id="big">
-    <div class="container">
-
-        <div class="alert alert-success" role="alert" v-if="success==true">
-            Password reset is successful !<br>
-            Please return to the login page and log in !
+        <div class="container" >
+            <div class="alert alert-success" role="alert" v-if="success==true">
+                Password reset is successful !<br>
+                Please return to the login page and log in !
+            </div>
+            <form @submit.prevent="resetpw()" autocomplete="on" v-if="success==false">
+                <div style="color:#F84B2F;display: flex;width: 100%;justify-content: center;font-weight: 500;font-size: 20px;align-items: center;align-content: center;"><i class="fa-solid fa-repeat"></i> <span style="margin-left: 6px;">Reset Password</span></div><br>
+                <div class="input-form"><input type="text" required v-model="resetPassword.password"><div class="underline"></div><label>New Password</label></div><br>
+                <button type="submit" class="mt-4 btn-pers" id="login_button" >Reset</button>
+            </form>
         </div>
-
-        <form @submit.prevent="resetpw()" autocomplete="on" v-if="success==false">
-            <h4>Reset Password</h4><br>
-            <div class="input-form"><input type="text" required v-model="resetPassword.password"><div class="underline"></div><label>New Password</label></div><br>
-            <button type="submit" class="mt-4 btn-pers" id="login_button" >Reset</button>
-        </form>
-    </div>
     </div>
     <Notification></Notification>
-
 </div>
 </template>
 
@@ -35,10 +23,13 @@ import BaseRequest from '../../restful/admin/core/BaseRequest';
 import useEventBus from '../../composables/useEventBus'
 import Notification from './Notification'
 
+import ParticleVue33 from "./../admin/particle/ParticleVue33.vue";
+
 export default {
-    name: "ResetPasswordAdmin",
+    name: "ResetPasswordUser",
     components: {
-    Notification
+    Notification,
+    ParticleVue33
     },
     data(){
         return {
@@ -52,7 +43,7 @@ export default {
     },
     mounted(){
 
-        window.document.title='MetaShop | Login';
+        window.document.title='MetaShop | Reset Password User';
         let urlParams = new URLSearchParams(window.location.search);
         if(urlParams.has('token')) {
             this.token = urlParams.get('token');
@@ -64,14 +55,14 @@ export default {
             // console.log(this.loginAdmin);
             if(this.token){
                 var v = this.resetPassword;
-                BaseRequest.put('api/admin/reset-password/'+this.token,this.resetPassword)
+                BaseRequest.put('api/customer/reset-password/'+this.token,this.resetPassword)
                 .then( () => {
                     // console.log("login success !");
                     // alert("Đăng nhập thành công !");
                     this.error = null ;
                     this.success = true;
                     const { emitEvent } = useEventBus();
-                    emitEvent('eventSuccess','Reset Password Success !');
+                    emitEvent('eventUserSuccess','Reset Password Success !');
                 })
                 .catch( error => {
                     this.resetPassword = v; // để nó không reset ô input đi . 
@@ -79,31 +70,25 @@ export default {
                     console.log(error);
 
                     const { emitEvent } = useEventBus();
-                    emitEvent('eventError','Reset password failed !');
+                    emitEvent('eventUserError','Reset password failed !');
                     // console.log(error.response.data.error);
                     // console.log("login false !");
                 })
             }
             else {
                 const { emitEvent } = useEventBus();
-                emitEvent('eventError','Token Invalid ! Reset password failed !');
+                emitEvent('eventUserError','Token Invalid ! Reset password failed !');
             }
             
         },
-        logoClick:function(){
-            this.$router.push({name:'UserComp'});
-        },
-        adminlogin:function(){
-            window.location=window.location.href;
-        },
-        pagelogin:function(){
-            this.$router.push({name:'LoginAdmin'});
-        }
     }
 }
 </script>
 
 <style scoped>
+#big {
+    position: relative;
+}
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
 
 *{
@@ -118,7 +103,7 @@ background-color: #F2F4F6;
 padding-top: 10px;
 padding-left: 30px;
 padding-right: 30px;
-height: 577px;
+height: 430px;
 }
 body{
     display: flex;
@@ -128,6 +113,7 @@ body{
     background: linear-gradient(to right, #EF629F, #EECDA3);
 }
 .container{
+    margin-top: 60px;
     border-radius: 26px;
     width: 450px;
     background: #fff;
@@ -150,7 +136,7 @@ body{
 .input-form input:valid ~ label{
     transform: translateY(-20px);
     font-size: 15px;
-    color: #0085FF;
+    color: #F84B2F;
 }
 .container .input-form label{
     position: absolute;
@@ -171,7 +157,7 @@ body{
     content: "";
     height: 100%;
     width: 100%;
-    background: #0085FF;
+    background: #F84B2F;
     transform: scaleX(0);
     transform-origin: center;
     transition: transform 0.3s ease;
@@ -181,57 +167,6 @@ body{
     transform: scaleX(1);
 }
 
-
-
-
-
-
-/* header */
-#header {
-    display: flex;
-    padding: 6px 30px;
-    background-color: white;
-    box-shadow: 0px 10px 10px -10px gray;
-    margin-bottom: 60px;
-    align-items: center;
-    border-radius: 16px;
-}
-#header #img {
-    cursor: pointer;
-}
-#header img {
-    width: 80px;
-}
-#span {
-    border: 1px solid gray;
-    background-color: gray;
-    height: 80px;
-    margin-left: 20px;
-}
-
-@import url('https://fonts.googleapis.com/css2?family=Reem+Kufi+Ink');
-
-#logo {
-    font-size: 30px;
-    font-family: 'Reem Kufi Ink', sans-serif;
-    color: #0085FF;
-    cursor: pointer;
-}
-#big {
-    justify-content: center;
-    display: flex;
-}
-#title {
-    font-size: 20px;
-    color: gray;
-    margin-left: 20px;
-    cursor: pointer;
-}
-#title:hover{
-    text-decoration: underline;
-    text-decoration-color: #0085FF;
-    color: #0085FF;
-}
 
 
 
@@ -257,8 +192,8 @@ body{
 }
 
 .btn-pers:hover {
-    background-color: #0085FF;
-    box-shadow: 0px 15px 20px rgba(46, 138, 229, 0.4);
+    background-color: #F84B2F;
+    box-shadow: 0px 15px 20px #fcbab0;
     color: #fff;
     transform: translate(-50%, -7px);
     }

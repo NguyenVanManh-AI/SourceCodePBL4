@@ -96,7 +96,7 @@
 
 import BaseRequest from '../../restful/admin/core/BaseRequest';
 import useEventBus from '../../composables/useEventBus';
-import Notification from './../admin/Notification';
+import Notification from './Notification';
 import config from '../../config.js';
 
 import ParticleVue3 from "./../admin/particle/ParticleVue3.vue";
@@ -157,7 +157,7 @@ export default {
             .then( () =>{
 
                 const { emitEvent } = useEventBus();
-                emitEvent('eventSuccess','You have successfully registered your account, now login !');
+                emitEvent('eventUserSuccess','You have successfully registered your account, now login !');
                 setTimeout(()=>{
                     this.$router.push({name:'LoginUser'}); 
                 }, 1500);
@@ -180,7 +180,7 @@ export default {
         },
         inError:function(er){
             const { emitEvent } = useEventBus();
-            for(var i=0;i<er.length;i++) emitEvent('eventError',er[i]);
+            for(var i=0;i<er.length;i++) emitEvent('eventUserError',er[i]);
         },
         alreadyAcc:function(){
             this.$router.push({name:'LoginUser'}); 

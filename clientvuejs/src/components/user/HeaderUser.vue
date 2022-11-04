@@ -353,18 +353,19 @@ input:hover{
   background-color: blue;
   overflow: auto;
   opacity: 0;
-  border-top-left-radius: 20px;
-  border-bottom-left-radius: 20px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
   transition: top 0.5s , opacity 1.5s ,width 0.1s, height 0.1s  ;
   z-index: 1; /* vì trong header vẫn có slider các kiểu nên cũng phải để */
 }
 
 #cart:hover #list-cart{
+  padding:20px 10px;
   top:64px;
   opacity: 1;
   width: 380px;
   height: 400px;
-  border: 1px solid #F84B2F;
+  border: 2px solid white;
   display: block;
 }
 #cart:hover #cart-shopping {
@@ -554,7 +555,7 @@ input:hover{
   opacity: 1;
   width: 260px;
   height: 160px;
-  /* border: 1px solid red; */
+  border: 2px solid white;
 }
 #have-account:hover #pr p{
   color:#F84B2F;

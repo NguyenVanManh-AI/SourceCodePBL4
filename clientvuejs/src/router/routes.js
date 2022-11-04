@@ -29,6 +29,7 @@ import ImportProduct from './../components/admin/ImportProduct'
 import UserComp from './../components/User'
 import LoginUser from './../components/user/Login'
 import RegisterUser from './../components/user/Register'
+import ResetPasswordUser from './../components/user/ResetPassword'
 import DashboardUser from './../components/user/Dashboard'
 import InforUser from './../components/user/InforUser'
 
@@ -58,6 +59,7 @@ const routes = [
         children : [
             {path:'login',name:'LoginUser',component:LoginUser},
             {path:'register',name:'RegisterUser',component:RegisterUser},
+            {path:'reset-password',name:'ResetPasswordUser',component:ResetPasswordUser},
             {path:'dashboard',name:'DashboardUser',component:DashboardUser},
             {path:'infor-user',name:'InforUser',component:InforUser},
         ]

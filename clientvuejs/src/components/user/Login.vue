@@ -73,7 +73,7 @@
   import BaseRequest from '../../restful/user/core/BaseRequest';
   import LoginRequest from '../../restful/user/requests/LoginRequest'
   import useEventBus from '../../composables/useEventBus'
-  import Notification from './../admin/Notification'
+  import Notification from './Notification'
   
   import ParticleVue3 from "./../admin/particle/ParticleVue3.vue";
   import config from '../../config.js';
@@ -136,7 +136,7 @@
               window.localStorage.setItem('user',JSON.stringify(user));
 
               const { emitEvent } = useEventBus();
-              emitEvent('eventSuccess','Login by Google Success !');
+              emitEvent('eventUserSuccess','Login by Google Success !');
     
               setTimeout(()=>{
                 this.$router.push({name:'DashboardUser'}); 
@@ -146,7 +146,7 @@
             })
             .catch( () => {
               const { emitEvent } = useEventBus();
-              emitEvent('eventError','Login by Google failed !');
+              emitEvent('eventUserError','Login by Google failed !');
               this.$router.push({name:"LoginUser"});
             })
         }
@@ -174,7 +174,7 @@
             this.error = null ;
   
             const { emitEvent } = useEventBus();
-            emitEvent('eventSuccess','Login Success !');
+            emitEvent('eventUserSuccess','Login Success !');
   
             setTimeout(()=>{
               // console.log(data);
@@ -189,7 +189,7 @@
             console.log(error);
   
             const { emitEvent } = useEventBus();
-            emitEvent('eventError',error.response.data.error);
+            emitEvent('eventUserError',error.response.data.error);
             // console.log(error.response.data.error);
             // console.log("login false !");
           })
@@ -223,28 +223,31 @@
         },
         rspw:function(){
           BaseRequest.post('api/customer/reset-password',this.resetPassword)
-          .then( () => { // chỉ cần email có trong hệ thống là nó không lỗi , còn thực tế tồn tại hay không không quan trọng 
+          .then( () => { 
+              // chỉ cần email có trong hệ thống là nó không lỗi , còn thực tế tồn tại hay không không quan trọng 
               // console.log("login success !");
               // alert("Đăng nhập thành công !");
+
+              const { emitEvent } = useEventBus();
+              emitEvent('eventUserSuccess','We have e-mailed your password reset link !');
+
               this.error = null ;
               var closePW = window.document.getElementById('closePW');
               closePW.click();
               this.resetPassword.email = '';
-              const { emitEvent } = useEventBus();
-              emitEvent('eventSuccess','We have e-mailed your password reset link !');
   
-              setTimeout(()=>{
+              // setTimeout(()=>{
                   // console.log(data);
                   // this.$router.push({name:'DashboardAdmin'}); 
                   // window.location=window.location.href;
-              }, 1000);
+              // }, 1000);
           })
           .catch( error => {
               this.error = error;
               // console.log(error);
   
               const { emitEvent } = useEventBus();
-              emitEvent('eventError','Reset password failed !');
+              emitEvent('eventUserError','Reset password failed !');
               // console.log(error.response.data.error);
               // console.log("login false !");
           })
