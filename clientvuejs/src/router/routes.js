@@ -30,8 +30,16 @@ import UserComp from './../components/User'
 import LoginUser from './../components/user/Login'
 import RegisterUser from './../components/user/Register'
 import ResetPasswordUser from './../components/user/ResetPassword'
+
+import AccountUser from './../components/user/Account'
+import ProfileUser from './../components/user/account/Profile'
+import ChangePasswordUser from './../components/user/account/ChangePassword'
+import PurchaseOrderUser from './../components/user/account/PurchaseOrder' 
+import ShippingAddressUser from './../components/user/account/ShippingAddress' 
+
 import DashboardUser from './../components/user/Dashboard'
 import InforUser from './../components/user/InforUser'
+
 
 
 // other 
@@ -60,6 +68,16 @@ const routes = [
             {path:'login',name:'LoginUser',component:LoginUser},
             {path:'register',name:'RegisterUser',component:RegisterUser},
             {path:'reset-password',name:'ResetPasswordUser',component:ResetPasswordUser},
+
+            {path:'account',name:'AccountUser',component:AccountUser,
+                children : [
+                    {path:'profile',name:'ProfileUser',component:ProfileUser},
+                    {path:'change-password',name:'ChangePasswordUser',component:ChangePasswordUser},
+                    {path:'purchase-order',name:'PurchaseOrderUser',component:PurchaseOrderUser},
+                    {path:'shipping-address',name:'ShippingAddressUser',component:ShippingAddressUser},
+                ]
+            },
+
             {path:'dashboard',name:'DashboardUser',component:DashboardUser},
             {path:'infor-user',name:'InforUser',component:InforUser},
         ]

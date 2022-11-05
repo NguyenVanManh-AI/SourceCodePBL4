@@ -1,6 +1,8 @@
 <template>
     <div>
       Dashboard User
+      <input type="text" v-model="n" class="form-control" >
+      <button type="button" class="btn btn-primary" @click="plus">Plus</button>
       <div id="carouselExampleControls" class="carousel slide" data-ride="carousel" >
   <div class="carousel-inner">
     <div class="carousel-item active" >
@@ -26,13 +28,29 @@
 </template>
 
 <script>
-    export default {
-      name: "DashboardUser",
-      components: {
 
-      },
-      methods: {
-        
-      }
+import useEventBus from '../../composables/useEventBus';
+
+export default {
+  name: "DashboardUser",
+  components: {
+
+  },
+  data(){
+    return {
+      n:0,
     }
+  },
+  methods: {
+    plus:function(){
+      this.n++;
+      var ob = {
+        n:this.n,
+        name:'vanmanh'
+      }
+      const { emitEvent } = useEventBus();
+      emitEvent('eventPlus',ob);
+    }
+  }
+}
 </script>

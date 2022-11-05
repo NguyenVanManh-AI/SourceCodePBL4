@@ -52,7 +52,7 @@
           </div>
           <div id="list-have-acc">
             <ul id="list-have-acc-ul">
-              <li><i class="fa-solid fa-circle-user"></i> My Account </li>
+              <li @click="myaccount"><i class="fa-solid fa-circle-user"></i> My Account </li>
               <li><i class="fa-solid fa-bag-shopping"></i> Order </li>
               <li @click="logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout </li>
             </ul>
@@ -91,7 +91,7 @@
 <script>
 
 import BaseRequest from '../../restful/admin/core/BaseRequest';
-// import useEventBus from '../../composables/useEventBus';
+import useEventBus from '../../composables/useEventBus';
 // import Notification from './Notification';
 import TypedText2 from "./../admin/typedtext/TypedText2.vue"
 import config from '../../config.js';
@@ -135,7 +135,7 @@ export default {
         window.removeEventListener('scroll', this.handleScroll); // header
     },
     mounted(){
-
+      
       this.user = JSON.parse(window.localStorage.getItem('user'));
 
       if(this.user != null && this.user.url_img != null) this.url_img = config.API_URL +'/'+ this.user.url_img;
@@ -146,6 +146,14 @@ export default {
         .catch(()=>{
 
         })
+
+      // plus
+      const { onEvent } = useEventBus()
+      onEvent('eventPlus',(ob)=>{
+        this.count = ob.n;
+        alert(ob.name);
+      })
+      // plus
     },
     methods: {
       // header
@@ -173,6 +181,10 @@ export default {
         window.localStorage.removeItem('user');
         this.$router.push({name:"LoginUser"});
         window.location = window.origin+'/main/login';
+      },
+
+      myaccount:function(){
+        this.$router.push({name:"ProfileUser"});
       }
     },
 }
@@ -242,10 +254,22 @@ input:hover{
   top: 0;
   background-color: white;
   /* cố định */
-  z-index: 1; /* fix khỏi những cái khác */
+  z-index: 2; /* fix khỏi những cái khác */
   transition: top 0.7s ease; /* để cho nó trượt xuống cho mượt */
   border-bottom:2px solid white ;
 }
+/* z-index là một thuộc tính rất mạnh , nó có thể phân chia ra các lớp 
+Ví dụ z-index : 2 sẽ nằm trên z-index : 1 
+Ví dụ Thanh SideBar của user có một số style bị slide trong user đè lên 
+=> để fix thì cho z-index : 1 , mặc khác ta cũng có head có z-index : 1 
+mà sidebar nằm sau nên ưu tiên hơn header => kết qủa là sidebar đè lên header 
+
+=> fix bằng cách cho header : z-index : 2 , sidebar : z-index : 1
+    Để cho Header luôn là cái to nhất , nằm trên hết 
+
+  + Ta có thể dùng z-index đánh số từ 1 đến n để phân lớp => một thuộc tính rất mạnh  
+
+*/
 
 /* contact */
 #contact {
@@ -630,3 +654,9 @@ input:hover{
   display: block;
 }
 </style>
+
+<!--
+  Trong mounted()       
+    + Lấy các thông số quan trọng trước (những cái mà có khả năng lỗi thấp) 
+    + Tránh để những cái dễ lỗi lên đầu vì nó sẽ không chạy tiếp chương trình . 
+ -->
