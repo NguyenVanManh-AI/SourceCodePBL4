@@ -145,7 +145,9 @@ export default {
 
     },
     mounted(){
-
+        if(window.localStorage.getItem('user')){
+            this.$router.push({name:"DashboardUser"});
+        }
     },
     methods:{
         loginGoogle:function(){
@@ -184,7 +186,8 @@ export default {
         },
         alreadyAcc:function(){
             this.$router.push({name:'LoginUser'}); 
-        }
+        },
+        
     }
 }
 </script>

@@ -59,4 +59,16 @@ class Customer extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    public function customerOrders()
+    {
+        return $this->hasMany(CustomerOrder::class);
+    }
+
+    // tại một thời điểm nhất định mỗi customer chỉ có một địa chỉ ship hàng  
+    public function shippingAddress()
+    {
+        return $this->hasOne(ShippingAddress::class);
+    }
+    
 }

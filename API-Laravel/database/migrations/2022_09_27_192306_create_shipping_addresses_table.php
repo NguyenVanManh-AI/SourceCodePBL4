@@ -15,6 +15,10 @@ class CreateShippingAddressesTable extends Migration
     {
         Schema::create('shipping_addresses', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('customer_id');
+            $table->string('recipient_name');
+            $table->string('phone_number');
+            $table->string('address');
             $table->timestamps();
         });
     }

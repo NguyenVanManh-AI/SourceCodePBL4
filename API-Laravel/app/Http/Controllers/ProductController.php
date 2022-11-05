@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\OrderDetail;
 use App\Models\Image; // xóa product đi thì xóa ảnh của nó đi luôn (không giữ lại nặng máy)
 use App\Models\ImportDetail; // xóa product đi thì cũng set cho product_id của import_detail về null
 use Illuminate\Http\Request;
@@ -78,6 +79,7 @@ class ProductController extends Controller
         try {
             $product =  Product::find($id);
             if ($product) {
+                OrderDetail::where("product_id",$id)->update(['product_id'=>null]); // set null cho OrderDetail
                 ImportDetail::where("product_id",$id)->update(['product_id'=>null]);  // set null cho ImportDetail
                 $imgs = Image::where("product_id",$id)->get(); // với ảnh thì không set null mà xóa hết các ảnh liên quan của product đó
                 if($imgs){ // lấy ra các img có product_id đó (nếu có) và lặp qua từng cái 

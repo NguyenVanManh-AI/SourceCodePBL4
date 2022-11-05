@@ -15,7 +15,7 @@ use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\ResetPasswordController; 
 use App\Http\Controllers\SendEmailController; 
 use App\Http\Controllers\ShippingAddressController; 
-use App\Http\Controllers\UserOrderController;
+use App\Http\Controllers\CustomerOrderController;
 use App\Models\ImportDetail;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
