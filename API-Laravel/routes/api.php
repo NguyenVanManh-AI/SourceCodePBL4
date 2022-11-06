@@ -142,7 +142,9 @@ Route::prefix('customer')->controller(CustomerAuthController::class)->group(func
 
     Route::middleware('auth:customer_api')->group(function () {
         Route::post('logout', 'logout');
+        Route::get('status-pw', 'statusPassword');
         Route::post('change-password', 'changePassword');// vẫn cần token , vẫn phải thông qua customer_api
+        Route::post('create-pw', 'createPassword'); // Tạo mới mật khẩu cho tài khoản chưa có mật khẩu 
         Route::patch('update-profile', 'updateProfile');// cạp nhật thông tin cá nhân 
         Route::post('upfile', 'upfile'); 
         Route::post('me', 'me');

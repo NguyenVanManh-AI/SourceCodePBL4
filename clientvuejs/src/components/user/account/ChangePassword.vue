@@ -9,7 +9,7 @@
                       <div style="margin-top: 30px;margin-bottom: 20px;color:gray"><i class="fa-solid fa-repeat"></i> CHANGE PASSWORD</div>
                   </div>
               </div>
-              <div class="form-group row">
+              <div class="form-group row" v-if="status">
                 <label  class="col-sm-5 col-form-label"><i class="fa-solid fa-key"></i> Current Password</label>
                 <div class="col-sm-7 show-pw"> 
                   <!-- chú ý là input có thể chỉnh padding được style="padding-right:40px"
@@ -17,7 +17,7 @@
                   <input :type="typeInput" v-model="changepw.current_password" class="form-control"  placeholder="Current Password">
                 </div>
               </div>
-              <div class="form-group row">
+              <div class="form-group row" >
                 <label  class="col-sm-5 col-form-label"><i class="fa-solid fa-key"></i> New Password</label>
                 <div class="col-sm-7">
                   <input :type="typeInput" v-model="changepw.new_password"  class="form-control"  placeholder="New Password">
@@ -100,7 +100,8 @@ export default {
               updated_at:null,
               email_verified_at:null,
           },
-          url_img:''
+          url_img:'',
+          status:true,
       }
   },
   setup(){
@@ -116,6 +117,15 @@ export default {
       this.user = JSON.parse(window.localStorage.getItem('user'));
       if(this.user != null && this.user.url_img != null) this.url_img = config.API_URL +'/'+ this.user.url_img;
 
+      // kiểm tra xem tài khoản này có password hay không 
+      BaseRequest.get('api/customer/status-pw?id='+this.user.id)
+        .then( (data) =>{
+            this.status = data.status;
+        }) 
+        .catch(()=>{
+
+        })
+
   },
   methods:{
       showPw:function(){
@@ -123,14 +133,16 @@ export default {
         else this.typeInput = "text";
       },
       changeforpw(){
-          // console.log(this.changepw);
+        // console.log(this.changepw);
+        console.log(this.status);
+        if(this.status == true){
           BaseRequest.post('api/customer/change-password?id='+this.user.id,this.changepw)
           .then( () =>{
 
               this.changepw.current_password='';
               this.changepw.new_password='';
               this.changepw.new_password_confirmation='';
-              this.checked = falase;
+              this.checked = false;
 
               const { emitEvent } = useEventBus();
               emitEvent('eventUserSuccess','Change For Password Success !');
@@ -140,11 +152,45 @@ export default {
               const { emitEvent } = useEventBus();
               emitEvent('eventUserError',error.response.data.message);
           })
+        }
+        else {
+          console.log(this.changepw);
+          BaseRequest.post('api/customer/create-pw?id='+this.user.id,this.changepw)
+          .then( () =>{
+
+              this.changepw.current_password='';
+              this.changepw.new_password='';
+              this.changepw.new_password_confirmation='';
+              this.checked = false;
+
+              const { emitEvent } = useEventBus();
+              emitEvent('eventUserSuccess','Change For Password Success !');
+
+              setTimeout(()=>{
+                  window.location=window.location.href;
+              }, 1500);
+          }) 
+          .catch(error=>{
+              const { emitEvent } = useEventBus();
+              emitEvent('eventUserError',error.response.data.message);
+          })
+        }
       },
   }
 }
 </script>
 
+<!-- 
+
++ Xử lí đổi mật khẩu cho người dùng đăng nhập bằng google 
+    + vì họ có password là NULL nên không có mật khẩu cũ . 
+    + Khi mới vào Component Change Password là gọi lên server => kiểm tra tài khoản đó có password hay không 
+    nếu có trả về true , không trả về false => dùng cái này để ẩn hiện input password cũ luôn , 
+
+    + Để cho đơn giản (mặt dù code dài dòng hơn chút nhưng khỏe) thì code thêm một hàm đổi mật khẩu trong CustomerAuth 
+    + Khi bấm save thì với biến kiểm tra được lấy về ngay từ đầu (true hoặc false) thì tùy vào đó mà gọi hàm nào trên server . 
+        Chỉ cần kiểm tra mật khẩu mới và cũ giống nhau và đúng quy tắc là được => là cập nhật lại mật khậu cho họ . 
+ -->
 <style scoped>
 *{
   transition: all 1s ease;

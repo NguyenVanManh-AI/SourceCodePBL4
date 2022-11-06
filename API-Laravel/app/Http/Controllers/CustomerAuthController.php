@@ -298,6 +298,15 @@ class CustomerAuthController extends Controller
     }
 
 
+    // Kiểm tra xem tài khoản này có mật khẩu hay không (tài khoản google không có mật khẩu cũ)
+    // cái này phục vụ cho việc đổi mật khẩu 
+    public function statusPassword(Request $request) {
+        $customer = Customer::find($request->id);
+        if(empty($customer->password)) return response()->json(['status' => false,],201);
+        else return response()->json(['status' => true,],201);
+    }
+
+    
     // change Password for Customer  
     public function changePassword(Request $request) {
 
@@ -323,12 +332,10 @@ class CustomerAuthController extends Controller
             ],400);
         }
 
-        $validator = Validator::make($request->all(), [
-            'current_password' => 'required',
-            'new_password' => 'required|string|min:6',
-        ]);
-        if($validator->fails()){
-            return response()->json($validator->errors(), 400);
+        if(strlen($request->get('new_password')) <= 6){
+            return response()->json([
+                'message' => 'Your new password invalid ! Password minimum 6 characters ',
+            ],400);
         }
 
         //Change Password
@@ -338,5 +345,29 @@ class CustomerAuthController extends Controller
         ],200);
     }
 
+    // Tạo mới mật khẩu cho tài khoản không có mật khẩu 
+    public function createPassword(Request $request) {
+
+        $user = Customer::find($request->id);
+
+        // mật khẩu mới và confirm phải giống nhau 
+        if($request->get('new_password') != $request->get('new_password_confirmation')){
+            return response()->json([
+                'message' => 'Your new password does not matches with the new password confirm.',
+            ],400);
+        }
+
+        if(strlen($request->get('new_password')) <= 6){
+            return response()->json([
+                'message' => 'Your new password invalid ! Password minimum 6 characters ',
+            ],400);
+        }
+
+        //Change Password
+        $user->update(['password' => bcrypt($request->get('new_password'))]);
+        return response()->json([
+            'message' => "Password successfully changed ! ",
+        ],200);
+    }
 
 }
