@@ -60,14 +60,12 @@ import Notification from './../Notification';
 import config from '../../../config.js';
 
 import ParticleVue32 from "./../../admin/particle/ParticleVue32.vue";
-import FilePicker from './FilePicker.vue';
 
 export default {
   name : "ChangePasswordUser",
   components: {
     Notification,
     ParticleVue32,
-    FilePicker
   },
   created(){
       document.title = "Meta Shop - Admin Profile"
