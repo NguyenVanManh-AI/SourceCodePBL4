@@ -171,7 +171,7 @@
 
           BaseRequest.post('api/customer/upfile?id='+idCustomer,formData)
           .then(data => {
-            console.log(data);
+            // console.log(data);
             this.user.url_img = data.link;
             window.localStorage.setItem('user',JSON.stringify(this.user));
 
@@ -259,7 +259,7 @@
         for(var i=0;i<this.num;i++){
           this.images[i] = fileList[i];
         }
-        console.log(this.images);
+        // console.log(this.images);
 
         const formData = new FormData();
         if (!fileList.length) return;
@@ -270,9 +270,9 @@
           });
 
         // Save it to cloud
-        console.log(formData);
+        // console.log(formData);
         this.save(formData);
-        console.log(formData);
+        // console.log(formData);
       }
     },
   }

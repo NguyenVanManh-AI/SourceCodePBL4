@@ -2,53 +2,6 @@
     <div id="profile" >
         <ParticleVue32></ParticleVue32>
         <img v-if="user.url_img != null" :src="url_img">
-        <!-- <div id="head">
-            <div id="pr">
-                <div>
-                    <img src='../../assets/avatar.png' v-if="this.admin.url_img == null">
-                    <img :src=url_img v-if="this.admin.url_img  != null">
-                </div>
-                <div id="pr2">
-                    <div id="name">{{inf.fullname}}</div>
-                    <div id="role"><i class="fa-solid fa-shield" style="color:#0085FF"></i> {{inf.role}}</div>
-                </div>
-            </div>
-            <div>
-                <button type="button" class="mt-4 btn-pers" data-toggle="modal" data-target="#exampleModal"  >Change Password</button>
-
-                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel"><i class="fa-brands fa-keycdn"></i> Change Password</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="form-group">
-                                <label for="recipient-name" class="col-form-label"><i class="fa-solid fa-key"></i> Current Password</label>
-                                <input v-model="changepw.current_password" type="password" class="form-control" id="current_pw">
-                            </div>
-                            <div class="form-group">
-                                <label for="recipient-name" class="col-form-label"><i class="fa-solid fa-key"></i> New Password</label>
-                                <input v-model="changepw.new_password" type="password" class="form-control" id="new_pw">
-                            </div>
-                            <div class="form-group">
-                                <label for="message-text" class="col-form-label"><i class="fa-solid fa-key"></i> Confrim New Password</label>
-                                <input  v-model="changepw.new_password_confirmation" type="password" class="form-control" id="cf_new_pw">
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="close">Close</button>
-                        <button type="button" class="btn btn-primary" @click="changeforpw()">Change Password</button>
-                    </div>
-                    </div>
-                </div>
-                </div>
-
-            </div>
-        </div> -->
         <!-- bind style này hoặc động tốt chỉ là tìm cách khác để style thêm opacity -->
         <!-- <div id="details" :style="[ user.url_img != null ? {'background-image': 'url(' + url_img + ')'} : { 'background-color': 'white' }]"> -->
         <div id="details" class="col-12">
@@ -135,12 +88,6 @@ export default {
     },
     data(){
         return{
-            changepw:{
-                // id:1,
-                current_password:'',
-                new_password:'',
-                new_password_confirmation:'',
-            },
             user:{
                 id:null,
                 fullname:'',
@@ -158,10 +105,6 @@ export default {
                 created_at:null,
                 updated_at:null,
                 email_verified_at:null,
-            },
-            inf:{
-                role:'',
-                fullname:'',
             },
             err:{
                 fullname:[],
@@ -188,15 +131,6 @@ export default {
         this.user = JSON.parse(window.localStorage.getItem('user'));
         if(this.user != null && this.user.url_img != null) this.url_img = config.API_URL +'/'+ this.user.url_img;
 
-        // this.inf.fullname = this.user.fullname;
-        // this.inf.role = this.user.role;
-        // this.url_img = config.API_URL + '/' + this.admin.url_img; 
-        // window.document.title = "Meta Shop | "+this.inf.fullname;
-
-        // console.log(this.admin);
-        // var s = "{\"name\":[\"The name field is required.\"],\"email\":[\"The email field is required.\"],\"password\":[\"The password field is required.\"]}";
-        // console.log(JSON.parse(s.replace('\ ','')));
-
     },
     methods:{
         saveInfor:function(){
@@ -215,8 +149,6 @@ export default {
 
                 window.localStorage.setItem('user',JSON.stringify(this.user));
 
-                // this.inf.fullname = this.admin.fullname;
-                // this.inf.role = this.admin.role;
                 this.err = null;
 
                 setTimeout(()=>{
@@ -242,32 +174,6 @@ export default {
         inError:function(er){
             const { emitEvent } = useEventBus();
             for(var i=0;i<er.length;i++) emitEvent('eventUserError',er[i]);
-        },
-
-        changeforpw(){
-            // console.log(this.changepw);
-            BaseRequest.post('api/admin/change-password?id='+this.admin.id,this.changepw)
-            .then( () =>{
-                // console.log(data);
-                var cl = window.document.getElementById('close'); // Nếu thành công thì cho nó tự động đóng form 
-                cl.click();
-
-                this.changepw.current_password='';
-                this.changepw.new_password='';
-                this.changepw.new_password_confirmation='';
-
-                const { emitEvent } = useEventBus();
-                emitEvent('eventUserSuccess','Change For Password Success !');
-
-                // setTimeout(()=>{
-                //     window.location=window.location.href;
-                // }, 1500);
-            }) 
-            .catch(error=>{
-                // console.log(error);
-                const { emitEvent } = useEventBus();
-                emitEvent('eventUserError',error.response.data.message);
-            })
         },
     }
 }
