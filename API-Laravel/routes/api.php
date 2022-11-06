@@ -17,6 +17,7 @@ use App\Http\Controllers\SendEmailController;
 use App\Http\Controllers\ShippingAddressController; 
 use App\Http\Controllers\CustomerOrderController;
 use App\Models\ImportDetail;
+use App\Models\ShippingAddress;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -145,5 +146,13 @@ Route::prefix('customer')->controller(CustomerAuthController::class)->group(func
         Route::patch('update-profile', 'updateProfile');// cạp nhật thông tin cá nhân 
         Route::post('upfile', 'upfile'); 
         Route::post('me', 'me');
+    });
+});
+
+// ShippingAddress 
+Route::prefix('shipping-address')->controller(ShippingAddressController::class)->group(function () {
+    Route::middleware('auth:customer_api')->group(function () {
+        Route::get('/get-address', 'getAddress');
+        Route::post('/update-or-create', 'updateOrCreateAddress');
     });
 });
