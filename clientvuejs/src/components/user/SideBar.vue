@@ -49,7 +49,7 @@ export default {
                 created_at:null,
                 updated_at:null,
                 email_verified_at:null,
-            }
+            },
         }
     },
     mounted(){

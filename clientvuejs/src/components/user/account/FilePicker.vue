@@ -3,7 +3,7 @@
     <div class="container upload-card">
       <!--UPLOAD-->
       <form enctype="multipart/form-data" novalidate v-if="isInitial || isSaving">
-        <h1 style="color:#F84B2F">Upload Avatar</h1>
+        <h1 style="color:#F84B2F;font-size:14px"><i class="fa-solid fa-wand-magic-sparkles"></i> Update Avatar </h1>
         <div class="dropbox">
           <!-- bỏ multiple trong input đi để chỉ chọn được 1 ảnh thôi -->
           <input type="file" name="photos" :disabled="isSaving" 
@@ -11,7 +11,9 @@
             fileCount = $event.target.files.length" class="input-file">
             
             <p v-if="isInitial">
-              Drag your file(s) here to begin<br> or click to browse <i class="fa-regular fa-image"></i>
+              <!-- Drag your file(s) here to begin<br> or click to browse <i class="fa-regular fa-image"></i> --><!-- ///+++ -->
+              <img :src="url_img" v-if="user.url_img!=null"> <!-- ///+++ -->
+              <img src='../../../assets/avatar.png' v-if="user.url_img==null"> <!-- ///+++ -->
             </p>
             <p v-if="isSaving">
               Uploading {{ fileCount }} files...
@@ -32,7 +34,7 @@
             <!--Remove btn to remove individual files-->
             <img  src="../../../assets/error.png" v-on:click="removeFile(fileCount,uploadedFiles.indexOf(item));" class="close" alt="Remove">
             <!--File Name-->
-            <p v-if="fname=ftruncate(item.fileName)" style="max-width: 100px;font-size:14px">{{fname}}</p>
+            <!-- <p v-if="fname=ftruncate(item.fileName)" style="max-width: 100px;font-size:14px">{{fname}}</p> --> <!-- /// +++ -->
           </div>
         </div>
         <!--  Submit to your storage service-->
@@ -42,7 +44,7 @@
         <!-- <button class="btn" v-on:click="saveReal()">Submit</button> -->
 
         <!-- Chỉ một ảnh thôi nên không cần , khi up nhiều ảnh thì cancel một lần cho khỏe -->
-        <!-- <button type="button" class="btn btn-outline-danger" v-on:click="reset()">Cancel</button> -->
+        <!-- <button type="button" class="btn btn-outline-danger" v-on:click="reset()">Cancel</button> --> <!-- /// +++ -->
 
         </div>
 
@@ -63,8 +65,9 @@
 <script>
   // swap as you need
    import { upload } from '../../../uploadfile/file-upload.fake.service'; // fake service
-   import BaseRequest from '../../../restful/user/core/BaseRequest';
-   import useEventBus from '../../../composables/useEventBus'
+   import BaseRequest from '../../../restful/user/core/BaseRequest'; /// +++
+   import useEventBus from '../../../composables/useEventBus' /// +++
+   import config from '../../../config.js'; /// +++
 
   const STATUS_INITIAL = 0, STATUS_SAVING = 1, STATUS_SUCCESS = 2, STATUS_FAILED = 3;
 
@@ -79,6 +82,8 @@
         fname: '',
         images:[],
         num:0,
+
+        /// +++
         user : {
           id:null,
           fullname:'',
@@ -96,7 +101,10 @@
           created_at:null,
           updated_at:null,
           email_verified_at:null,
-        }
+        },
+        url_img:'',
+        /// +++
+
       }
     },
     computed: {
@@ -116,7 +124,8 @@
     },
     mounted() {
 
-      this.user = JSON.parse(window.localStorage.getItem('user'));
+      this.user = JSON.parse(window.localStorage.getItem('user')); /// +++
+      if(this.user != null && this.user.url_img != null) this.url_img = config.API_URL +'/'+ this.user.url_img; /// +++
 
       this.reset();
       const { onEvent } = useEventBus()
@@ -152,6 +161,7 @@
           });
       },
 
+      /// +++ , thật ra up load 1 file nên không cần for cũng được , nhưng mình lười sửa lại 
       saveReal(idCustomer){
         // console.log(this.images);
         for(var i=0;i<this.num;i++){
@@ -174,8 +184,8 @@
             emitEvent('eventUserError','Up Avatar Failse !');
           })
         }
-
       },
+      /// +++
 
       // saveReal(){
       //   console.log(this.images);
@@ -282,13 +292,16 @@
     margin: auto;
     width: 50%;
   }
+  .dropbox *{
+    cursor: pointer;
+  }
   .dropbox {
     margin: auto;
     width: 100%;
     background: #f8f8f8;
     border-radius:10px;
     color: dimgray;
-    padding: 5px 5px;
+    padding: 5px 5px; /* ///+++ */
     min-height: 120px;
     position: relative;
     cursor: pointer;
@@ -298,7 +311,7 @@
     opacity: 0;/* invisible but it's there! */
     left: 0px; 
     width: 100%;
-    height: 100px;
+    /* height: 100px; */
     position: absolute;
     cursor: pointer;
   }
@@ -310,7 +323,7 @@
   .dropbox p {
     font-size: 0.6em;
     text-align: center;
-    padding: 25px 0;
+    padding: 5px 0;
   }
   .img-container{
     position: relative;
@@ -318,7 +331,7 @@
     padding: 5px;
   }
   .preview-img{
-    width: 100px;
+    width: 120px;
     padding: 5px;
     border: 1px dotted #b3b3b39e;
   }

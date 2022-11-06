@@ -243,24 +243,6 @@ export default {
             const { emitEvent } = useEventBus();
             for(var i=0;i<er.length;i++) emitEvent('eventUserError',er[i]);
         },
-		// handleOnchange(e){
-		// 	this.image = e.target.files[0];
-		// },
-		// upload(){
-		// 	const formData = new FormData;
-        //     formData.set('photo',this.image);
-		// 	BaseRequest.post('api/customer/upfile?id='+this.user.id,formData)
-		// 	.then( data=>{
-        //         this.user.url_img = data.link;
-        //         window.localStorage.setItem('user',JSON.stringify(this.user)); // cập nhật lại link ảnh (user.url_img)
-        //         const { emitEvent } = useEventBus();
-        //         emitEvent('eventUserSuccess','Up Avatar Success !');
-		// 	})
-		// 	.catch(() => {
-        //         const { emitEvent } = useEventBus();
-        //         emitEvent('eventUserError','Up Avatar Failse !');
-		// 	})
-		// },
 
         changeforpw(){
             // console.log(this.changepw);
