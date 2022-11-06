@@ -30,7 +30,7 @@ export default {
     },
     data(){
         return{
-            status:true,
+            status:false,
             arr:[false,false,false,false],
             user:{
                 id:null,

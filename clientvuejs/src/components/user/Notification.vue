@@ -13,9 +13,13 @@
       </div> -->
       <notificationGroup group="top">
         <!-- <div class="fixed inset-0 flex px-4 py-6 pointer-events-none p-6 items-start justify-end"> --><!-- phía trên -->
-          <div
-          class="fixed inset-x-0 bottom-0 flex px-4 py-6 pointer-events-none p-6 items-start justify-end"
-        > <!-- thông báo thành công nhưng ở phía dưới -->
+         
+        <!-- CÁCH 1 cho top về bottom khi thành công -->
+          <!-- <div
+          class="fixed inset-x-0 bottom-0 flex px-4 py-6 pointer-events-none p-6 items-start justify-end z-50"
+        >  -->
+        
+        <!-- thông báo thành công nhưng ở phía dưới -->
         <!-- Thật ra cả user và admin dùng chung một file notifications có điều Thông báo thành công bị thanh header của 
         user che đi , nên phải đổi lại vị trí cho nó xuống dưới để người dùng có thể thấy thông báo -->
         <!-- chú ý một số trường hợp thông báo bị footer che đi thì tăng chiều dài của body lên để 
@@ -23,6 +27,13 @@
         <!-- Thông báo hiện gần sát lề dưới nên nếu có phần nào đó của footer hiện lên thì sẽ che đi thông báo -->
         <!-- Ngoài Resetpassword ra thì tất cả đều khá dài nên không lo -->
         <!-- nếu fix thì cho div to nhất của file này z-index = 1 (chú ý đặt id khác và dài để khỏi trùng) -->
+
+        <!-- CÁCH KHÁC HAY HƠN NHIỀU : 
+        Ta có dù cho chỉnh xuống dưới thì cũng bị Footer che đi mất vì footer cũng có z-index nên
+        ta cho các thông báo là z-index thật lớn ví dụ là 50 . 
+        Trong framework Tailwind thì z-index : 50; là z-50 => thêm nó vào class của div to nhất cho cả thông báo Success và Error  
+       -->
+       <div class="fixed inset-0 flex px-4 py-6 pointer-events-none p-6 items-start justify-end z-50">
           <div class="max-w-sm w-full">
             <notification v-slot="{notifications}">
               <div
@@ -55,7 +66,7 @@
       </notificationGroup>
       <notificationGroup group="bottom" position="bottom">
         <div
-          class="fixed inset-x-0 bottom-0 flex px-4 py-6 pointer-events-none p-6 items-start justify-end"
+          class="fixed inset-x-0 bottom-0 flex px-4 py-6 pointer-events-none p-6 items-start justify-end z-50"
         >
           <div class="max-w-sm w-full">
             <notification v-slot="{notifications}">

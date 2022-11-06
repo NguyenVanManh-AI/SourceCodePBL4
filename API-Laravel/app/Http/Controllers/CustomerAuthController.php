@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\ShippingAddress;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Validator;
 use Exception;
 use Hash;
+use Illuminate\Support\Facades\File; // upfile 
 
 // login Google , use thêm Auth để hỗ trợ đăng nhập không password 
 use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Claims\Custom;
 
 class CustomerAuthController extends Controller
 {
@@ -65,6 +68,16 @@ class CustomerAuthController extends Controller
             $validator->validated(),
             ['password' => bcrypt($request->password),'status'=> "1"]
         ));
+
+        // đến đây chắc chắn là đã có biến $customer 
+        // thêm tiếp địa chỉ customer vào cho bảng shipping address
+        ShippingAddress::create([
+            'customer_id' => $customer->id,
+            'recipient_name' => $customer->fullname,
+            'phone_number' => $customer->phone,
+            'address' => $customer->address
+        ]);
+        // 
 
         return response()->json([
             'message' => 'Customer successfully registered',
@@ -159,36 +172,92 @@ class CustomerAuthController extends Controller
 
     public function updateProfile(Request $request)
     {
-        try {
-            $validator = Validator::make($request->all(), [
-                'fullname' => 'string|between:2,100',
-                'email' => 'string|email|max:100|unique:customers',
-                'username' => 'string|max:100|unique:customers',
-                'address' => 'string|min:1',
-                'phone' => 'min:9|numeric',
-                'url_img' => 'string|min:0',
-                'date_of_birth' => 'date',
-                'gender' => 'in:1,0',
-            ]);
-    
-            if($validator->fails()){
-                 return response()->json($validator->errors(), 400);
-            }
-    
-            $customer =Customer::find($request->id);
-            $customer->update($request->all());
+        
+        $validator = Validator::make($request->all(), [
+            'fullname' => 'required|string|between:2,100',
+            'email' => 'required|string|email|max:100',
+            'username' => 'required|string|min:6|max:100',
+            'address' => 'required|string|min:1',
+            'phone' => 'required|min:9|numeric',
+            'date_of_birth' => 'required|date',
+            'gender' => 'required|in:1,0',
+        ]);
 
-            return response()->json([
-                'message' => 'User successfully updated',
-                'user' => $customer
-            ], 201);
+        if($validator->fails()){
+            return response()->json($validator->errors(), 400);
         }
-        catch(Exception $e) {
-            return response()->json([
-                'message' => 'Username or Email already exists',
-            ],201);
+
+        $acc = Customer::find($request->id);
+        $emailAc = $acc->email;
+        $usernameAc = $acc->username;
+
+        if($request->email != $emailAc){
+            if(Customer::where('emai',$request->email)){
+                return response()->json([
+                    'email' => ['Email already exists !'],
+                ], 400);
+            }
         }
+        // vì dưới client khi lỗi error => trả về mảng của mảng các lỗi mình code lượt qua tất cả các phần tử nên phải trả về một mảng 
+        // còn nếu trả về 'email' => 'Email already exists !' thì nó sẽ bị cắt ra thành nhiều chữ => lỗi 
+
+        // thứ 2 là phải return về email hoặc username thay vì message vì dưới client cũng code vậy 
+
+        if($request->username != $usernameAc){
+            if(Customer::where('username',$request->username)){
+                return response()->json([
+                    'username' => ['User already exists !'],
+                ], 400);
+            }
+        }
+
+        // CHÚ Ý PHÁI TRẢ VỀ CODE 400 thay vì 401 . 401 là lỗi token về đăng nhập các kiểu 
+        // code 400 là lỗi về người dùng nhập sai hoặc đến địa chỉ không tồn tại (page not found ,...)
+        // với lại dưới client mình cũng bắt cho nó nếu gặp lỗi 401 tức là token hết hạn nên cho nó đăng xuất 
+        // để đăng nhập lại => nên tuyệt đối tất cả các lỗi không liên quan đến hạn token thì PHẢI TRẢ VỀ 400 
+
+        $customer =Customer::find($request->id);
+        $customer->update($request->all());
+
+        // tạo thêm shipping address cho google với lần cập nhật thông tin đầu tiên của họ 
+        // đến đây chắc chắn là đã có biến $customer 
+        // thêm tiếp địa chỉ customer vào cho bảng shipping address
+        $ship = ShippingAddress::Where('customer_id',$customer->id)->first(); // phải là first() chứ không là get();
+        // nếu không có tức là đây là toàn khoản google chưa có địa chỉ đang cập nhật thông tin cho mình thì tạo luôn cho nó . 
+        if(empty($ship)) { // có rồi tức là tài khoản google này trước đó đã cập nhật thông tin rồi nên thôi 
+            ShippingAddress::create([
+                'customer_id' => $customer->id,
+                'recipient_name' => $customer->fullname,
+                'phone_number' => $customer->phone,
+                'address' => $customer->address
+            ]);
+        }
+
+        // shipping address phải luôn đầy đủ , chỉ là có hoặc không thôi nếu không có chắc chắn là đăng nhập bằng google .
+        // nếu có rồi thì thôi , bỏ qua bước này  
+
+        return response()->json([
+            'message' => 'User successfully updated',
+            'user' => $customer
+        ], 201);
+
+        // update thì nếu làm như register thì update giống với email hay username hiện tại thì nó cũng 
+        // báo lỗi nên phải code tay , khả năng là có cách khác code ngắn hơn , tìm hiểu sau 
     }
+
+    public function upfile(Request $request) {
+        $pathToFile = $request->file('photo')->store('avatarcustomer','public'); // lưu vào folder avatarcustomer
+
+        $customer = Customer::find($request->id); // tìm và xóa ảnh cũ đi (nếu có)
+        $filename = $customer->url_img;
+        if($filename) File::delete($filename); // xóa ảnh cũ đi (nếu có)(còn ai không có thì thôi) 
+        $customer->update(['url_img' => 'storage/'.$pathToFile]);
+        return response()->json([
+            "link"=> 'storage/'.$pathToFile
+        ],200);
+    } 
+
+
 
     /**
      * Log the user out (Invalidate the token).

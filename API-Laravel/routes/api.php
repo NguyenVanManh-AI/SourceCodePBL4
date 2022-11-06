@@ -143,6 +143,7 @@ Route::prefix('customer')->controller(CustomerAuthController::class)->group(func
         Route::post('logout', 'logout');
         Route::post('change-password', 'changePassword');// vẫn cần token , vẫn phải thông qua customer_api
         Route::patch('update-profile', 'updateProfile');// cạp nhật thông tin cá nhân 
+        Route::post('upfile', 'upfile'); 
         Route::post('me', 'me');
     });
 });

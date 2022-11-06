@@ -12,7 +12,7 @@
         >Bottom notification</button>
       </div> -->
       <notificationGroup group="top">
-        <div class="fixed inset-0 flex px-4 py-6 pointer-events-none p-6 items-start justify-end">
+        <div class="fixed inset-0 flex px-4 py-6 pointer-events-none p-6 items-start justify-end z-50">
           <div class="max-w-sm w-full">
             <notification v-slot="{notifications}">
               <div
@@ -45,7 +45,7 @@
       </notificationGroup>
       <notificationGroup group="bottom" position="bottom">
         <div
-          class="fixed inset-x-0 bottom-0 flex px-4 py-6 pointer-events-none p-6 items-start justify-end"
+          class="fixed inset-x-0 bottom-0 flex px-4 py-6 pointer-events-none p-6 items-start justify-end z-50"
         >
           <div class="max-w-sm w-full">
             <notification v-slot="{notifications}">
