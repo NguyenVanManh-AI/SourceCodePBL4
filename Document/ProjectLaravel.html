@@ -5667,6 +5667,11 @@ $user = User::where('city', 'kullu')
         => tạo độ phong phú cho giao diện trở nên tự nhiên và đẹp hơn 
         => Vẫn đảm bảo đủ mọi chứ năng cho người dùng đối với sản phẩm đó . 
 
+        + Mình không fix cứng ảnh để làm các trang lớn slide (đầu tiên) 
+            nhưng nếu lấy ra các ảnh của sản phẩm nằm trong kho thì một số ảnh lại lại không đẹp mà mỗi slide mỗi ảnh như thế thì xấu
+            => Mình sẽ lấy ra nhiều ảnh , mỗi slide lớn của cái slider to nhất nằm đầu tiên là tập hợp của nhiều ảnh lại 
+            => nhìn cũng khá đẹp . 
+
     + Khi mà tìm kiếm (lọc các kiểu hoặc sắp xếp các kiểu) 
         + Nếu như không đủ số lượng ví dụ lấy ra được có 12 sản phẩm => 10 + 6 + 4 
         => chỉ tới ngang 12 = 10 + 2 => đến ngang 10 và 6 thôi nên ta sẽ ẩn 4 đi 
@@ -6120,3 +6125,6 @@ xem có gì lỗi không . Vì khi deploy lên thì chạy mới lại hoàn to�
 
 
 + Export một bảng hoặc cả database sau đó Import vào cũng vậy . Ta có thể import từng bảng riêng lẽ hoặc cả database . 
+
++ fix thêm lỗi , người dùng chọn đăng nhập bằng google => khi về lại trang login nhưng nếu có status = 0 thì không lưu user 
+cho localStorage mà báo tài khoản đã bị khóa .  
