@@ -21,16 +21,16 @@ class CustomerAuthController extends Controller
     {
         
         $u = Customer::where('email',$request->email)->first();
-        if($u){
-            $status = Customer::where('email',$request->email)->first()->status;
-            if($status){ // phải có tồn tại email đó đã 
+        if(empty($u)){
+            return response()->json(['error' => 'Email is incorrect !'], 401);
+        }
+        else {
+            $status = $u->status;
+            // if($status){ // phải có tồn tại email đó đã 
                 if($status == 0){
                     return response()->json(['error' => 'Your account has been locked !'], 401);
                 } // sau return là hết vì vậy nếu như không bị khóa thì tiếp tục thực hiện đoạn code tiếp theo  
-            }
-        }
-        else {
-            return response()->json(['error' => 'Email is incorrect !'], 401);
+            // }
         }
 
 

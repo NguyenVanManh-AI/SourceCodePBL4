@@ -131,17 +131,34 @@
                 updated_at:null,
                 email_verified_at:null,
               }
+
               user = response.data;
               user.access_token = access_token;
-              window.localStorage.setItem('user',JSON.stringify(user));
 
+              // Đăng nhập thường thì xử lí lại server rồi còn đăng nhập bằng này thì xử li ở client cũng được 
+              // Nó cũng đảm bảo chức năng bảo mật 
+              
+              // Tài khoản này đã từng đăng nhập bằng google sau đó bị admin block 
+              // => Đăng nhập bằng Google nhưng nếu có status == 0 thì không cho vào 
               const { emitEvent } = useEventBus();
-              emitEvent('eventUserSuccess','Login by Google Success !');
-    
-              setTimeout(()=>{
-                this.$router.push({name:'DashboardUser'}); 
-                window.location=window.location.href;
-              }, 1000);
+              if(user.status == 0) {
+                emitEvent('eventUserError','Your account has been locked !');
+                setTimeout(()=>{
+                  this.$router.push({name:'LoginUser'}); 
+                  window.location=window.origin + window.pathname ;
+                }, 1000);
+              }
+
+              else {
+                window.localStorage.setItem('user',JSON.stringify(user));
+                emitEvent('eventUserSuccess','Login by Google Success !');
+                setTimeout(()=>{
+                  this.$router.push({name:'DashboardUser'}); 
+                  window.location=window.location.href;
+                }, 1000);
+              }
+
+
               
             })
             .catch( () => {

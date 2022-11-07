@@ -186,8 +186,8 @@ export default {
     top: 0px;
     opacity: 0.9;
     min-width: 100%;
-    min-height: 100%;
-    object-fit: contain;
+    max-height: 100%;
+    object-fit: cover;
     filter: blur(8px);
     -webkit-filter: blur(8px);
 } 
