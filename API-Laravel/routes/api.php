@@ -16,6 +16,7 @@ use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\SendEmailController; 
 use App\Http\Controllers\ShippingAddressController; 
 use App\Http\Controllers\CustomerOrderController;
+use App\Http\Controllers\DashboardController;
 use App\Models\ImportDetail;
 use App\Models\ShippingAddress;
 
@@ -157,4 +158,17 @@ Route::prefix('shipping-address')->controller(ShippingAddressController::class)-
         Route::get('/get-address', 'getAddress');
         Route::post('/update-or-create', 'updateOrCreateAddress');
     });
+});
+
+
+// Dashboard
+Route::prefix('dashboard-customer')->controller(DashboardController::class)->group(function () {
+    Route::get('get-category', 'App\Http\Controllers\DashboardController@getCategory');
+    Route::get('all-products3', 'App\Http\Controllers\DashboardController@allProducts3');
+    Route::get('product-detail/{uri}', 'App\Http\Controllers\DashboardController@getProduct');
+
+    // Route::middleware('auth:customer_api')->group(function () {
+    //     Route::get('/get-address', 'getAddress');
+    //     Route::post('/update-or-create', 'updateOrCreateAddress');
+    // });
 });

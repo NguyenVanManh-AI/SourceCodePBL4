@@ -38,6 +38,8 @@ import PurchaseOrderUser from './../components/user/account/PurchaseOrder'
 import ShippingAddressUser from './../components/user/account/ShippingAddress' 
 
 import DashboardUser from './../components/user/Dashboard'
+import ProductUserDetails from './../components/user/ProductUserDetails'
+import UserOrder from './../components/user/UserOrder'
 import InforUser from './../components/user/InforUser'
 
 
@@ -79,6 +81,8 @@ const routes = [
             },
 
             {path:'dashboard',name:'DashboardUser',component:DashboardUser},
+            {path:'product/:id',name:'ProductUserDetails',component:ProductUserDetails},
+            {path:'order',name:'UserOrder',component:UserOrder},
             {path:'infor-user',name:'InforUser',component:InforUser},
         ]
     },   
@@ -133,8 +137,12 @@ const router = createRouter({
 
 router.beforeEach((to,from,next)=>{
     if(to.path.includes('/main')){
+        if(to.path.includes('/main/product/')) next(); // (1) 
+        if(to.path.includes('/main/order/')) next(); // (1) 
+
         let excludePages = ['/main/login','/main/dashboard','/main/register','/main/reset-password'];
-        let requiredlogin = !excludePages.includes(to.path);
+        let requiredlogin = !excludePages.includes(to.path); 
+
         let user = localStorage.getItem('user');
         if(requiredlogin && !user){
             if(to.path != "/main"){
@@ -162,6 +170,21 @@ router.beforeEach((to,from,next)=>{
 
 
 
+
+    // include là tìm kiếm chuỗi trong chuỗi ví dụ : "I love Học JavaScript".includes("love") = true 
+    // (1) : tìm trong cái to.path hiện tại nếu có /main/product/ nghĩa là đang muốn đến xem sản phẩm chi 
+    // tiết => không cần điều kiện gì cả => cho đi xem luôn => next()
+    // 
+
+    // let excludePages = ['/main/login','/main/dashboard','/main/register','/main/reset-password'];
+    // let requiredlogin = !excludePages.includes(to.path); (2)
+    // tìm kiếm giá trị to.path có trong mảng excludePages hay không nếu không có và không có biến user nữa 
+    // thì bắt đăng nhập
+    // excludePages là mảng các string được phép vào mà không cần đăng nhập 
+    // => riêng (1) ta làm riêng bởi vì product/... => nhiều nên không liệt kê hết vào mảng 
+
+    // nói chung là chỉ cần dùng includes tìm kiếm chuỗi 
+    // còn tìm kiếm kiểu như thế nào thì tùy ta vận dụng cho hợp lý , code ngắn là được 
 
     // if(!to.path.indexOf('/admin')){
     //     let excludePages = ['/admin/login','/admin/dashboard'];

@@ -19,15 +19,15 @@
         </div>
         <div id="search">
           <div class="col-sm-10">
-            <input type="email" class="form-control" id="inputEmail3" placeholder="Search Information Product on Meta Shop">
+            <input v-model="searchad" type="email" class="form-control" id="inputEmail3" placeholder="Search Information Product on Meta Shop">
           </div>
           <button type="button" @click="clicksearch" class="btn btn-outline-primary"><i class="fa-solid fa-magnifying-glass"></i></button>
         </div>
-        <div id="cart">
+        <div id="cart" @click="clickUserOrder">
           <div id="cart-shopping">
             <i class="fa-solid fa-cart-shopping"></i>
           </div>
-          <div id="cart-number">{{this.count}}</div>
+          <div id="cart-number">{{this.user_order.length}}</div>
           <div id="list-cart">
             cddd
             <div style="width: 30px;height: 1000px;background-color: red;position: relative;">
@@ -68,7 +68,7 @@
             <div class="carousel-inner">
               <div :class="{'carousel-item':true, 'active':index==0}" v-for="(categorys,index) in categoryss" :key="index">
                 <div class="big-category">
-                  <span class="sp-category" v-for="(category,index2) in categorys" :key="index2"><i class="fa-brands fa-shopify"></i> {{category.name.substr(0, 12)}}<span v-if="category.name.length>12" >...</span>,</span>
+                  <span class="sp-category" @click="clickCategory(category.name)" v-for="(category,index2) in categorys" :key="index2"><i class="fa-brands fa-shopify"></i> {{category.name.substr(0, 12)}}<span v-if="category.name.length>12" >...</span>,</span>
                 </div>
               </div>
             </div>
@@ -125,7 +125,13 @@ export default {
           email_verified_at:null,
         },
         count:123,
-        url_img:''
+        url_img:'',
+
+
+      // search 
+        searchad:'',
+      // user order 
+        user_order:[],
       }
     },
     created () {
@@ -135,7 +141,11 @@ export default {
         window.removeEventListener('scroll', this.handleScroll); // header
     },
     mounted(){
-      
+      let urlParams = new URLSearchParams(window.location.search);
+      if(urlParams.has('searchad')) {
+        this.searchad = urlParams.get('searchad');
+      }
+
       this.user = JSON.parse(window.localStorage.getItem('user'));
 
       if(this.user != null && this.user.url_img != null) this.url_img = config.API_URL +'/'+ this.user.url_img;
@@ -147,13 +157,15 @@ export default {
 
         })
 
-      // plus
+      // user order 
+      this.user_order = JSON.parse(window.localStorage.getItem('user_order'));
+      
+      // event user order 
       const { onEvent } = useEventBus()
-      onEvent('eventPlus',(ob)=>{
-        this.count = ob.n;
-        alert(ob.name);
-      })
-      // plus
+      onEvent('eventUserOrder',()=>{
+        this.user_order = JSON.parse(window.localStorage.getItem('user_order'));
+      });
+
     },
     methods: {
       // header
@@ -175,6 +187,8 @@ export default {
       },
       logoClick:function(){
         this.$router.push({name:"DashboardUser"});
+        // window.location = window.location.pathname;
+        window.location = window.origin+'/main/dashboard';
       },
 
       logout:function(){
@@ -185,12 +199,36 @@ export default {
 
       myaccount:function(){
         this.$router.push({name:"ProfileUser"});
+      },
+
+      clicksearch:function(){
+        var url = new window.URL(document.location.href);
+        url.searchParams.set("searchad",this.searchad);
+        // window.location = url;
+        window.location = window.origin+'/main/dashboard' + url.search;
+      },
+      clickCategory:function(name){
+        var url = new window.URL(document.location.href);
+        url.searchParams.set("category_name",name);
+        // console.log(url);
+        window.location = window.origin+'/main/dashboard' + url.search;
+        // window.location = url;
+      },
+
+      clickUserOrder:function(){
+        this.$router.push({name:"UserOrder"});
       }
     },
 }
 </script>
 
 <style scoped>
+
+/* 
+  <span class="sp-category" @click="clickCategory(category.name)" v-for="(category,index2) in categorys" :key="index2"><i class="fa-brands fa-shopify"></i> {{category.name.substr(0, 12)}}<span v-if="category.name.length>12" >...</span>,</span>
+  => như thế này vuejs vẫn hiểu và vẫn truyền vào được từng cái , @click="clickCategory(category.name)
+  không nhất thiết là phải có span v-for rồi trong một span nữa 
+*/
 
 /* RESET COLOR INPUT AND BUTTON */
 textarea:focus,
