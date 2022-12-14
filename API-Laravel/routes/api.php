@@ -172,3 +172,10 @@ Route::prefix('dashboard-customer')->controller(DashboardController::class)->gro
     //     Route::post('/update-or-create', 'updateOrCreateAddress');
     // });
 });
+
+Route::prefix('customer-order')->controller(CustomerOrderController::class)->group(function () {
+    Route::middleware('auth:customer_api')->group(function () {
+        Route::post('buy-now', 'test');
+       
+    });
+});

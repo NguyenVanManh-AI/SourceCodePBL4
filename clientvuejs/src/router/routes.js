@@ -138,7 +138,7 @@ const router = createRouter({
 router.beforeEach((to,from,next)=>{
     if(to.path.includes('/main')){
         if(to.path.includes('/main/product/')) next(); // (1) 
-        if(to.path.includes('/main/order/')) next(); // (1) 
+        if(to.path.includes('/main/order')) next(); // (1) 
 
         let excludePages = ['/main/login','/main/dashboard','/main/register','/main/reset-password'];
         let requiredlogin = !excludePages.includes(to.path); 

@@ -27,12 +27,24 @@
           <div id="cart-shopping">
             <i class="fa-solid fa-cart-shopping"></i>
           </div>
-          <div id="cart-number">{{this.user_order.length}}</div>
-          <div id="list-cart">
-            cddd
-            <div style="width: 30px;height: 1000px;background-color: red;position: relative;">
+          <div id="cart-number" v-if="user_order != null">{{user_order.length}}</div>
+          <div id="list-cart" v-if="user_order != null">
+            <div id="inner_cart" >
+              <li class="pr_cart" v-for="(pr,index) in user_order" :key="index">
+                <div class="pr_cart_img">
+                  <img :src="API_URL + '/' + pr.image_path">
+                </div>
+                <div class="pr_cart_name">
+                  <p>Product Name : <span style="color:#0085FF">{{pr.product_name}}</span></p>
+                  <p>
+                    Price : <span>{{new Intl.NumberFormat().format(pr.price)}}$</span>
+                    <span style="margin-left:30px"></span>
+                    Quantity : <span>{{new Intl.NumberFormat().format(pr.buy_number)}}</span><br>
+                    Total : <span>{{new Intl.NumberFormat().format(pr.price * pr.buy_number)}}$</span>
+                  </p>
+                </div>
+              </li>
             </div>
-            sbc
           </div>
         </div>
         <div id="no-account" v-if="!user">
@@ -126,12 +138,13 @@ export default {
         },
         count:123,
         url_img:'',
+        API_URL : '',
 
 
       // search 
         searchad:'',
       // user order 
-        user_order:[],
+        user_order:null,
       }
     },
     created () {
@@ -141,6 +154,9 @@ export default {
         window.removeEventListener('scroll', this.handleScroll); // header
     },
     mounted(){
+
+      this.API_URL = config.API_URL; 
+
       let urlParams = new URLSearchParams(window.location.search);
       if(urlParams.has('searchad')) {
         this.searchad = urlParams.get('searchad');
@@ -223,6 +239,52 @@ export default {
 </script>
 
 <style scoped>
+
+#inner_cart {
+  width: 100%;
+  /* height: 1000px; */
+  /* background-color: red; */
+  position: relative;
+}
+.pr_cart {
+  display: flex;
+  height: 100px;
+  background-color: white;
+  align-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+  border-radius: 6px;
+}
+.pr_cart_img {
+  margin-right: 10px;
+  width: 100px;
+  height: 100px;
+}
+.pr_cart_img img {
+  width: 100%; 
+  height: 100%; 
+  object-fit: contain;
+}
+.pr_cart_name {
+  width: calc(100% - 120px);
+}
+.pr_cart_name p:nth-child(1){
+  line-height: 20px;
+  font-size: 16px;
+  color: black;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+.pr_cart_name p:nth-child(2) {
+  color: black;
+  font-weight: bold;
+  line-height: 16px;
+  font-size: 12px;
+}
+.pr_cart_name p:nth-child(2) span {
+  color: red;
+}
+
 
 /* 
   <span class="sp-category" @click="clickCategory(category.name)" v-for="(category,index2) in categorys" :key="index2"><i class="fa-brands fa-shopify"></i> {{category.name.substr(0, 12)}}<span v-if="category.name.length>12" >...</span>,</span>
@@ -412,7 +474,7 @@ mà sidebar nằm sau nên ưu tiên hơn header => kết qủa là sidebar đè
   left:-160px;
   width: 0px;
   height: 0px;
-  background-color: blue;
+  background-color: #F0F2F5;
   overflow: auto;
   opacity: 0;
   border-top-left-radius: 10px;
@@ -422,12 +484,13 @@ mà sidebar nằm sau nên ưu tiên hơn header => kết qủa là sidebar đè
 }
 
 #cart:hover #list-cart{
-  padding:20px 10px;
+  padding:10px 10px;
+  padding-bottom: 0px;
   top:64px;
   opacity: 1;
   width: 380px;
   height: 400px;
-  border: 2px solid white;
+  border: 2px solid #0085FF;
   display: block;
 }
 #cart:hover #cart-shopping {

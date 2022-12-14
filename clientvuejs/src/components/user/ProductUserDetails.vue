@@ -162,6 +162,7 @@ export default {
                 material: '',
                 dimension: '',
                 uri: '',
+                status:false, // phục vụ cho checkbox ở component UserOrder
             },
             // images:null,
             images:[], // lỗi hay gặp , nếu là array của array thì khai báo null cũng được 

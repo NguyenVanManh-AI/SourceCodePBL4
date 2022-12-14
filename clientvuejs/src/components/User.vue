@@ -17,10 +17,10 @@ export default {
         FooterUser
     },
     methods: {
-    
+        
     },
     mounted(){
-    
+        this.$router.push({name:'DashboardUser'}); 
     }
 }
 </script>

@@ -3,10 +3,33 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\Customer;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\File;
+use SebastianBergmann\Environment\Console;
+use Exception;
+use Hash;
+use Mail;        
+use Illuminate\Support\Facades\DB;
+use App\Mail\SendPassword;
+use Illuminate\Support\Str;
 
 class CustomerOrderController extends Controller
 {
     //
+    public function test(Request $request){
+        // print_r($request->buy_now);
+        $buy_now = $request->buy_now;
+        foreach($buy_now as $pr){
+            print_r($pr);
+            $pr_1 = (object)($pr);
+            echo $pr_1->id . "\n";
+            echo $pr_1->buy_number . "\n";
+        }
+    }
+
+
 
 
 

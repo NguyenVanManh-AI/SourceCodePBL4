@@ -188,8 +188,6 @@ export default {
       })
 
       // product 
-
-
       BaseRequest.get(txtquery)
       .then( (data) =>{
           this.products = data.product.data ;
