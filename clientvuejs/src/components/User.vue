@@ -20,7 +20,7 @@ export default {
         
     },
     mounted(){
-        this.$router.push({name:'DashboardUser'}); 
+        // this.$router.push({name:'DashboardUser'}); 
     }
 }
 </script>

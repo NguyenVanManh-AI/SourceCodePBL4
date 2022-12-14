@@ -65,7 +65,7 @@
           <div id="list-have-acc">
             <ul id="list-have-acc-ul">
               <li @click="myaccount"><i class="fa-solid fa-circle-user"></i> My Account </li>
-              <li><i class="fa-solid fa-bag-shopping"></i> Order </li>
+              <li @click="order"><i class="fa-solid fa-bag-shopping"></i> Order </li>
               <li @click="logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout </li>
             </ul>
           </div>
@@ -215,6 +215,9 @@ export default {
 
       myaccount:function(){
         this.$router.push({name:"ProfileUser"});
+      },
+      order:function(){
+        this.$router.push({name:"PurchaseOrderUser"});
       },
 
       clicksearch:function(){

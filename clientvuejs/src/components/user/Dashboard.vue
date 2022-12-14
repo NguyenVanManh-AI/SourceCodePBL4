@@ -205,7 +205,7 @@ export default {
   methods: {
     clickCallback:function(pageNum){
       let urlParams = new URLSearchParams(window.location.search);
-      console.log('api/dashboard-customer/all-products3?page='+pageNum+"&"+urlParams);
+      // console.log('api/dashboard-customer/all-products3?page='+pageNum+"&"+urlParams);
       BaseRequest.get('api/dashboard-customer/all-products3?page='+pageNum+"&"+urlParams)
         .then( (data) =>{
           this.products = data.product.data ;

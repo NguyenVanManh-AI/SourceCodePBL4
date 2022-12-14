@@ -62,6 +62,25 @@ export default {
     },
     data(){
       return{
+        user:{
+          id:null,
+          fullname:'',
+          username:'',
+          email: '',
+          phone: '',
+          google_id:null,
+          date_of_birth:null,
+          url_img:null,
+          gender:null,
+          address:'',
+          status:null,
+          access_token:'',
+          refreshToken:'',
+          created_at:null,
+          updated_at:null,
+          email_verified_at:null,
+        },
+
         domain:'',
         user_order:null,
         products:[],
@@ -72,10 +91,12 @@ export default {
       }
     },
     mounted(){
+
+      this.user = JSON.parse(window.localStorage.getItem('user'));
+
       this.API_URL = config.API_URL; 
       this.user_order = JSON.parse(window.localStorage.getItem('user_order'));
       this.domain = config.API_URL;
-
 
       // để cải thiện thêm thì chỉ cần lấy ra số lượng của những sản phẩm mình đang order 
       // không lấy ra hết database , không lấy ảnh ra => cải thiện sau (chưa kể còn xét đến trường hợp đang order thì 
@@ -132,6 +153,7 @@ export default {
         for(var i=0;i<this.user_order.length;i++){
           if(this.user_order[i].status == true) this.user_order.splice(i, 1);
         }
+        this.saveLocal();
       },
       buyNow:function(){
         // khi tính tiền (total) thì tính sao kệ nó , dù có quá số lượng hay không cũng kệ 
@@ -151,13 +173,51 @@ export default {
             }
             else {
                 var pr = {
-                  id:this.user_order[i].product_id,
-                  buy_number:this.user_order[i].buy_number
+                  product_id:this.user_order[i].product_id,
+                  buy_number:this.user_order[i].buy_number,
+                  product_name:this.user_order[i].product_name,
+                  price:this.user_order[i].price,
                 }
                 buyNow.push(pr);
             }
           }
         }
+
+        // kiểm tra xem đăng nhập hay chưa 
+        if(window.localStorage.getItem('user') == null) {
+          emitEvent('eventUserError','You need to login !');
+          setTimeout(()=>{
+            this.$router.push({name:'LoginUser'}); 
+            window.location=window.origin + window.pathname ;
+            return ; 
+          }, 1000);
+          return ; 
+        }
+
+        // không có gì hết thì thôi 
+        if(buyNow.length == 0) {
+          return ; 
+        }
+
+        var buy_data = {
+          buy_now : buyNow,
+          id_user : this.user.id,
+          totalPrice : this.totalPrice,
+        }
+
+        BaseRequest.post('api/customer-order/buy-now',buy_data)
+        .then( () =>{
+          // console.log(data);
+          // sau khi order thành công thì xóa 
+          this.deleteAll();
+          emitEvent('eventUserSuccess','Buy Product Success !');
+        }) 
+        .catch(error=>{
+          // console.log(error.response.data);
+          emitEvent('eventUserError',error.response.data.error);
+        })
+
+
 
         // nếu buy thành công thì lượt qua các phần tử có id đó trong user_order và xóa nó đi 
         // ta không làm giống như bên productDetail là nối chuỗi rồi lên server tách chuỗi nữa . 
@@ -171,11 +231,6 @@ export default {
           // }
           // => lên server forEach ra sau đó chuyển từ array sang object rồi lưu vào database 
         // => từ nay trở đi sẽ làm ntn nếu gặp phải việc cần gửi dữ liệu kiểu này lên server 
-
-        console.log(buyNow);
-        console.log(JSON.stringify(buyNow)); 
-        emitEvent('eventUserSuccess','Buy Product Success !');
-
       }
     }
 }

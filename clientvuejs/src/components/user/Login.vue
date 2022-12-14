@@ -1,6 +1,5 @@
 <template>
     <div id="main">
-  
       <!-- HIỆU ỨNG BACKGROUND HÌNH TRÒN -->
       <div id="container-inside"> 
         <div id="circle-small"></div>
@@ -9,16 +8,15 @@
         <div id="circle-xlarge"></div>
         <div id="circle-xxlarge"></div>
         <ParticleVue3/> <!-- ///+++ -->
-  
       <!-- HIỆU ỨNG BACKGROUND HÌNH TRÒN -->
       <br><br>
       <div id="big">
         <div class="container">
             <form  @submit.prevent="login()" action="http://127.0.0.1:8000/api/auth/login" >
               <h4 style="text-transform: uppercase;letter-spacing: 2.5px;font-weight: 700;color:#F84B2F;"><i class="fa-solid fa-right-to-bracket"></i> LOGIN</h4><br>
-              <div class="input-form"><input type="email" v-model="loginUser.email" required autocomplete="off"><div class="underline"></div><label :class="{fix1:loginUser.email.length>0}"><i class="fa-solid fa-envelope"></i> Email</label></div><br>
-              <div class="input-form" id="bigshow"><input :type="passwordType" required v-model="loginUser.password" autocomplete="off"><div class="underline"></div><label><i class="fa-solid fa-lock"></i> Password</label>
-                <div id="show" :class="{bodr:loginUser.password.length>0,bodr2:loginUser.password.length==0}"><input type="checkbox" v-model="showpw"></div>
+              <div class="input-form"><input type="email" v-model="loginUser.email" required ><div class="underline"></div><label :class="{fix1:loginUser.email.length>0}"><i class="fa-solid fa-envelope"></i> Email</label></div><br>
+              <div class="input-form"><input type="password" required v-model="loginUser.password" ><div class="underline"></div><label><i class="fa-solid fa-lock"></i> Password</label>
+                <!-- <div id="show" :class="{bodr:loginUser.password.length>0,bodr2:loginUser.password.length==0}"><input type="checkbox" v-model="showpw"></div> -->
               </div><br>
               <!-- <div class="alert alert-danger" v-if="error">{{error.response.data.error}}</div> -->
               <a class="under" style="text-decoration: none;color: #F84B2F;" href="#" data-toggle="modal" data-target="#exampleModalForgotPassword" >Forgot your password ? </a><br>
@@ -271,14 +269,16 @@
         }
       },
       watch:{
+        /*
         showpw:function(){
           if(this.showpw == true) this.passwordType = 'text';
           else this.passwordType = 'password'; 
         }
+        */
       },
 
   }
-  </script>
+</script>
   
   <!-- Có một bug đó là 
     cái hiệu ứng ở input nó sẽ bị false khi mà google tự động điền 
@@ -296,7 +296,7 @@
       sau đó thêm : autocomplete="off" vào input 
   
     -->
-  <style scoped>
+<style scoped>
   
   /* @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap'); */
   
@@ -558,7 +558,7 @@
   
   /* show password */
   #bigshow{
-    padding-right: 30px;
+    /* padding-right: 30px; */
     position: relative;
   }
   #show {

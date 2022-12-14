@@ -42,6 +42,12 @@ import ProductUserDetails from './../components/user/ProductUserDetails'
 import UserOrder from './../components/user/UserOrder'
 import InforUser from './../components/user/InforUser'
 
+// user order 
+import CancelledComp from './../components/user/purchase/CancelledComp'
+import DeliveredComp from './../components/user/purchase/DeliveredComp'
+import DeliveringComp from './../components/user/purchase/DeliveringComp'
+import WaitForConfirmation from './../components/user/purchase/WaitForConfirmation'
+import WaitingForShipping from './../components/user/purchase/WaitingForShipping'
 
 
 // other 
@@ -75,7 +81,18 @@ const routes = [
                 children : [
                     {path:'profile',name:'ProfileUser',component:ProfileUser},
                     {path:'change-password',name:'ChangePasswordUser',component:ChangePasswordUser},
-                    {path:'purchase-order',name:'PurchaseOrderUser',component:PurchaseOrderUser},
+                    {
+                        path:'purchase-order',
+                        name:'PurchaseOrderUser',
+                        component:PurchaseOrderUser,
+                        children : [
+                            {path:'cancelled',name:'CancelledComp',component:CancelledComp},
+                            {path:'delivered',name:'DeliveredComp',component:DeliveredComp},
+                            {path:'delivering',name:'DeliveringComp',component:DeliveringComp},
+                            {path:'confirmation',name:'WaitForConfirmation',component:WaitForConfirmation},
+                            {path:'shipping',name:'WaitingForShipping',component:WaitingForShipping},
+                        ]
+                    },
                     {path:'shipping-address',name:'ShippingAddressUser',component:ShippingAddressUser},
                 ]
             },
@@ -137,6 +154,11 @@ const router = createRouter({
 
 router.beforeEach((to,from,next)=>{
     if(to.path.includes('/main')){
+
+        if(to.path == '/main' || to.path == '/main/'){
+            next({name:'DashboardUser'});
+        }
+
         if(to.path.includes('/main/product/')) next(); // (1) 
         if(to.path.includes('/main/order')) next(); // (1) 
 
@@ -151,6 +173,17 @@ router.beforeEach((to,from,next)=>{
                 emitEvent('eventError401',"Bạn chưa đăng nhập !");
             }
         }
+
+        // account
+        if(to.path == '/main/account' || to.path == '/main/account/'){
+            next({name:'ProfileUser'});
+        }
+
+        // purchase-order
+        if(to.path == '/main/account/purchase-order' || to.path == '/main/account/purchase-order/'){
+            next({name:'WaitForConfirmation'});
+        }
+
     }
 
     if(to.path.includes('/admin')){
