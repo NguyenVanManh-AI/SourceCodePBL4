@@ -252,9 +252,6 @@ export default {
   align-content: center;
   align-items: center;
 }
-.pr_img {
-
-}
 .pr_img img {
   width: 80%;
   height: 80%;
