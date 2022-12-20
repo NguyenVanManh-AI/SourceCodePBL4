@@ -374,7 +374,7 @@
       order:function(){
         for(var i=0;i<this.colors.length;i++) this.colors[i] = false;
         this.colors[7]=true;
-        this.$router.push({name:'OrderAdmin'});
+        this.$router.push({name:'AdminWaitForConfirmation'});
       },
       statistical:function(){
         for(var i=0;i<this.colors.length;i++) this.colors[i] = false;

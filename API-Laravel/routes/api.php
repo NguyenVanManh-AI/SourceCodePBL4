@@ -16,6 +16,7 @@ use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\SendEmailController; 
 use App\Http\Controllers\ShippingAddressController; 
 use App\Http\Controllers\CustomerOrderController;
+use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\DashboardController;
 use App\Models\ImportDetail;
 use App\Models\ShippingAddress;
@@ -173,12 +174,26 @@ Route::prefix('dashboard-customer')->controller(DashboardController::class)->gro
     // });
 });
 
+
+// Customer Order
 Route::prefix('customer-order')->controller(CustomerOrderController::class)->group(function () {
     Route::middleware('auth:customer_api')->group(function () {
         Route::post('buy-now', 'buyNow');
         Route::get('wait-confirm', 'WaitForConfirmation');
         Route::get('details', 'orderDetails');
         Route::get('cancel', 'cancelOrder');
+       
+    });
+});
+
+
+// Admin Order
+Route::prefix('admin-order')->controller(AdminOrderController::class)->group(function () {
+    Route::middleware('auth:admin_api')->group(function () {
+        Route::get('wait-confirm', 'WaitForConfirmation');
+        Route::get('details', 'orderDetails');
+        Route::get('cancel', 'cancelOrder');
+        Route::get('confirm', 'confirm');
        
     });
 });

@@ -28,19 +28,18 @@ export default {
     }
     },
     mounted(){
+        const { onEvent } = useEventBus()
+        onEvent('eventWaitForConfirmation',()=>{
+            this.border_bts = [false,false,false,false,false],
+            this.border_bts[0] = true;
+        })
 
-    const { onEvent } = useEventBus()
-    onEvent('eventWaitForConfirmation',()=>{
-        this.border_bts = [false,false,false,false,false],
-        this.border_bts[0] = true;
-    })
-
-    var _pathname = window.location.pathname;
-    if(_pathname.includes('confirmation')) this.border_bts[0] = true;
-    if(_pathname.includes('shipping')) this.border_bts[1] = true;
-    if(_pathname.includes('delivering')) this.border_bts[2] = true;
-    if(_pathname.includes('delivered')) this.border_bts[3] = true;
-    if(_pathname.includes('cancelled')) this.border_bts[4] = true;
+        var _pathname = window.location.pathname;
+        if(_pathname.includes('confirmation')) this.border_bts[0] = true;
+        if(_pathname.includes('shipping')) this.border_bts[1] = true;
+        if(_pathname.includes('delivering')) this.border_bts[2] = true;
+        if(_pathname.includes('delivered')) this.border_bts[3] = true;
+        if(_pathname.includes('cancelled')) this.border_bts[4] = true;
     },
     methods: {
     waitForConfirmation:function(){

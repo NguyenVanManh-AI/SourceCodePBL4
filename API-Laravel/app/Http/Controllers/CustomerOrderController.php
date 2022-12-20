@@ -95,8 +95,8 @@ class CustomerOrderController extends Controller
         if($sort == 'true') $sort = 'DESC';
         else $sort = 'ASC';
 
-        $id_customer = $request->id ; // những cái mới nhất cho lên đầu 
-        $customer_orders = CustomerOrder::orderBy('id',$sort)->where('customer_id',$id_customer)->where('order_status',1) 
+        $id_customer = $request->id ; // những cái mới nhất cho lên đầu , những cái chưa có confirm_time là chưa xác nhận 
+        $customer_orders = CustomerOrder::orderBy('id',$sort)->where('customer_id',$id_customer)->whereNull('confirm_time')->where('order_status',1) 
         ->where(function($query) use($search){
             $query->where('hex_id','LIKE', '%'.$search.'%')
             ->orWhere('recipient_name','LIKE', '%'.$search.'%')

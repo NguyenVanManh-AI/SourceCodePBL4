@@ -14,6 +14,7 @@ import ProfileAdmin from './../components/admin/Profile'
 import CategoryAdmin from './../components/admin/Category'
 import CustomerAdmin from './../components/admin/Customer'
 import ManagementAdmin from './../components/admin/ManagementAdmin'
+import AdminOrderDetails from './../components/admin/AdminOrderDetails'
 import OrderAdmin from './../components/admin/Order'
 import ProductAdmin from './../components/admin/Product'
 import ProductAdd from './../components/admin/ProductAdd'
@@ -24,6 +25,12 @@ import WareHouse from './../components/admin/Warehouse'
 import WarehouseImport from './../components/admin/WarehouseImport'
 import ImportDetails from './../components/admin/ImportDetails'
 import ImportProduct from './../components/admin/ImportProduct'
+
+// admin order 
+import AdminDeliveredComp from './../components/admin/purchase/AdminDeliveredComp'
+import AdminDeliveringComp from './../components/admin/purchase/AdminDeliveringComp'
+import AdminWaitForConfirmation from './../components/admin/purchase/AdminWaitForConfirmation'
+import AdminWaitingForShipping from './../components/admin/purchase/AdminWaitingForShipping'
 
 // user 
 import UserComp from './../components/User'
@@ -118,7 +125,18 @@ const routes = [
             {path:'category',name:'CategoryAdmin',component:CategoryAdmin},
             {path:'customer',name:'CustomerAdmin',component:CustomerAdmin},
             {path:'management-admin',name:'ManagementAdmin',component:ManagementAdmin},
-            {path:'order',name:'OrderAdmin',component:OrderAdmin},
+            {
+                path:'order',
+                name:'OrderAdmin',
+                component:OrderAdmin,
+                children : [
+                    {path:'delivered',name:'AdminDeliveredComp',component:AdminDeliveredComp},
+                    {path:'delivering',name:'AdminDeliveringComp',component:AdminDeliveringComp},
+                    {path:'confirmation',name:'AdminWaitForConfirmation',component:AdminWaitForConfirmation},
+                    {path:'shipping',name:'AdminWaitingForShipping',component:AdminWaitingForShipping},
+                ]
+            },
+            {path:'order-details/:id',name:'AdminOrderDetails',component:AdminOrderDetails},
             {path:'product',name:'ProductAdmin',component:ProductAdmin},
             {path:'product/add',name:'ProductAdd',component:ProductAdd},
             {path:'product/:id',name:'ProductDetails',component:ProductDetails},

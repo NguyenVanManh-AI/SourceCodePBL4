@@ -24,9 +24,9 @@
       <div class="container">
           <form  @submit.prevent="login()" action="http://127.0.0.1:8000/api/auth/login" >
             <h4 style="text-transform: uppercase;letter-spacing: 2.5px;font-weight: 700;color:#0085FF;"><i class="fa-solid fa-right-to-bracket"></i> LOGIN</h4><br>
-            <div class="input-form"><input type="email" v-model="loginAdmin.email" required autocomplete="off"><div class="underline"></div><label :class="{fix1:loginAdmin.email.length>0}"><i class="fa-solid fa-envelope"></i> Email</label></div><br>
-            <div class="input-form" id="bigshow"><input :type="passwordType" required v-model="loginAdmin.password" autocomplete="off"><div class="underline"></div><label><i class="fa-solid fa-lock"></i> Password</label>
-              <div id="show"><input type="checkbox" v-model="showpw"></div>
+            <div class="input-form"><input type="email" v-model="loginAdmin.email" required ><div class="underline"></div><label :class="{fix1:loginAdmin.email.length>0}"><i class="fa-solid fa-envelope"></i> Email</label></div><br>
+            <div class="input-form" id="bigshow"><input type="password" required v-model="loginAdmin.password" ><div class="underline"></div><label><i class="fa-solid fa-lock"></i> Password</label>
+              <!-- <div id="show"><input type="checkbox" v-model="showpw"></div> -->
             </div><br>
             <!-- <div class="alert alert-danger" v-if="error">{{error.response.data.error}}</div> -->
             <a class="text-primary under" style="text-decoration: none;" href="#" data-toggle="modal" data-target="#exampleModalForgotPassword" >Forgot your password ? </a><br>
@@ -449,7 +449,7 @@ export default {
 
 /* show password */
 #bigshow{
-  padding-right: 30px;
+  /* padding-right: 30px; */
   position: relative;
 }
 #show {
