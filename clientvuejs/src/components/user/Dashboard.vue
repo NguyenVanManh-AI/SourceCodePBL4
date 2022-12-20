@@ -73,20 +73,20 @@
               </div>
               <span></span>
             </li>
-            </div>
-            <div id="divpaginate">
-              <paginate class="pag" id="nvm"
-                  :page-count="Math.ceil(this.quantity/20)"
-                  :page-range="3"
-                  :margin-pages="2"
-                  :click-handler="clickCallback"
-                  :initial-page="this.pageN"
-                  :prev-text="'Prev'"
-                  :next-text="'Next'"
-                  :container-class="'pagination'"
-                  :page-class="'page-item'">
-              </paginate>
-            </div>
+          </div>
+          <div id="divpaginate">
+            <paginate class="pag" id="nvm"
+                :page-count="Math.ceil(this.quantity/20)"
+                :page-range="3"
+                :margin-pages="2"
+                :click-handler="clickCallback"
+                :initial-page="this.pageN"
+                :prev-text="'Prev'"
+                :next-text="'Next'"
+                :container-class="'pagination'"
+                :page-class="'page-item'">
+            </paginate>
+          </div>
         </div>
       </div> 
 

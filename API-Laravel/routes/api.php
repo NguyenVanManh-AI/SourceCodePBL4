@@ -176,6 +176,9 @@ Route::prefix('dashboard-customer')->controller(DashboardController::class)->gro
 Route::prefix('customer-order')->controller(CustomerOrderController::class)->group(function () {
     Route::middleware('auth:customer_api')->group(function () {
         Route::post('buy-now', 'buyNow');
+        Route::get('wait-confirm', 'WaitForConfirmation');
+        Route::get('details', 'orderDetails');
+        Route::get('cancel', 'cancelOrder');
        
     });
 });

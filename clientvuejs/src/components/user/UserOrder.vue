@@ -35,7 +35,7 @@
             <button type="button" class="btn btn-danger" @click="deleteAll()"><i class="fa-solid fa-trash"></i> Delete</button>
         </div>
         <div class="col-4 d-flex align-items-center total">
-          Total payment (<span>{{totalProduct}}</span> product) : <span>{{totalPrice}}$</span>
+          Total payment (<span>{{new Intl.NumberFormat().format(totalProduct)}}</span> product) : <span>{{new Intl.NumberFormat().format(totalPrice)}}$</span>
         </div>
         <div class="col-2 d-flex align-items-center">
             <button type="button" class="btn btn-outline-success" @click="buyNow()"><i class="fa-solid fa-cart-shopping"></i> Buy Now </button>
@@ -148,11 +148,16 @@ export default {
           else this.user_order[i].status = false;
         }
         this.saveLocal();
+        console.log(this.user_order);
       },
       deleteAll:function(){
-        for(var i=0;i<this.user_order.length;i++){
-          if(this.user_order[i].status == true) this.user_order.splice(i, 1);
-        }
+        // for(var i=0;i<this.user_order.length;i++){
+        //   if(this.user_order[i].status == true) this.user_order.splice(i, 1);
+        // }
+        this.user_order = this.user_order.filter(function(pr){
+          if(pr.status == true) return false ; 
+          else return true; 
+        });
         this.saveLocal();
       },
       buyNow:function(){
@@ -216,8 +221,6 @@ export default {
           // console.log(error.response.data);
           emitEvent('eventUserError',error.response.data.error);
         })
-
-
 
         // nếu buy thành công thì lượt qua các phần tử có id đó trong user_order và xóa nó đi 
         // ta không làm giống như bên productDetail là nối chuỗi rồi lên server tách chuỗi nữa . 

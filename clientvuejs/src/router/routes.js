@@ -35,12 +35,13 @@ import AccountUser from './../components/user/Account'
 import ProfileUser from './../components/user/account/Profile'
 import ChangePasswordUser from './../components/user/account/ChangePassword'
 import PurchaseOrderUser from './../components/user/account/PurchaseOrder' 
-import ShippingAddressUser from './../components/user/account/ShippingAddress' 
+import ShippingAddressUser from './../components/user/account/ShippingAddress'  
+import OrderDetails from './../components/user/account/OrderDetails'  
 
 import DashboardUser from './../components/user/Dashboard'
 import ProductUserDetails from './../components/user/ProductUserDetails'
 import UserOrder from './../components/user/UserOrder'
-import InforUser from './../components/user/InforUser'
+import InforUser from './../components/user/InforUser' 
 
 // user order 
 import CancelledComp from './../components/user/purchase/CancelledComp'
@@ -94,6 +95,7 @@ const routes = [
                         ]
                     },
                     {path:'shipping-address',name:'ShippingAddressUser',component:ShippingAddressUser},
+                    {path:'order-details/:id',name:'OrderDetails',component:OrderDetails},
                 ]
             },
 

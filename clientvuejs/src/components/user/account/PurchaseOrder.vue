@@ -82,6 +82,7 @@ export default {
 #purchaseorder{
     /* padding: 20px; */
     margin-right:20px;
+    margin-bottom: 20px;
 }
 #header{
     display: flex;

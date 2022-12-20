@@ -17,6 +17,11 @@ use Hash;
 use Mail;        
 use Illuminate\Support\Facades\DB;
 use App\Mail\OrderSuccess;
+use App\Mail\CancelOrder;
+use App\Mail\ConfirmSuccess;
+use App\Mail\Delivered;
+use App\Mail\Delivering;
+use App\Models\Image;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 
@@ -45,7 +50,7 @@ class CustomerOrderController extends Controller
             'recipient_name' => $shippingAddress->recipient_name,
             'phone_number' => $shippingAddress->phone_number,
             'address' => $shippingAddress->address,
-            'order_status' => 0,
+            'order_status' => 1,
             'order_time' => $date_now,
             'shipping_fee' => round(0.1*$request->totalPrice)
         ]);
@@ -81,6 +86,86 @@ class CustomerOrderController extends Controller
 
     }
 
+    // đúng ra là phải query đến bảng Order_detail để lấy ra đơn hàng rồi cộng tất cả sản phẩm lại là ta sẽ được tổng tiền 
+    // nhưng trước đó mình có lưu tiền ship vào bằng cách nhân 0.1 tổng tiền hàng nên giờ lấy ra như thế này cx được  
+
+    public function WaitForConfirmation(Request $request){
+        $search = $request->search; 
+        $sort = $request->sort; 
+        if($sort == 'true') $sort = 'DESC';
+        else $sort = 'ASC';
+
+        $id_customer = $request->id ; // những cái mới nhất cho lên đầu 
+        $customer_orders = CustomerOrder::orderBy('id',$sort)->where('customer_id',$id_customer)->where('order_status',1) 
+        ->where(function($query) use($search){
+            $query->where('hex_id','LIKE', '%'.$search.'%')
+            ->orWhere('recipient_name','LIKE', '%'.$search.'%')
+            ->orWhere('address','LIKE', '%'.$search.'%');
+        })->paginate(5);
+
+        // chỉ hiện ra các đơn hàng có status 1
+        // các đơn hàng có status 0 cho qua bảng cancel  
+
+        foreach($customer_orders as $order){
+            $order->total = $order->shipping_fee*10; // php cũng giống như js , trước đó total là thuộc tính chưa có 
+            // ta chỉ cần gọi là thuộc tính này tự động thêm vào object 
+        }
+
+        return response()->json([
+            'message' => 'Get all order success !',
+            'customer_order' => $customer_orders
+        ],201);
+    }
+
+    public function orderDetails(Request $request){
+        $hex_id = $request->hex_id; 
+        $customer_order = CustomerOrder::where('hex_id',$hex_id)->first();
+        $customer_order_id = $customer_order->id;
+        $order_details = OrderDetail::where('customer_order_id',$customer_order_id)->get();
+
+        $total = 0 ; 
+        foreach($order_details as $pr){
+            $img = Image::where('product_id',$pr->product_id)->first();
+            $pr->image_path = $img->image_path;
+            $total += $pr->price * $pr->quantity;
+        }
+
+        return response()->json([
+            'message' => 'Get all order products success !',
+            'order_details' => $order_details,
+            'total' => $total,
+            'order_time' => $customer_order->order_time
+        ],201);
+
+    }
+
+    public function cancelOrder(Request $request){
+        $id = $request->id_cancel;
+        $customer_order = CustomerOrder::find($id);
+        $customer_order->update([
+            'order_status' => 0
+        ]);
+
+        // sau khi cho status = 0 thì phải cộng các sản phẩm đã được order vào lại cho product 
+        $order_details = OrderDetail::where('customer_order_id',$id)->get();
+        foreach($order_details as $pr){
+            $product = Product::find($pr->product_id); 
+            $product->update([
+                'quantity' => $product->quantity + $pr->quantity
+            ]);
+        }
+
+        // sau đó gửi mail về cho user là đơn đã được user hủy thành công hoặc là bị admin hủy 
+        $customer = Customer::find($request->id_customer); 
+        Mail::to($customer->email)->send(new CancelOrder($customer_order->hex_id)); 
+
+        return response()->json([
+            'message' => 'Get cancel success !',
+        ],201);
+
+        // đúng ra trong mỗi lần where hay find thế này , chắc ăn nhất là phải kiểm tra 
+        // nó có empty hay không , không mới tiếp tục thực hiện (tất cả các cái chứ không riêng gì cái này)
+    }
 
 
 
