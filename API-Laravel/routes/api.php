@@ -180,6 +180,10 @@ Route::prefix('customer-order')->controller(CustomerOrderController::class)->gro
     Route::middleware('auth:customer_api')->group(function () {
         Route::post('buy-now', 'buyNow');
         Route::get('wait-confirm', 'WaitForConfirmation');
+        Route::get('wait-ship', 'WaitingForShipping');
+        Route::get('delivering', 'Delivering');
+        Route::get('delivered', 'Delivered');
+        Route::get('order-cancel', 'OrderCancel');
         Route::get('details', 'orderDetails');
         Route::get('cancel', 'cancelOrder');
        
@@ -191,9 +195,13 @@ Route::prefix('customer-order')->controller(CustomerOrderController::class)->gro
 Route::prefix('admin-order')->controller(AdminOrderController::class)->group(function () {
     Route::middleware('auth:admin_api')->group(function () {
         Route::get('wait-confirm', 'WaitForConfirmation');
+        Route::get('wait-ship', 'WaitingForShipping');
+        Route::get('delivering', 'Delivering');
+        Route::get('order-delivered', 'OrderDelivered');
         Route::get('details', 'orderDetails');
         Route::get('cancel', 'cancelOrder');
         Route::get('confirm', 'confirm');
-       
+        Route::get('ship', 'ship');
+        Route::get('delivered', 'delivered');
     });
 });

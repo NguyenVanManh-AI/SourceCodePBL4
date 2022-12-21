@@ -17,10 +17,10 @@
 
             <div id="table">
                 <div id="header">
-                    <li @click="waitForConfirmation" :class="{border_bt:border_bts[0],border_bt2:!border_bts[0]}">Wait for confirmation</li>
-                    <li @click="waitingForShipping" :class="{border_bt:border_bts[1],border_bt2:!border_bts[1]}">Waiting for shipping</li>
-                    <li @click="delivering" :class="{border_bt:border_bts[2],border_bt2:!border_bts[2]}">Delivering</li>
-                    <li @click="delivered" :class="{border_bt:border_bts[3],border_bt2:!border_bts[3]}">Delivered</li>
+                    <li @click="waitForConfirmation" :class="{border_bt:border_bts[0],border_bt2:!border_bts[0]}"><i class="fa-brands fa-shopify mr-1"></i> Wait for confirmation</li>
+                    <li @click="waitingForShipping" :class="{border_bt:border_bts[1],border_bt2:!border_bts[1]}"><i class="fa-regular fa-circle-check mr-1"></i> Waiting for shipping</li>
+                    <li @click="delivering" :class="{border_bt:border_bts[2],border_bt2:!border_bts[2]}"><i class="fa-solid fa-truck-fast mr-1"></i> Delivering</li>
+                    <li @click="delivered" :class="{border_bt:border_bts[3],border_bt2:!border_bts[3]}"><i class="fa-solid fa-house-circle-check mr-1"></i> Delivered</li>
                 </div>
                 <div id="content">
                     <router-view></router-view>

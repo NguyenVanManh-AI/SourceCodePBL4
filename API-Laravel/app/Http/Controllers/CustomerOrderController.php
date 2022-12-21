@@ -166,8 +166,107 @@ class CustomerOrderController extends Controller
         // đúng ra trong mỗi lần where hay find thế này , chắc ăn nhất là phải kiểm tra 
         // nó có empty hay không , không mới tiếp tục thực hiện (tất cả các cái chứ không riêng gì cái này)
     }
+    
 
+    // là những cái đã có confirm_time mà chưa có ship_time 
+    public function WaitingForShipping(Request $request){
+        $search = $request->search; 
+        $sort = $request->sort; 
+        if($sort == 'true') $sort = 'DESC';
+        else $sort = 'ASC';
 
+        $id_customer = $request->id ;
+        $customer_orders = CustomerOrder::orderBy('id',$sort)->where('customer_id',$id_customer)->whereNull('ship_time')->whereNotNull('confirm_time')->where('order_status',1) 
+        ->where(function($query) use($search){
+            $query->where('hex_id','LIKE', '%'.$search.'%')
+            ->orWhere('recipient_name','LIKE', '%'.$search.'%')
+            ->orWhere('address','LIKE', '%'.$search.'%');
+        })->paginate(5);
+
+        foreach($customer_orders as $order){
+            $order->total = $order->shipping_fee*10; 
+        }
+
+        return response()->json([
+            'message' => 'Get all order success !',
+            'customer_order' => $customer_orders
+        ],201);
+    }
+
+    // là những cái đã có ship_time mà chưa có completed_time 
+    public function Delivering(Request $request){
+        $search = $request->search; 
+        $sort = $request->sort; 
+        if($sort == 'true') $sort = 'DESC';
+        else $sort = 'ASC';
+
+        $id_customer = $request->id ;
+        $customer_orders = CustomerOrder::orderBy('id',$sort)->where('customer_id',$id_customer)->whereNull('completed_time')->whereNotNull('ship_time')->where('order_status',1) 
+        ->where(function($query) use($search){
+            $query->where('hex_id','LIKE', '%'.$search.'%')
+            ->orWhere('recipient_name','LIKE', '%'.$search.'%')
+            ->orWhere('address','LIKE', '%'.$search.'%');
+        })->paginate(5);
+
+        foreach($customer_orders as $order){
+            $order->total = $order->shipping_fee*10; 
+        }
+
+        return response()->json([
+            'message' => 'Get all order success !',
+            'customer_order' => $customer_orders
+        ],201);
+    }
+
+    // là những cái đã có completed_time
+    public function Delivered(Request $request){
+        $search = $request->search; 
+        $sort = $request->sort; 
+        if($sort == 'true') $sort = 'DESC';
+        else $sort = 'ASC';
+
+        $id_customer = $request->id ;
+        $customer_orders = CustomerOrder::orderBy('id',$sort)->where('customer_id',$id_customer)->whereNotNull('completed_time')->where('order_status',1) 
+        ->where(function($query) use($search){
+            $query->where('hex_id','LIKE', '%'.$search.'%')
+            ->orWhere('recipient_name','LIKE', '%'.$search.'%')
+            ->orWhere('address','LIKE', '%'.$search.'%');
+        })->paginate(5);
+
+        foreach($customer_orders as $order){
+            $order->total = $order->shipping_fee*10; 
+        }
+
+        return response()->json([
+            'message' => 'Get all order success !',
+            'customer_order' => $customer_orders
+        ],201);
+    }
+
+    // những đơn bị hủy order_status = 0 
+    public function OrderCancel(Request $request){
+        $search = $request->search; 
+        $sort = $request->sort; 
+        if($sort == 'true') $sort = 'DESC';
+        else $sort = 'ASC';
+
+        $id_customer = $request->id ;
+        $customer_orders = CustomerOrder::orderBy('id',$sort)->where('customer_id',$id_customer)->where('order_status',0) 
+        ->where(function($query) use($search){
+            $query->where('hex_id','LIKE', '%'.$search.'%')
+            ->orWhere('recipient_name','LIKE', '%'.$search.'%')
+            ->orWhere('address','LIKE', '%'.$search.'%');
+        })->paginate(5);
+
+        foreach($customer_orders as $order){
+            $order->total = $order->shipping_fee*10; 
+        }
+
+        return response()->json([
+            'message' => 'Get all order success !',
+            'customer_order' => $customer_orders
+        ],201);
+    }
 
 
 

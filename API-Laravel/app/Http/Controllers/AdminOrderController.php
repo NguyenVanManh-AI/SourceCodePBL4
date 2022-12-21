@@ -27,6 +27,7 @@ use Carbon\Carbon;
 
 class AdminOrderController extends Controller
 {
+    // hiện tất cả đơn hàng chờ xác nhận 
     public function WaitForConfirmation(Request $request){
         $search = $request->search; 
         $sort = $request->sort; 
@@ -50,6 +51,7 @@ class AdminOrderController extends Controller
         ],201);
     }
 
+    // hủy đơn
     public function cancelOrder(Request $request){
         $id = $request->id_cancel;
         $customer_order = CustomerOrder::find($id);
@@ -73,6 +75,7 @@ class AdminOrderController extends Controller
         ],201);
     }
 
+    // hiện chi tiết đơn hàng 
     public function orderDetails(Request $request){
         $hex_id = $request->hex_id; 
         $customer_order = CustomerOrder::where('hex_id',$hex_id)->first();
@@ -95,6 +98,7 @@ class AdminOrderController extends Controller
 
     }
 
+    // xác nhận đơn hàng => chuyển sang chờ giao hàng 
     public function confirm(Request $request){
 
         $hex_id = $request->hex_id; 
@@ -112,6 +116,117 @@ class AdminOrderController extends Controller
             'message' => 'Confirm success !',
         ],201);
     }
+
+    // hiện tất cả chờ giao hàng 
+    public function WaitingForShipping(Request $request){
+        $search = $request->search; 
+        $sort = $request->sort; 
+        if($sort == 'true') $sort = 'DESC';
+        else $sort = 'ASC';
+
+        $customer_orders = CustomerOrder::orderBy('id',$sort)->whereNull('ship_time')->whereNotNull('confirm_time')->where('order_status',1) 
+        ->where(function($query) use($search){
+            $query->where('hex_id','LIKE', '%'.$search.'%')
+            ->orWhere('recipient_name','LIKE', '%'.$search.'%')
+            ->orWhere('address','LIKE', '%'.$search.'%');
+        })->paginate(5);
+
+        foreach($customer_orders as $order){
+            $order->total = $order->shipping_fee*10; 
+        }
+
+        return response()->json([
+            'message' => 'Get all order success !',
+            'customer_order' => $customer_orders
+        ],201);
+    }
+
+    // xác nhận đang giao hàng => chuyển sang đang giao hàng 
+    public function ship(Request $request){
+
+        $hex_id = $request->hex_id; 
+        $customer_order = CustomerOrder::where('hex_id',$hex_id)->first();
+
+        $date_now = Carbon::now('Asia/Ho_Chi_Minh');
+        $customer_order->update([
+            'ship_time' => $date_now
+        ]);
+
+        $customer = Customer::find($customer_order->customer_id); 
+        Mail::to($customer->email)->send(new Delivering($customer_order->hex_id)); 
+
+        return response()->json([
+            'message' => 'Confirm success !',
+        ],201);
+    }
+
+    // hiện tất cả đơn hàng đang được giao 
+    public function Delivering(Request $request){
+        $search = $request->search; 
+        $sort = $request->sort; 
+        if($sort == 'true') $sort = 'DESC';
+        else $sort = 'ASC';
+
+        $customer_orders = CustomerOrder::orderBy('id',$sort)->whereNull('completed_time')->whereNotNull('ship_time')->where('order_status',1) 
+        ->where(function($query) use($search){
+            $query->where('hex_id','LIKE', '%'.$search.'%')
+            ->orWhere('recipient_name','LIKE', '%'.$search.'%')
+            ->orWhere('address','LIKE', '%'.$search.'%');
+        })->paginate(5);
+
+        foreach($customer_orders as $order){
+            $order->total = $order->shipping_fee*10; 
+        }
+
+        return response()->json([
+            'message' => 'Get all order success !',
+            'customer_order' => $customer_orders
+        ],201);
+    }
+
+    // xác nhận đã giao hàng 
+    public function delivered(Request $request){
+
+        $hex_id = $request->hex_id; 
+        $customer_order = CustomerOrder::where('hex_id',$hex_id)->first();
+
+        $date_now = Carbon::now('Asia/Ho_Chi_Minh');
+        $customer_order->update([
+            'completed_time' => $date_now
+        ]);
+
+        $customer = Customer::find($customer_order->customer_id); 
+        Mail::to($customer->email)->send(new Delivered($customer_order->hex_id)); 
+
+        return response()->json([
+            'message' => 'Confirm success !',
+        ],201);
+    }
+
+    // hiện tất cả đơn hàng đã được giao 
+    public function OrderDelivered(Request $request){
+        $search = $request->search; 
+        $sort = $request->sort; 
+        if($sort == 'true') $sort = 'DESC';
+        else $sort = 'ASC';
+
+        $customer_orders = CustomerOrder::orderBy('id',$sort)->whereNotNull('completed_time')->where('order_status',1) 
+        ->where(function($query) use($search){
+            $query->where('hex_id','LIKE', '%'.$search.'%')
+            ->orWhere('recipient_name','LIKE', '%'.$search.'%')
+            ->orWhere('address','LIKE', '%'.$search.'%');
+        })->paginate(5);
+
+        foreach($customer_orders as $order){
+            $order->total = $order->shipping_fee*10; 
+        }
+
+        return response()->json([
+            'message' => 'Get all order success !',
+            'customer_order' => $customer_orders
+        ],201);
+    }
+    
 
 }
 
