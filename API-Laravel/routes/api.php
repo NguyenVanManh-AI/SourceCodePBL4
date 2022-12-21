@@ -203,5 +203,6 @@ Route::prefix('admin-order')->controller(AdminOrderController::class)->group(fun
         Route::get('confirm', 'confirm');
         Route::get('ship', 'ship');
         Route::get('delivered', 'delivered');
+        Route::get('print', 'print');
     });
 });

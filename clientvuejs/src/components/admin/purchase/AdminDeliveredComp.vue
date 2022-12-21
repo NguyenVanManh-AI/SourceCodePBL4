@@ -33,7 +33,7 @@
                         <td>{{customer_order.completed_time}}</td>
                         <td style="color:red">${{new Intl.NumberFormat().format(customer_order.total)}}</td>
                         <td><button type="button" class="btn btn-outline-primary" @click="viewDetail(customer_order.hex_id)">Details</button></td>
-                        <td><button type="button" class="btn btn-outline-success"><i class="fa-solid fa-file-pdf"></i> Export File</button></td>
+                        <td><button type="button" @click="printPDF(customer_order.hex_id)" class="btn btn-outline-success"><i class="fa-solid fa-file-pdf"></i> Export File</button></td>
                     </tr> 
                 </tbody>
             </table>
@@ -115,6 +115,9 @@ export default {
     methods:{
         viewDetail:function(uri){
             this.$router.push({name:'AdminOrderDetails',params:{id:uri}});
+        },
+        printPDF:function(uri){
+            this.$router.push({name:'AdminOrderPrintPDF',params:{id:uri}});
         },
         fsortlatest:function(){
             this.sortlatest = !this.sortlatest;

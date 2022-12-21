@@ -15,6 +15,7 @@ import CategoryAdmin from './../components/admin/Category'
 import CustomerAdmin from './../components/admin/Customer'
 import ManagementAdmin from './../components/admin/ManagementAdmin'
 import AdminOrderDetails from './../components/admin/AdminOrderDetails'
+import AdminOrderPrintPDF from './../components/admin/AdminOrderPrintPDF'
 import OrderAdmin from './../components/admin/Order'
 import ProductAdmin from './../components/admin/Product'
 import ProductAdd from './../components/admin/ProductAdd'
@@ -137,6 +138,7 @@ const routes = [
                 ]
             },
             {path:'order-details/:id',name:'AdminOrderDetails',component:AdminOrderDetails},
+            {path:'print/:id',name:'AdminOrderPrintPDF',component:AdminOrderPrintPDF},
             {path:'product',name:'ProductAdmin',component:ProductAdmin},
             {path:'product/add',name:'ProductAdd',component:ProductAdd},
             {path:'product/:id',name:'ProductDetails',component:ProductDetails},

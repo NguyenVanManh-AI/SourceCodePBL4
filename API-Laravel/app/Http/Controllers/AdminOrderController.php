@@ -226,6 +226,32 @@ class AdminOrderController extends Controller
             'customer_order' => $customer_orders
         ],201);
     }
+
+    // in phiếu 
+    public function print(Request $request){
+        $hex_id = $request->hex_id; 
+        $customer_order = CustomerOrder::where('hex_id',$hex_id)->first();
+        $customer_order_id = $customer_order->id;
+        $order_details = OrderDetail::where('customer_order_id',$customer_order_id)->get();
+
+        $date_now = Carbon::now('Asia/Ho_Chi_Minh');
+
+        $total = 0 ; 
+        foreach($order_details as $pr){
+            $img = Image::where('product_id',$pr->product_id)->first();
+            $pr->image_path = $img->image_path;
+            $total += $pr->price * $pr->quantity;
+        }
+
+        return response()->json([
+            'message' => 'Get all order products success !',
+            'order_details' => $order_details,
+            'total' => $total,
+            'customer_order' => $customer_order,
+            'date_now' => $date_now
+        ],201);
+
+    }
     
 
 }

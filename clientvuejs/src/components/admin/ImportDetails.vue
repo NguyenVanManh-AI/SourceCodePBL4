@@ -246,7 +246,7 @@ export default {
     justify-content: center;
     width: 100%;
     margin-top: -90px;
-    margin-left: 70%;
+    padding-left: 70%;
 }
 #inner2 {
     border: 2px solid red;
