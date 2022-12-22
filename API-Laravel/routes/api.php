@@ -191,7 +191,6 @@ Route::prefix('customer-order')->controller(CustomerOrderController::class)->gro
     });
 });
 
-
 // Admin Order
 Route::prefix('admin-order')->controller(AdminOrderController::class)->group(function () {
     Route::middleware('auth:admin_api')->group(function () {
@@ -210,8 +209,7 @@ Route::prefix('admin-order')->controller(AdminOrderController::class)->group(fun
 
 // Admin Statistical
 Route::prefix('statistical')->controller(StatisticalController::class)->group(function () {
+    Route::middleware('auth:admin_api')->group(function () {
         Route::get('chart', 'chart');
-        Route::middleware('auth:admin_api')->group(function () {
-        // Route::get('print', 'print');
     });
 });

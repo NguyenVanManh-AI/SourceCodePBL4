@@ -10,22 +10,23 @@
   // import {Chart} from 'chart.js'
 import Chart from 'chart.js/auto';
 import useEventBus from '../../../composables/useEventBus'
+// import BaseRequest from '../../../restful/admin/core/BaseRequest';
 
 export default {
     name: 'DoughnutChart' ,
+    data(){
+        return {
+            data_donut : [],
+            labels_donut : ['Wait for confirmation','Waiting for delivery','Delivering','Delivered','Cancelled'],
+        }
+    },
     mounted(){
         const ctx = document.getElementById('myChart2');
         var data = {
-            labels: [
-                'Wait for confirmation',
-                'Waiting for delivery',
-                'Delivering',
-                'Delivered',
-                'Cancelled'
-            ],
+            labels: this.labels_donut,
             datasets: [{
                 label: 'Order number',
-                data: [300, 50, 100,20,10],
+                data: this.data_donut,
                 backgroundColor: [
                     'rgb(255, 205, 86)',
                     'rgb(54, 162, 235)',

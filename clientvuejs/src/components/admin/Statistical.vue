@@ -22,9 +22,9 @@
                         <div id="title2"><i class="fa-solid fa-hockey-puck"></i> Statistics by</div>
                         <div class="col-3">
                             <select class="form-control" v-model="s_time">
-                                <option value="month">This Month</option>
-                                <option value="quarter">This Quarter</option>
                                 <option value="year">This Year</option>
+                                <option value="quarter">This Quarter</option>
+                                <option value="month">This Month</option>
                             </select>
                         </div>
                     </div>
@@ -32,8 +32,8 @@
                     <div>
                         <div id="title3"><i class="fa-solid fa-chart-column"></i> Statistics of revenue, import goods</div>
                         <div id="infor_line">
-                            <span><i class="fa-solid fa-file-invoice-dollar"></i> Revenue</span><span>$999</span>
-                            <span><i class="fa-solid fa-hand-holding-dollar"></i> Import goods</span><span>$789</span>
+                            <span><i class="fa-solid fa-file-invoice-dollar"></i> Revenue</span><span>$ {{new Intl.NumberFormat().format(total_datas_revenue)}}</span>
+                            <span><i class="fa-solid fa-hand-holding-dollar"></i> Import goods</span><span>$ {{new Intl.NumberFormat().format(total_datas_import)}}</span>
                         </div>
                     </div>
                     <div class="chart_main">
@@ -45,13 +45,13 @@
                     <div>
                         <div id="title4"><i class="fa-solid fa-basket-shopping"></i> Statistics of orders</div>
                         <div class="infor_donut">
-                            <span id="sp1"><i class="fa-brands fa-shopify mr-1"></i> Wait for confirmation</span><p>$999</p>
-                            <span id="sp2"><i class="fa-regular fa-circle-check mr-1"></i> Waiting for delivery</span><p>$789</p>
+                            <span id="sp1"><i class="fa-brands fa-shopify mr-1"></i> Wait for confirmation</span><p>{{new Intl.NumberFormat().format(data_donut[0])}}</p>
+                            <span id="sp2"><i class="fa-regular fa-circle-check mr-1"></i> Waiting for delivery</span><p>{{new Intl.NumberFormat().format(data_donut[1])}}</p>
                         </div>
                         <div class="infor_donut">
-                            <span id="sp3"><i class="fa-solid fa-truck-fast mr-1"></i> Delivering</span><p>$999</p>
-                            <span id="sp4"><i class="fa-solid fa-house-circle-check mr-1"></i> Delivered</span><p>$999</p>
-                            <span id="sp5"><i class="fa-solid fa-trash"></i> Cancelled</span><p>$999</p>
+                            <span id="sp3"><i class="fa-solid fa-truck-fast mr-1"></i> Delivering</span><p>{{new Intl.NumberFormat().format(data_donut[2])}}</p>
+                            <span id="sp4"><i class="fa-solid fa-house-circle-check mr-1"></i> Delivered</span><p>{{new Intl.NumberFormat().format(data_donut[3])}}</p>
+                            <span id="sp5"><i class="fa-solid fa-trash"></i> Cancelled</span><p>{{new Intl.NumberFormat().format(data_donut[4])}}</p>
                         </div>
                     </div>
                     <div class="chart_main">
@@ -70,7 +70,7 @@
 
 <script>
 
-// import BaseRequest from '../../restful/admin/core/BaseRequest';
+import BaseRequest from '../../restful/admin/core/BaseRequest';
 import useEventBus from '../../composables/useEventBus'
 import Notification from './Notification'
 import config from '../../config.js'
@@ -87,7 +87,7 @@ export default {
         Notification,
         ParticleVue32,
         LineChart,
-        DoughnutChart
+        DoughnutChart,
     },
     setup() {
         document.title = "Meta Shop | Order"
@@ -113,16 +113,57 @@ export default {
                 email_verified_at:null,
             },
             domain:config.API_URL,
-            s_time:'month',
+            s_time:'year',
+            total_datas_revenue : 0,
+            total_datas_import : 0,
+            data_donut : [],
         }
     },
     mounted(){
         this.admin = JSON.parse(window.localStorage.getItem('admin'));
         this.url_img = config.API_URL + '/' + this.admin.url_img; 
 
-        
+        // line 
+        var datas_revenue = [];
+        var datas_import = [];
+        var labels_line = [];
 
+        // donut 
+        var data_donut = []; 
+        var labels_donut = ['Wait for confirmation','Waiting for delivery','Delivering','Delivered','Cancelled'];
 
+        BaseRequest.get('api/statistical/chart?sort_by=year')
+        .then( (data) =>{
+            datas_revenue = data.datas_revenue;
+            datas_import = data.datas_import;
+            labels_line = data.labels_line;
+            data_donut = data.data_donut;
+
+            datas_revenue.forEach(a => {this.total_datas_revenue += a;});
+            datas_import.forEach(a => {this.total_datas_import += a;});
+            this.data_donut = data.data_donut;
+
+            var ob_line = {
+                datas_revenue : datas_revenue,
+                datas_import : datas_import,
+                labels_line : labels_line,
+            }
+
+            var ob_donut = {
+                data_donut : data_donut,
+                labels_donut : labels_donut,
+            }
+
+            const { emitEvent } = useEventBus();
+            emitEvent('eventAdminStatistical',ob_line);
+            emitEvent('event2AdminStatistical',ob_donut);
+
+            emitEvent('eventSuccess','Statistical Success !');
+        }) 
+        .catch(()=>{
+            const { emitEvent } = useEventBus();
+            emitEvent('eventError','Statistical Failse !');
+        })
     },
     methods:{
         home:function(){
@@ -143,52 +184,43 @@ export default {
             var datas_import = [];
             var labels_line = [];
 
-            if(this.s_time == 'month'){
-                datas_revenue = [10,15,20,25,30,35,40];
-                datas_import = [12,25,10,65,40,95,80];
-                labels_line = ['1','2','3','4','5','6','7'];
-            }
-            if(this.s_time == 'quarter'){
-                datas_revenue = [120,190,160];
-                datas_import = [220,490,160];
-                labels_line = ['Quarter one','Quarter two','Quarter three' , 'Quarter four'];
-            }
-            if(this.s_time == 'year'){
-                datas_revenue = [6500, 5900, 8000, 81, 5600, 55, 4000,6005, 59, 8000, 8001, 1],
-                datas_import = [61500, 15900, 8000, 281, 35600, 155, 44000,46005, 259, 78000, 18001, 11],
-                labels_line = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-            }
-
-            const { emitEvent } = useEventBus();
-            var ob_line = {
-                datas_revenue : datas_revenue,
-                datas_import : datas_import,
-                labels_line : labels_line,
-            }
-            emitEvent('eventAdminStatistical',ob_line);
-
             // donut 
             var data_donut = []; 
             var labels_donut = ['Wait for confirmation','Waiting for delivery','Delivering','Delivered','Cancelled'];
-            if(this.s_time == 'month'){
-                data_donut = [10,25,5,30,2];
-            }
-            if(this.s_time == 'quarter'){
-                data_donut = [120,190,160,100,123];
-            }
-            if(this.s_time == 'year'){
-                data_donut = [10,15,6,90,1];
-            }
-            var ob_donut = {
-                data_donut : data_donut,
-                labels_donut : labels_donut,
-            }
-            emitEvent('event2AdminStatistical',ob_donut);
 
+            BaseRequest.get('api/statistical/chart?sort_by='+this.s_time)
+            .then( (data) =>{
+                datas_revenue = data.datas_revenue;
+                datas_import = data.datas_import;
+                labels_line = data.labels_line;
+                data_donut = data.data_donut;
 
+                datas_revenue.forEach(a => {this.total_datas_revenue += a;});
+                datas_import.forEach(a => {this.total_datas_import += a;});
+                this.data_donut = data.data_donut;
+            
+                var ob_line = {
+                    datas_revenue : datas_revenue,
+                    datas_import : datas_import,
+                    labels_line : labels_line,
+                }
+
+                var ob_donut = {
+                    data_donut : data_donut,
+                    labels_donut : labels_donut,
+                }
+
+                const { emitEvent } = useEventBus();
+                emitEvent('eventAdminStatistical',ob_line);
+                emitEvent('event2AdminStatistical',ob_donut);
+
+                emitEvent('eventSuccess','Statistical Success !');
+            }) 
+            .catch(()=>{
+                const { emitEvent } = useEventBus();
+                emitEvent('eventError','Statistical Failse !');
+            })
         }
-
-
     }
 }
 </script>
@@ -273,7 +305,7 @@ export default {
 }
 
 #infor_line span:nth-child(4) {
-    color: rgb(150, 150, 0);
+    color: rgb(0, 190, 248);
     font-size: 20px;
     margin: 0px 10px;
 }

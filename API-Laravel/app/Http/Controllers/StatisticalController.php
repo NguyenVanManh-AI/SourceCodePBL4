@@ -37,6 +37,7 @@ class StatisticalController extends Controller
 
         if($sort_by == 'year'){
 
+            // line 
             $datas_import = [];
             for($i=1;$i<=12;$i++){
                 $total = 0 ; 
@@ -65,10 +66,24 @@ class StatisticalController extends Controller
                 array_push($datas_revenue,$total);
             }
 
+            // donut 
+            $data_donut = [];
+            $WaitForConfirmation = CustomerOrder::whereNull('confirm_time')->where('order_status',1)->whereYear('order_time', '20'.$year_now)->get();
+            $WaitingForShipping = CustomerOrder::whereNull('ship_time')->whereNotNull('confirm_time')->where('order_status',1)->whereYear('order_time', '20'.$year_now)->get(); 
+            $Delivering = CustomerOrder::whereNull('completed_time')->whereNotNull('ship_time')->where('order_status',1)->whereYear('order_time', '20'.$year_now)->get();
+            $OrderDelivered = CustomerOrder::whereNotNull('completed_time')->where('order_status',1)->whereYear('order_time', '20'.$year_now)->get();
+            $OrderCancel = CustomerOrder::where('order_status',0)->whereYear('order_time', '20'.$year_now)->get();
+            array_push($data_donut,count($WaitForConfirmation));
+            array_push($data_donut,count($WaitingForShipping));
+            array_push($data_donut,count($Delivering));
+            array_push($data_donut,count($OrderDelivered));
+            array_push($data_donut,count($OrderCancel));
+            
             return response()->json([
                 'datas_import' => $datas_import,
                 'datas_revenue' => $datas_revenue,
-                'labels_line' => ['January','February','March','April','May','June','July','August','September','October','November','December']
+                'labels_line' => ['January','February','March','April','May','June','July','August','September','October','November','December'],
+                'data_donut' => $data_donut
             ]);
 
         }
@@ -77,6 +92,7 @@ class StatisticalController extends Controller
             $start = null;
             $end = null;
 
+            // line 
             if($month_now >= 1 && $month_now <= 3){ $start = 1; $end = 3;}
             if($month_now >= 4 && $month_now <= 6){ $start = 4; $end = 6;}
             if($month_now >= 7 && $month_now <= 9){ $start = 7; $end = 9;}
@@ -96,8 +112,10 @@ class StatisticalController extends Controller
             }
 
             $datas_revenue = [];
+            $_month = [];
             for($i=$start;$i<=$end;$i++){
                 $total = 0 ; 
+                array_push($_month,'Month '.$i);
                 $customerOrders = CustomerOrder::whereNotNull('completed_time')->where('order_status',1)
                 ->whereYear('order_time', '20'.$year_now)->whereMonth('order_time', $i)->get();
                 foreach($customerOrders as $customerOrder){ 
@@ -108,16 +126,46 @@ class StatisticalController extends Controller
                 }
                 array_push($datas_revenue,$total);
             }
+            // line 
+
+            // donut 
+            $data_donut = [];
+            $_WaitForConfirmation = 0 ;
+            $_WaitingForShipping = 0 ;
+            $_Delivering = 0;
+            $_OrderDelivered = 0;
+            $_OrderCancel = 0;
+            for($i=$start;$i<=$end;$i++){
+                $WaitForConfirmation = CustomerOrder::whereNull('confirm_time')->where('order_status',1)->whereYear('order_time', '20'.$year_now)->whereMonth('order_time', $i)->get();
+                $WaitingForShipping = CustomerOrder::whereNull('ship_time')->whereNotNull('confirm_time')->where('order_status',1)->whereYear('order_time', '20'.$year_now)->whereMonth('order_time', $i)->get(); 
+                $Delivering = CustomerOrder::whereNull('completed_time')->whereNotNull('ship_time')->where('order_status',1)->whereYear('order_time', '20'.$year_now)->whereMonth('order_time', $i)->get();
+                $OrderDelivered = CustomerOrder::whereNotNull('completed_time')->where('order_status',1)->whereYear('order_time', '20'.$year_now)->whereMonth('order_time', $i)->get();
+                $OrderCancel = CustomerOrder::where('order_status',0)->whereYear('order_time', '20'.$year_now)->whereMonth('order_time', $i)->get();
+                
+                $_WaitForConfirmation += count($WaitForConfirmation);
+                $_WaitingForShipping += count($WaitingForShipping);
+                $_Delivering += count($Delivering);
+                $_OrderDelivered += count($OrderDelivered);
+                $_OrderCancel += count($OrderCancel);
+            }
+            array_push($data_donut,$_WaitForConfirmation);
+            array_push($data_donut,$_WaitingForShipping);
+            array_push($data_donut,$_Delivering);
+            array_push($data_donut,$_OrderDelivered);
+            array_push($data_donut,$_OrderCancel);
+            // donut 
 
             return response()->json([
                 'datas_import' => $datas_import,
                 'datas_revenue' => $datas_revenue,
-                'labels_line' => ['Quarter one','Quarter two','Quarter three' , 'Quarter four'],
+                'labels_line' => $_month,
+                'data_donut' => $data_donut
             ]);
-
         }
 
         if($sort_by == 'month'){
+
+            // line 
             $datas_import = [];
             for($i=1;$i<=$date_now;$i++){
                 $total = 0 ; 
@@ -148,11 +196,27 @@ class StatisticalController extends Controller
                 }
                 array_push($datas_revenue,$total);
             }
+            // line 
+
+            // donut 
+            $data_donut = [];
+            $WaitForConfirmation = CustomerOrder::whereNull('confirm_time')->where('order_status',1)->whereYear('order_time', '20'.$year_now)->whereMonth('order_time', $month_now)->get();
+            $WaitingForShipping = CustomerOrder::whereNull('ship_time')->whereNotNull('confirm_time')->where('order_status',1)->whereYear('order_time', '20'.$year_now)->whereMonth('order_time', $month_now)->get(); 
+            $Delivering = CustomerOrder::whereNull('completed_time')->whereNotNull('ship_time')->where('order_status',1)->whereYear('order_time', '20'.$year_now)->whereMonth('order_time', $month_now)->get();
+            $OrderDelivered = CustomerOrder::whereNotNull('completed_time')->where('order_status',1)->whereYear('order_time', '20'.$year_now)->whereMonth('order_time', $month_now)->get();
+            $OrderCancel = CustomerOrder::where('order_status',0)->whereYear('order_time', '20'.$year_now)->whereMonth('order_time', $month_now)->get();
+
+            array_push($data_donut,count($WaitForConfirmation));
+            array_push($data_donut,count($WaitingForShipping));
+            array_push($data_donut,count($Delivering));
+            array_push($data_donut,count($OrderDelivered));
+            array_push($data_donut,count($OrderCancel));
 
             return response()->json([
                 'datas_import' => $datas_import,
                 'datas_revenue' => $datas_revenue,
                 'labels_line' => $day,
+                'data_donut' => $data_donut
             ]);
         }
 
