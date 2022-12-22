@@ -91,7 +91,6 @@ export default {
         if(_pathname.includes('shipping')) this.border_bts[1] = true;
         if(_pathname.includes('delivering')) this.border_bts[2] = true;
         if(_pathname.includes('delivered')) this.border_bts[3] = true;
-       
     },
     methods:{
         home:function(){

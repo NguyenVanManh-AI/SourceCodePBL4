@@ -1,44 +1,425 @@
 <template>
-    <div>
-        <!-- <ParticleVue32></ParticleVue32> -->
-        Statistical
-        <div style="width: 600px;justify-content: center;display: flex;">
-            <LineChart/>
+    <div id="administrator">
+        <ParticleVue32></ParticleVue32>
+        <div id="big">
+            <div id="head">
+                <div>
+                    <div><span @click="home" id="home" class="under">Pages</span> / <span class="under" @click="spstatisticaladmin" id="spstatisticaladmin">Statistical</span></div>
+                    <div style="font-weight: bold" class="ef">Statistical</div>
+                </div>
+                <div id="search">
+                    <div id="pr" @click="profile">
+                        <img :src="url_img" v-if="admin.url_img!=null">
+                        <img src='../../assets/avatar.png' v-if="admin.url_img==null">
+                    </div>
+                </div>
+            </div>
+
+            <div id="table">
+                <div id="statistical">
+                    <div id="title1"><i class="fa-solid fa-chart-pie"></i> Statistics of sales and import data of metashop stores</div>
+                    <div class="row" id="slsort">
+                        <div id="title2"><i class="fa-solid fa-hockey-puck"></i> Statistics by</div>
+                        <div class="col-3">
+                            <select class="form-control" v-model="s_time">
+                                <option value="month">This Month</option>
+                                <option value="quarter">This Quarter</option>
+                                <option value="year">This Year</option>
+                            </select>
+                        </div>
+                    </div>
+                    <br><hr>
+                    <div>
+                        <div id="title3"><i class="fa-solid fa-chart-column"></i> Statistics of revenue, import goods</div>
+                        <div id="infor_line">
+                            <span><i class="fa-solid fa-file-invoice-dollar"></i> Revenue</span><span>$999</span>
+                            <span><i class="fa-solid fa-hand-holding-dollar"></i> Import goods</span><span>$789</span>
+                        </div>
+                    </div>
+                    <div class="chart_main">
+                        <div id="chart_line">
+                            <LineChart></LineChart>
+                        </div>
+                    </div>
+                    <br><hr><br>
+                    <div>
+                        <div id="title4"><i class="fa-solid fa-basket-shopping"></i> Statistics of orders</div>
+                        <div class="infor_donut">
+                            <span id="sp1"><i class="fa-brands fa-shopify mr-1"></i> Wait for confirmation</span><p>$999</p>
+                            <span id="sp2"><i class="fa-regular fa-circle-check mr-1"></i> Waiting for delivery</span><p>$789</p>
+                        </div>
+                        <div class="infor_donut">
+                            <span id="sp3"><i class="fa-solid fa-truck-fast mr-1"></i> Delivering</span><p>$999</p>
+                            <span id="sp4"><i class="fa-solid fa-house-circle-check mr-1"></i> Delivered</span><p>$999</p>
+                            <span id="sp5"><i class="fa-solid fa-trash"></i> Cancelled</span><p>$999</p>
+                        </div>
+                    </div>
+                    <div class="chart_main">
+                        <div id="chart_donut">
+                            <DoughnutChart></DoughnutChart>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <Notification></Notification>
+
     </div>
 </template>
 
 <script>
-import LineChart from './LineChart.vue'
 
-// import ParticleVue32 from "./particle/ParticleVue32.vue";
+// import BaseRequest from '../../restful/admin/core/BaseRequest';
+import useEventBus from '../../composables/useEventBus'
+import Notification from './Notification'
+import config from '../../config.js'
+
+import LineChart from './admin_chart/LineChart.vue'
+import DoughnutChart from './admin_chart/DoughnutChart.vue'
+
+
+import ParticleVue32 from "./particle/ParticleVue32.vue";
 
 export default {
     name:"StatisticalAdmin",
     components:{
+        Notification,
+        ParticleVue32,
         LineChart,
-        // ParticleVue32
+        DoughnutChart
     },
     setup() {
-        document.title = "Meta Shop | Statiscal";
+        document.title = "Meta Shop | Order"
     },
     data(){
         return {
-
+            url_img:'',
+            admin:{
+                id:null,
+                fullname:'',
+                username:'',
+                email: '',
+                phone: '',
+                date_of_birth:null,
+                url_img:null,
+                gender:null,
+                address:'',
+                role:'',
+                access_token:'',
+                refreshToken:'',
+                created_at:null,
+                updated_at:null,
+                email_verified_at:null,
+            },
+            domain:config.API_URL,
+            s_time:'month',
         }
     },
     mounted(){
+        this.admin = JSON.parse(window.localStorage.getItem('admin'));
+        this.url_img = config.API_URL + '/' + this.admin.url_img; 
+
+        
+
 
     },
     methods:{
-
+        home:function(){
+            this.$router.push({name:'DashboardAdmin'});
+        },
+        spstatisticaladmin:function(){
+            this.$router.push({name:'StatisticalAdmin'});
+            window.location = window.location.href;
+        },
+        profile:function(){
+            this.$router.push({name:'ProfileAdmin'});
+        },
     },
     watch:{
+        s_time:function(){
+            // line 
+            var datas_revenue = [];
+            var datas_import = [];
+            var labels_line = [];
+
+            if(this.s_time == 'month'){
+                datas_revenue = [10,15,20,25,30,35,40];
+                datas_import = [12,25,10,65,40,95,80];
+                labels_line = ['1','2','3','4','5','6','7'];
+            }
+            if(this.s_time == 'quarter'){
+                datas_revenue = [120,190,160];
+                datas_import = [220,490,160];
+                labels_line = ['Quarter one','Quarter two','Quarter three' , 'Quarter four'];
+            }
+            if(this.s_time == 'year'){
+                datas_revenue = [6500, 5900, 8000, 81, 5600, 55, 4000,6005, 59, 8000, 8001, 1],
+                datas_import = [61500, 15900, 8000, 281, 35600, 155, 44000,46005, 259, 78000, 18001, 11],
+                labels_line = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+            }
+
+            const { emitEvent } = useEventBus();
+            var ob_line = {
+                datas_revenue : datas_revenue,
+                datas_import : datas_import,
+                labels_line : labels_line,
+            }
+            emitEvent('eventAdminStatistical',ob_line);
+
+            // donut 
+            var data_donut = []; 
+            var labels_donut = ['Wait for confirmation','Waiting for delivery','Delivering','Delivered','Cancelled'];
+            if(this.s_time == 'month'){
+                data_donut = [10,25,5,30,2];
+            }
+            if(this.s_time == 'quarter'){
+                data_donut = [120,190,160,100,123];
+            }
+            if(this.s_time == 'year'){
+                data_donut = [10,15,6,90,1];
+            }
+            var ob_donut = {
+                data_donut : data_donut,
+                labels_donut : labels_donut,
+            }
+            emitEvent('event2AdminStatistical',ob_donut);
+
+
+        }
+
 
     }
 }
 </script>
 
 <style scoped>
+
+
+*{
+    list-style: none;
+}
+
+/* biểu đồ */
+#statistical {
+    padding: 30px 20px;
+}
+.chart_main {
+    display: flex;
+    justify-content: center;
+}
+#chart_line {
+    width: 80%;
+}
+#chart_donut {
+    width: 60%;
+}
+
+
+#title1 {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: rgb(31, 112, 31);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+#title1 i {
+    margin-right: 6px;
+}
+
+#slsort{
+    display: flex;
+    align-items: center;
+    align-content: center;
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: bold;
+
+}
+
+#title3 {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    margin-top: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    justify-content: center;
+    margin-top: 10px;
+    color: rgb(0, 190, 248);
+}
+#title3 i {
+    margin: 0px 6px;
+}
+#infor_line {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    justify-content: center;
+    margin-top: 6px;
+}
+
+#infor_line span:nth-child(2) {
+    color: green;
+    font-size: 20px;
+    margin: 0px 10px;
+}
+
+#infor_line span:nth-child(4) {
+    color: rgb(150, 150, 0);
+    font-size: 20px;
+    margin: 0px 10px;
+}
+#title4 {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    margin-top: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    justify-content: center;
+    margin-top: 10px;
+    color: rgb(144, 144, 4);
+}
+#title4 i {
+    margin: 0px 6px;
+}
+.infor_donut {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    justify-content: center;
+    margin-top: 6px;
+}
+#sp1{
+    color: rgb(255, 205, 86);
+}
+#sp2{
+    color: rgb(54, 162, 235);
+}
+#sp3{
+    color: #7ED957;
+}
+#sp4{
+    color: #008037;
+}
+#sp5{
+    color: rgb(255, 99, 132);
+}
+
+.infor_donut i {
+    margin-left: 20px;
+}
+
+.infor_donut p {
+    font-size: 18px;
+    color: #0085FF;
+    margin: 0px 6px;
+}
+
+
+
+/* header */
+#administrator{
+    background-color: #F2F4F6;
+    padding: 0px 30px;
+    position: relative;
+}
+
+#pr {
+    line-height: 100%;
+    color: #0085FF;
+    align-items: center;
+    display: flex;
+    cursor: pointer;
+    margin-left: 20px;
+}
+#pr img{
+    object-fit: cover;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+}
+#home {
+    color: #0085FF;
+    cursor: pointer;
+}
+.under{
+    position: relative;
+    padding: 0px 0px;
+}
+.under::after{
+    content: ' ';
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 0;
+    height: 2px;
+    background:#0085FF;
+    transition: width 0.3s;
+}
+.under:hover::after {
+    width: 100%;
+    transition: width 0.3s;
+}
+
+#spstatisticaladmin{
+    color: #3a9efb;
+    cursor: pointer;
+}
+#big {
+    position: relative;
+    background-color: white;
+    border-radius: 10px;
+    align-items: center;
+    box-shadow: 0px 10px 10px -10px #0085FF;
+    background-color: #0085FF;
+    height: 80px;
+    margin-top: 50px;
+}
+.ef {
+    -webkit-animation: pulse 2s cubic-bezier(.4,0,.6,1) infinite!important;
+    animation: pulse 2s cubic-bezier(.4,0,.6,1) infinite!important;
+}
+#head {
+    position: absolute;
+    top: -50px;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 40px;
+    margin: 10px 0px;
+    background-color: white;
+    box-shadow: 0px 10px 10px -10px white;
+    border-radius: 10px;
+    align-items: center;
+    width: 100%;
+}
+#table {
+    top: 40px;
+    position: absolute;
+    justify-content: space-between;
+    padding: 0px 30px;
+    margin: 10px 0px;
+    background-color: white;
+    /* box-shadow: 0px 10px 10px -10px gray; */
+    box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
+    border-radius: 10px;
+    align-items: center;
+    width: 100%;
+    /* min-height: 440px; */
+    font-size: 13px;
+    /* border: 10px solid red; */
+}
+
 
 </style>

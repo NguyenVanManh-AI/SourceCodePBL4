@@ -17,6 +17,7 @@ use App\Http\Controllers\SendEmailController;
 use App\Http\Controllers\ShippingAddressController; 
 use App\Http\Controllers\CustomerOrderController;
 use App\Http\Controllers\AdminOrderController;
+use App\Http\Controllers\StatisticalController;
 use App\Http\Controllers\DashboardController;
 use App\Models\ImportDetail;
 use App\Models\ShippingAddress;
@@ -204,5 +205,13 @@ Route::prefix('admin-order')->controller(AdminOrderController::class)->group(fun
         Route::get('ship', 'ship');
         Route::get('delivered', 'delivered');
         Route::get('print', 'print');
+    });
+});
+
+// Admin Statistical
+Route::prefix('statistical')->controller(StatisticalController::class)->group(function () {
+        Route::get('chart', 'chart');
+        Route::middleware('auth:admin_api')->group(function () {
+        // Route::get('print', 'print');
     });
 });
