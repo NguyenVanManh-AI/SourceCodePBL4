@@ -211,5 +211,6 @@ Route::prefix('admin-order')->controller(AdminOrderController::class)->group(fun
 Route::prefix('statistical')->controller(StatisticalController::class)->group(function () {
     Route::middleware('auth:admin_api')->group(function () {
         Route::get('chart', 'chart');
+        Route::get('product', 'StatisticalProduct');
     });
 });

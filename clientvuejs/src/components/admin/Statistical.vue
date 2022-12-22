@@ -59,6 +59,62 @@
                             <DoughnutChart></DoughnutChart>
                         </div>
                     </div>
+                    <br><hr><br>
+                    <div>
+                        <div id="title9"><i class="fa-solid fa-chart-line"></i> Detailed statistics of imported and sold products</div>
+                        <div class="col-12">
+                            <div class="col-auto">
+                            <label class="sr-only" for="inlineFormInputGroup">Product information search</label>
+                                <div class="input-group mb-2">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></div>
+                                    </div>
+                                    <input type="text" v-model="searchad" class="form-control" id="inlineFormInputGroup" placeholder="Product information search">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <table class="table table-hover table-bordered">
+                                <thead class="thead-dark">
+                                    <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Product Code</th>
+                                    <th scope="col">Product Name</th>
+                                    <th scope="col">Sold</th>
+                                    <th scope="col">Import</th>
+                                    <th scope="col">Revenue</th>
+                                    <!-- <th scope="col">Profit</th> -->
+                                    </tr>
+                                </thead>
+                                <tbody v-for="(pr,index) in products" :key="index">
+                                    <tr>
+                                        <th scope="row">{{(pageN-1)*10+index+1}}</th>
+                                        <td @click="viewDetails(pr.uri)" class="view">{{pr.uri}}</td>
+                                        <td @click="viewDetails(pr.uri)" class="view">{{pr.name}}</td>
+                                        <td>{{new Intl.NumberFormat().format(pr.number_order)}}</td>
+                                        <td>{{new Intl.NumberFormat().format(pr.number_import)}}</td>
+                                        <td>${{new Intl.NumberFormat().format(pr.price_order)}}</td>
+                                        <!-- <td>{{new Intl.NumberFormat().format(pr.price_order - pr.price_import)}}</td> -->
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div id="divpaginate">
+                                <paginate class="pag" id="nvm"
+                                    :page-count="Math.ceil(this.quantity/10)"
+                                    :page-range="3"
+                                    :margin-pages="2"
+                                    :click-handler="clickCallback"
+                                    :initial-page="this.pageN"
+                                    :prev-text="'Prev'"
+                                    :next-text="'Next'"
+                                    :container-class="'pagination'"
+                                    :page-class="'page-item'">
+                                </paginate>
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -77,7 +133,7 @@ import config from '../../config.js'
 
 import LineChart from './admin_chart/LineChart.vue'
 import DoughnutChart from './admin_chart/DoughnutChart.vue'
-
+import Paginate from 'vuejs-paginate-next';
 
 import ParticleVue32 from "./particle/ParticleVue32.vue";
 
@@ -88,6 +144,7 @@ export default {
         ParticleVue32,
         LineChart,
         DoughnutChart,
+        Paginate
     },
     setup() {
         document.title = "Meta Shop | Order"
@@ -117,6 +174,10 @@ export default {
             total_datas_revenue : 0,
             total_datas_import : 0,
             data_donut : [],
+            products : null,
+            quantity : 0,
+            pageN : 1,
+            searchad:'',
         }
     },
     mounted(){
@@ -164,6 +225,15 @@ export default {
             const { emitEvent } = useEventBus();
             emitEvent('eventError','Statistical Failse !');
         })
+
+        BaseRequest.get('api/statistical/product?searchad=')
+        .then( (data) =>{
+            this.products = data.products.data;
+            this.quantity = data.products.total;
+        }) 
+        .catch(()=>{
+
+        })
     },
     methods:{
         home:function(){
@@ -175,6 +245,24 @@ export default {
         },
         profile:function(){
             this.$router.push({name:'ProfileAdmin'});
+        },
+        viewDetails:function(uri){
+            this.$router.push({name:'ProductDetails',params:{id:uri}});
+        },
+        clickCallback:function(pageNum){
+            BaseRequest.get('api/statistical/product?searchad='+this.searchad+'&page='+pageNum)
+            .then( (data) =>{
+                this.products = data.products.data ;
+                this.quantity = data.products.total;
+                this.pageN = pageNum;
+
+                const { emitEvent } = useEventBus();
+                emitEvent('eventSuccess','Get Products Success !');
+            }) 
+            .catch(()=>{
+                const { emitEvent } = useEventBus();
+                emitEvent('eventError','Get Products Fails !');
+            })
         },
     },
     watch:{
@@ -220,6 +308,20 @@ export default {
                 const { emitEvent } = useEventBus();
                 emitEvent('eventError','Statistical Failse !');
             })
+        },
+        searchad:function(){
+            BaseRequest.get('api/statistical/product?searchad='+this.searchad+'&page=1')
+            .then( (data) =>{
+                this.products = data.products.data ;
+                this.quantity = data.products.total;
+
+                const { emitEvent } = useEventBus();
+                emitEvent('eventSuccess','Search Products Success !');
+            }) 
+            .catch(()=>{
+                const { emitEvent } = useEventBus();
+                emitEvent('eventError','Search Products Fails !');
+            })
         }
     }
 }
@@ -227,6 +329,35 @@ export default {
 
 <style scoped>
 
+.view {
+    cursor: pointer;
+}
+
+#divpaginate {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.view:hover {
+    text-decoration: underline;
+    color: #0085FF;
+}
+
+#title9 {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: rgb(210, 21, 87);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+#title9 i {
+    margin: 0px 6px;
+}
 
 *{
     list-style: none;
@@ -282,7 +413,7 @@ export default {
     font-weight: bold;
     justify-content: center;
     margin-top: 10px;
-    color: rgb(0, 190, 248);
+    color: rgb(248, 178, 0);
 }
 #title3 i {
     margin: 0px 6px;
@@ -318,7 +449,7 @@ export default {
     font-weight: bold;
     justify-content: center;
     margin-top: 10px;
-    color: rgb(144, 144, 4);
+    color: rgb(53, 144, 4);
 }
 #title4 i {
     margin: 0px 6px;

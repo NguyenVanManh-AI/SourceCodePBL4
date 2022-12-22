@@ -217,14 +217,72 @@ class StatisticalController extends Controller
                 'datas_revenue' => $datas_revenue,
                 'labels_line' => $day,
                 'data_donut' => $data_donut
-            ]);
+            ],201);
         }
 
         // ngày có thể nhầm lẫn một chút vì nếu lấy ngày mở mỹ và ngày ở việt nam sẽ khác nhau 
         // nói chung sau này có gì xem lại fix lại sau 
+    }
 
+    public function StatisticalProduct(Request $request){
+        $search = $request->searchad;
+        $products = Product::where(function($query) use($search){
+            $query->where('name','LIKE', '%'.$search.'%')
+            ->orWhere('warranty_period','LIKE', '%'.$search.'%')
+            ->orWhere('description','LIKE', '%'.$search.'%')
+            ->orWhere('price','LIKE', '%'.$search.'%')
+            ->orWhere('material','LIKE', '%'.$search.'%')
+            ->orWhere('uri','LIKE', '%'.$search.'%')
+            ->orWhere('dimension','LIKE', '%'.$search.'%');
+        })->paginate(10);
+        foreach($products as $product){ // (1) // ứng với mỗi sản phẩm cần tính các thông tin sau 
+            // nhập vào 
+            $import_details = ImportDetail::where('product_id',$product->id)->get();
+            $total_import = 0 ; // số lượng 
+            $price_import = 0 ; // tiền 
+            foreach($import_details as $import_detail){
+                $total_import += $import_detail->quantity;
+                $price_import += ($import_detail->quantity * $import_detail->price)*(100 + $import_detail->tax)/100;
+            }
+            $product->number_import = $total_import;
+            $product->price_import = $price_import;
+            
+            // bán ra 
+            // tất cả đơn hàng đã giao 
+            $total_order = 0;
+            $price_order = 0;
+            $customer_orders = CustomerOrder::whereNotNull('completed_time')->where('order_status',1)->get(); 
+            foreach($customer_orders as $customer_order){
+                $order_products = OrderDetail::where('customer_order_id',$customer_order->id)->get(); // lấy ra các sản phẩm của đơn hàng đó
+                foreach($order_products as $order_product){
+                    if($order_product->product_id == $product->id){ // nếu id của sản phẩm trùng với id của product (1) thì cộng vào
+                        $total_order += $order_product->quantity;
+                        $price_order += $order_product->quantity * $order_product->price;
+                    }
+                }
+            }
+            $product->number_order = $total_order;
+            $product->price_order = $price_order;
+        }
 
+        // sắp xếp tự code 
+        $tg = null;
+        $n = count($products);
+        for($i = 0; $i < $n - 1; $i++){
+            for($j = $i + 1; $j < $n; $j++){
+                if($products[$i]->price_order < $products[$j]->price_order){
+                    $tg = $products[$i];
+                    $products[$i] = $products[$j];
+                    $products[$j] = $tg;        
+                }
+            }
+        }
+        // sắp xếp tự code , sau này tìm cách tối ưu sau bằng sắp xếp trực tiếp trong sql hoặc sắp xếp kiểu khác 
+        // vì cái này có một nhược điểm là lấy ra 10 cái rồi mới đi sắp xếp trong 10 cái đó 
 
+        return response()->json([
+            'products' => $products,
+        ],201);
     }
 }
 
