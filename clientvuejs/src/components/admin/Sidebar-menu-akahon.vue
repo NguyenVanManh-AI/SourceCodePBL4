@@ -144,7 +144,6 @@
 
 // import useEventBus from '../../composables/useEventBus'
 
-
   export default {
     name: 'SidebarMenuAkahon',
     props: {
@@ -400,7 +399,7 @@
       },
       compadmin:function(){
         for(var i=0;i<this.colors.length;i++) this.colors[i] = false;
-        this.$router.push({name:"AdminComp"});
+        window.location = window.location.origin + '/main/dashboard';
       },
       logout:function(){
         // const { emitEvent } = useEventBus()

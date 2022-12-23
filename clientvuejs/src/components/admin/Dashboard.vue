@@ -76,7 +76,7 @@
             <br><br><hr> 
             <div id="title-chart"><i class="fa-solid fa-database"></i> Statistical chart of the total number of orders of the system</div>
             <div class="col-10 mx-auto" id="bart-chart">
-                <canvas id="barChart"></canvas>
+                <BarChar></BarChar>
             </div>
 
         </div>
@@ -87,9 +87,10 @@
 <script>
 import ParticleVue32 from "./particle/ParticleVue32.vue";
 import BaseRequest from '../../restful/admin/core/BaseRequest';
-import useEventBus from '../../composables/useEventBus'
-import Notification from './Notification'
-import Chart from 'chart.js/auto';
+import useEventBus from '../../composables/useEventBus';
+import Notification from './Notification';
+import BarChar from './admin_chart/BarChart.vue';
+// import Chart from 'chart.js/auto';
 // import config from '../../config.js'
 // import Paginate from 'vuejs-paginate-next';
 
@@ -97,7 +98,8 @@ export default {
     name: "DashboardAdmin",
     components: {
         ParticleVue32,
-        Notification
+        Notification,
+        BarChar
     },
     setup() {
         document.title = "Meta Shop | Dashboard";
@@ -154,68 +156,30 @@ export default {
     mounted(){
 
         this.admin = JSON.parse(window.localStorage.getItem('admin'));
-        if(!window.localStorage.getItem('admin')){
-            this.$router.push({name:"LoginAdmin"});
-        }
+        // if(!window.localStorage.getItem('admin')){
+        //     this.$router.push({name:"LoginAdmin"});
+        // }
 
-        var data_chart = [];
         BaseRequest.get('api/dashboard-admin/dashboard')
         .then( (data) =>{
             this.infor_dashboard = data.infor_dashboard ;
+
+            var data_chart = [];
             data_chart[0] = data.infor_dashboard.all_customer_order;
             data_chart[1] = data.infor_dashboard.WaitForConfirmation;
             data_chart[2] = data.infor_dashboard.WaitingForShipping;
             data_chart[3] = data.infor_dashboard.Delivering;
             data_chart[4] = data.infor_dashboard.OrderDelivered;
             data_chart[5] = data.infor_dashboard.OrderCancel;
+
             const { emitEvent } = useEventBus();
+            emitEvent('eventBarChart',data_chart);
             emitEvent('eventSuccess','Show Dashboard Success !');
         }) 
         .catch(()=>{
             const { emitEvent } = useEventBus();
             emitEvent('eventError','Show Dashboard Fails !');
         })
-
-        var barChart = document.getElementById('barChart');
-        var labels = ['Total Order','Wait for confirmation','Waiting for delivery','Delivering','Delivered','Cancelled'];
-        var data = {
-            labels: labels,
-            datasets: [{
-                label: 'Customer Order',
-                data: data_chart ,
-                backgroundColor: [
-                    'rgb(29, 215, 48, 0.2)',
-                    'rgba(255, 205, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(201, 203, 207, 0.2)'
-                ],
-                borderColor: [
-                    'rgb(29, 215, 48)',
-                    'rgb(255, 159, 64)',
-                    'rgb(255, 205, 86)',
-                    'rgb(75, 192, 192)',
-                    'rgb(54, 162, 235)',
-                    'rgb(153, 102, 255)',
-                    'rgb(201, 203, 207)'
-                ],
-                borderWidth: 1
-            }]
-        };
-        new Chart(barChart, {
-            type: 'bar',
-            data: data,
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            },
-        });
-
     }
 }
 </script>
