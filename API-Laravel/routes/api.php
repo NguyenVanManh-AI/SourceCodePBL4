@@ -19,6 +19,7 @@ use App\Http\Controllers\CustomerOrderController;
 use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\StatisticalController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AdminDashboardController;
 use App\Models\ImportDetail;
 use App\Models\ShippingAddress;
 
@@ -212,5 +213,12 @@ Route::prefix('statistical')->controller(StatisticalController::class)->group(fu
     Route::middleware('auth:admin_api')->group(function () {
         Route::get('chart', 'chart');
         Route::get('product', 'StatisticalProduct');
+    });
+});
+
+// Admin Dashboard
+Route::prefix('dashboard-admin')->controller(AdminDashboardController::class)->group(function () {
+    Route::middleware('auth:admin_api')->group(function () {
+        Route::get('dashboard', 'adminDashboard');
     });
 });
