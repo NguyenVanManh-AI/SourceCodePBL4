@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th12 23, 2022 lúc 11:47 AM
+-- Thời gian đã tạo: Th12 29, 2022 lúc 08:16 AM
 -- Phiên bản máy phục vụ: 10.4.22-MariaDB
 -- Phiên bản PHP: 7.4.27
 
@@ -128,7 +128,7 @@ INSERT INTO `customers` (`id`, `fullname`, `email`, `username`, `email_verified_
 (25, 'Mai Thị Kim Khánh', 'kimkhanhdth@gmail.com', 'kimkhanhdth', NULL, '$2y$10$rLrZo7PxrsLIbrT7Ov2jDeNCBy1Zl4VD/rQ6M1xxXPqgqrvCzTCYK', 'TP Ho Chi Minh - Viet Nam', '2001-09-28', 0, 1, '01236000123', 'storage/avatarcustomer/5Ua0h8PlorRwYtJmznRTJD80IzUt2Iau42iNCKDs.jpg', NULL, NULL, '2022-11-06 07:07:38', '2022-12-11 01:07:04'),
 (26, 'Mạnh Nguyễn Văn', 'khoahocfullstack5@gmail.com', 'gg_110612781880691501207', NULL, '$2y$10$lLgc0uV8pN4co957nG/KZeD5o01tT3ggLnLMvvxi9BfwwtGL5ZC8S', NULL, NULL, NULL, 1, NULL, NULL, '110612781880691501207', NULL, '2022-11-06 11:29:56', '2022-11-06 12:17:09'),
 (30, 'Mạnh Nguyễn Văn', 'khoahoc2fullstack5@gmail.com', 'gg_113818064700641091374', NULL, '$2y$10$oHlOD4ob.9NO4PbGkrdCSOJbZN98urOvgvQ2Bx6MWT7y60ufuUGtG', NULL, NULL, NULL, 1, NULL, NULL, '113818064700641091374', NULL, '2022-11-06 12:50:22', '2022-11-07 02:51:41'),
-(31, 'Mạnh Nguyễn Văn', 'nguyenvanmanh2001it1@gmail.com', 'gg_109722727162244891904', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, '109722727162244891904', NULL, '2022-12-11 01:12:21', '2022-12-11 01:12:21');
+(31, 'Mạnh Nguyễn Văn', 'nguyenvanmanh2001it1@gmail.com', 'gg_109722727162244891904', NULL, NULL, 'Thừa Thiên Huế - Việt Nam', '2001-08-29', 1, 1, '01236000333', 'storage/avatarcustomer/sKVlkGLjLGRXbXuTMjusOUQvaz8iZjrwIO9XmzZQ.jpg', '109722727162244891904', NULL, '2022-12-11 01:12:21', '2022-12-23 11:46:43');
 
 -- --------------------------------------------------------
 
@@ -175,7 +175,8 @@ INSERT INTO `customer_orders` (`id`, `customer_id`, `hex_id`, `customer_name`, `
 (15, 31, 'e00bb2a771bf48f65253', 'Mạnh Nguyễn Văn', 'Văn Mạnh', '01236000333', 'Thành phố Huế - Việt Nam', 0, '2022-12-21 01:33:09', NULL, NULL, NULL, 49500000, '2022-12-20 11:33:09', '2022-12-20 11:33:24'),
 (16, 31, 'd98c308c8e19e911fdda', 'Mạnh Nguyễn Văn', 'Văn Mạnh', '01236000333', 'Thành phố Huế - Việt Nam', 1, '2022-12-21 02:57:30', '2022-12-21 19:12:03', '2022-12-21 19:12:13', '2022-12-21 19:12:23', 3000, '2022-12-20 12:57:30', '2022-12-21 05:12:23'),
 (17, 25, '7aa6a20b0cf1edb1756c', 'Mai Thị Kim Khánh', 'Nguyễn Văn Mạnh', '0702518919', 'Thừa Thiên Huế - Việt Nam', 1, '2022-12-21 18:50:26', NULL, NULL, NULL, 68030, '2022-12-21 04:50:26', '2022-12-21 04:50:26'),
-(18, 31, '311c117b47de92aace49', 'Mạnh Nguyễn Văn', 'Văn Mạnh', '01236000333', 'Thành phố Huế - Việt Nam', 1, '2022-12-21 18:53:13', '2022-12-21 18:54:15', '2022-12-21 18:54:41', '2022-12-21 18:55:06', 17050900, '2022-12-21 04:53:13', '2022-12-21 04:55:06');
+(18, 31, '311c117b47de92aace49', 'Mạnh Nguyễn Văn', 'Văn Mạnh', '01236000333', 'Thành phố Huế - Việt Nam', 1, '2022-12-21 18:53:13', '2022-12-21 18:54:15', '2022-12-21 18:54:41', '2022-12-21 18:55:06', 17050900, '2022-12-21 04:53:13', '2022-12-21 04:55:06'),
+(19, 31, '3de435ac548d4e303740', 'Mạnh Nguyễn Văn', 'Văn Mạnh', '01236000333', 'Thành phố Huế - Việt Nam', 1, '2022-12-24 13:04:34', NULL, NULL, NULL, 52030, '2022-12-23 23:04:34', '2022-12-23 23:04:34');
 
 -- --------------------------------------------------------
 
@@ -463,7 +464,9 @@ INSERT INTO `order_details` (`id`, `customer_order_id`, `product_id`, `product_n
 (45, 18, 55, 'Xiaomi MI 10T Pro', 1, 27000000, '2022-12-21 04:53:13', '2022-12-21 04:53:13'),
 (46, 18, 13, 'Iphone 14', 1, 32000000, '2022-12-21 04:53:13', '2022-12-21 04:53:13'),
 (47, 18, 2, 'MacBook Air M1', 1, 30000000, '2022-12-21 04:53:13', '2022-12-21 04:53:13'),
-(48, 18, 71, 'Vinfast Lux A2.0', 1, 9999, '2022-12-21 04:53:13', '2022-12-21 04:53:13');
+(48, 18, 71, 'Vinfast Lux A2.0', 1, 9999, '2022-12-21 04:53:13', '2022-12-21 04:53:13'),
+(49, 19, 71, 'Vinfast Lux A2.0', 2, 9999, '2022-12-23 23:04:34', '2022-12-23 23:04:34'),
+(50, 19, 64, 'USB 2T', 1, 500300, '2022-12-23 23:04:34', '2022-12-23 23:04:34');
 
 -- --------------------------------------------------------
 
@@ -537,14 +540,14 @@ INSERT INTO `products` (`id`, `name`, `quantity`, `warranty_period`, `descriptio
 (61, 'Nhà Giả Kim', 15, '2022-12-30', 'Sách hay của tác giả Paulo Coelho', 13, 30000.00, 'Bìa cứng', '20cm - 6cm', 'eef751f4d5d65beb9f83', '2022-10-25 00:47:56', '2022-12-21 04:50:26'),
 (62, 'Đắc Nhân Tâm', 0, '2023-02-10', 'Sách hay - Đắc nhân tâm', 13, 345000.00, 'Bìa cứng', '20cm - 6cm', 'a6167fbae577e26eeb60', '2022-10-25 00:51:43', '2022-10-25 00:51:43'),
 (63, 'Ốp lưng IP12', 996, '2023-01-28', 'Ốp lưng màu đỏ dành cho điện thoại IPhone 12', 49, 30000.00, 'Ốp da', '12cm - 6cm', '9724895233d7d168774a', '2022-10-25 00:57:20', '2022-12-21 04:50:26'),
-(64, 'USB 2T', 199, '2022-12-25', 'Bộ nhớ , tốc độ đọc ghi siêu nhanh .', 50, 500300.00, 'Nhôm', '6cm - 4cm', 'bda1d26c51203943f113', '2022-10-25 01:05:09', '2022-12-21 04:50:26'),
+(64, 'USB 2T', 198, '2022-12-25', 'Bộ nhớ , tốc độ đọc ghi siêu nhanh .', 50, 500300.00, 'Nhôm', '6cm - 4cm', 'bda1d26c51203943f113', '2022-10-25 01:05:09', '2022-12-23 23:04:34'),
 (65, 'Sạc dự phòng Energizer 20.000mAh UE20012PQ', 0, '2024-11-22', 'Sạc dự phòng với 2 Đầu vào: Micro-USB, Đầu vào: Type C', 51, 900233.00, 'Nhôm', '10cm - 6cm', '2bbda9b780b75c226dd4', '2022-10-25 01:09:37', '2022-10-25 01:09:37'),
 (66, 'Bàn văn phòng', 0, '2022-10-28', 'Bàn văn phòng giá tốt . Để máy tính siêu đẹp .', 30, 1000999.00, 'Gỗ lim', '2m - 0.5m . Khối lượng 10kg', '1514021ea4a864141a5e', '2022-10-25 01:17:49', '2022-10-25 01:17:49'),
 (67, 'Ghế văn phòng', 0, '2023-02-04', 'Ghế văn phòng cao cấp . Chân sắt .', 30, 560399.00, 'Bọc vải - Khung sắt', '0.5m - 0.3m - 0.2m', 'e6c346ab60e7ab052bce', '2022-10-25 01:28:08', '2022-10-25 01:28:08'),
 (68, 'Redmi Xiaomi', 0, '2022-10-28', 'Điện thoại mới nhất của Xiaomi\nCông nghệ màn hình	AMOLEDHDR10+\nTần số quét	120Hz\nĐộ sáng tối đa	1500 nits\nKích thước màn hình	6.81 inch\nĐộ phân giải	1440 x 3200', 3, 17000332.00, 'Nhựa', '6.81 inch', 'ee4f585df2d2007e95b5', '2022-10-25 01:36:49', '2022-10-25 01:36:49'),
 (69, 'Lót chuột pro :))', 0, '2022-12-29', 'Lót chuột làm từ chất liệu vip pro siêu cấp :)) mua đi', 12, 9999999.00, 'Vải tơ tằm', '20cm - 20cm', '30691e92869d0bb5f259', '2022-10-25 01:39:22', '2022-10-25 01:39:55'),
 (70, 'USB 3.1 Type C', 0, '2022-10-21', 'Cổng chuyển đổi type C siêu bền', 12, 30999.00, 'Thép', '10cm - 2cm', 'd9103061ec5a246e97d2', '2022-10-25 01:52:50', '2022-10-25 01:52:50'),
-(71, 'Vinfast Lux A2.0', 10, '2022-10-30', 'Sự kết hợp giữa dáng vẻ khỏe khoắn và cấu trúc hoàn hảo của ngoại thất tạo nên điểm nhấn sang trọng nhưng vẫn đầy tinh tế cho LUX A2.0, thổi làn gió mới vào thiết kế đặc hữu của dòng sedan thông thường.', 52, 9999.00, 'Thép', '4973 x 1900 x 1500 (mm)', 'bed4db5d0d16175a5e0c', '2022-10-28 06:24:18', '2022-12-21 04:53:13'),
+(71, 'Vinfast Lux A2.0', 8, '2022-10-30', 'Sự kết hợp giữa dáng vẻ khỏe khoắn và cấu trúc hoàn hảo của ngoại thất tạo nên điểm nhấn sang trọng nhưng vẫn đầy tinh tế cho LUX A2.0, thổi làn gió mới vào thiết kế đặc hữu của dòng sedan thông thường.', 52, 9999.00, 'Thép', '4973 x 1900 x 1500 (mm)', 'bed4db5d0d16175a5e0c', '2022-10-28 06:24:18', '2022-12-23 23:04:34'),
 (72, 'Tesla Model X 2022', 15, '2022-10-30', 'Tesla Model X là dòng xe SUV điện hạng sang cỡ trung (mid-size all-electric luxury SUV) của nhà sản xuất xe hơi Tesla, inc (Mỹ). Ra đời lần đầu năm 2015, đến nay Model x vẫn ở thế hệ thứ nhất. Model X được phát triển với nền tảng chiếc sedan Tesla Model S. Cả Model X và Model S đều đang được sản xuất tại Nhà máy Tesla ở Fremont, California.', 52, 19999.00, 'Thép', '5037x 1999x 1676 (mm)', 'a719422a35a053a8821d', '2022-10-28 06:28:25', '2022-12-21 04:50:26');
 
 -- --------------------------------------------------------
@@ -665,7 +668,7 @@ INSERT INTO `users` (`id`, `fullname`, `email`, `username`, `email_verified_at`,
 (34, 'JOMA Tech', 'itmaster2908@gmail.com', 'jomatech99', NULL, '$2y$10$K2mH1tHzSONAaAXlfBWjku/3e78Cn9zyNYHt8rY.0ZGiPMFj50riq', 'USA', '2022-10-12', 1, '0928472632', 'storage/images/88ba41zgejIkVtF0uytAMdRPBpns8R40o4aYw9OC.jpg', 'super admin', NULL, '2022-10-01 07:04:29', '2022-10-02 22:51:46'),
 (35, 'sdvsdbdfbdfbdfb', 'dfbfdbfdbfdb@gmail.com', NULL, NULL, '$2y$10$9qpYKaO8/r4TZnXn9UwSG.ZC61l9mcpxKk6/BWaJqUytcSBbzkCfG', NULL, NULL, NULL, NULL, NULL, 'admin', NULL, '2022-10-01 07:04:54', '2022-10-02 22:51:20'),
 (36, 'Nguyễn Văn Mạnh', 'nguyevanmanhiotit1@gmail.com', NULL, NULL, '$2y$10$eU4KwTHRjuyqnNr0LbMdzun63RfrN7EEtXVv8Dkxyzi69zPSk/eqy', NULL, NULL, NULL, NULL, NULL, 'super admin', NULL, '2022-10-28 06:12:30', '2022-10-28 06:12:30'),
-(37, 'Nguyễn Văn Mạnh fullstack', 'nguyenvanmanhiotit1@gmail.com', 'nguyevanmanhiotit1', NULL, '$2y$10$HLcCwMqnQe/hOOkn.KwGSedrsKgPw2qJ0EGM1g8KTNvYRD0dNpi8e', 'Phú Vang - Thừa Thiên Huế - Việt Nam', '2001-08-29', 1, '0971404372', 'storage/images/Ju0rnVVaJK8bjORho2S3WjImCqHw3EUONuhC7mUp.jpg', 'super admin', NULL, '2022-10-28 06:13:05', '2022-10-30 11:44:27');
+(37, 'Nguyễn Văn Mạnh', 'nguyenvanmanhiotit1@gmail.com', 'nguyevanmanhiotit1', NULL, '$2y$10$LKlZn48ds0cEKIuudBldYeBD1QaW.6sswHWPzB3o79TV9wKDf6eGW', 'Phú Vang - Thừa Thiên Huế - Việt Nam', '2001-08-29', 1, '0971404372', 'storage/images/Ju0rnVVaJK8bjORho2S3WjImCqHw3EUONuhC7mUp.jpg', 'super admin', NULL, '2022-10-28 06:13:05', '2022-12-29 00:12:16');
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -799,7 +802,7 @@ ALTER TABLE `customers`
 -- AUTO_INCREMENT cho bảng `customer_orders`
 --
 ALTER TABLE `customer_orders`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT cho bảng `failed_jobs`
@@ -835,7 +838,7 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT cho bảng `order_details`
 --
 ALTER TABLE `order_details`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT cho bảng `personal_access_tokens`
