@@ -84,7 +84,7 @@ export default {
       FilePicker
     },
     created(){
-        document.title = "Meta Shop - Admin Profile"
+        document.title = "Meta Shop - Profile"
     },
     data(){
         return{

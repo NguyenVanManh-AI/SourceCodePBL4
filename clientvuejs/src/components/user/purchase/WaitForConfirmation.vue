@@ -124,6 +124,9 @@ export default {
             id_cancel:null,
         }
     },
+    setup() {
+        document.title = "Meta Shop - Waiting for Confirmation";
+    },
     mounted(){
 
         this.user = JSON.parse(window.localStorage.getItem('user'));

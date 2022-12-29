@@ -155,7 +155,7 @@ export default {
         ParticleVue32
     },
     setup() {
-        document.title = "Meta Shop | Product"
+        document.title = "Meta Shop - Product"
     },
     data(){
         return {

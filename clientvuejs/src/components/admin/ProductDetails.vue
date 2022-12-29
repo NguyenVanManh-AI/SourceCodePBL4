@@ -130,7 +130,7 @@ export default {
         ParticleVue32
     },
     setup() {
-        document.title = "Meta Shop | Product"
+        document.title = "Meta Shop - Product"
     },
     data(){
         return {
@@ -206,7 +206,7 @@ export default {
         .then( (data) =>{
             // console.log(data);
             this.detailsProduct = data.product ;
-            document.title = "Meta Shop | Product - "+this.detailsProduct.name; 
+            document.title = "Meta Shop - Product - "+this.detailsProduct.name; 
             console.log(this.detailsProduct);
             this.images = data.images;
 

@@ -109,7 +109,7 @@ export default {
         ParticleVue32
     },
     setup() {
-      document.title = "Meta Shop | Customer";
+      document.title = "Meta Shop - Customer";
     },
     data(){
         return {

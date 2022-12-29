@@ -108,7 +108,7 @@ export default {
       ParticleVue3
     },
     created(){
-        document.title = "Meta Shop - User Register"
+        document.title = "Meta Shop - Register";
     },
     data(){
         return{

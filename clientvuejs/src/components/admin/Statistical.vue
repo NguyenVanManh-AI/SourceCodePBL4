@@ -147,7 +147,7 @@ export default {
         Paginate
     },
     setup() {
-        document.title = "Meta Shop | Order"
+        document.title = "Meta Shop - Statistical"
     },
     data(){
         return {

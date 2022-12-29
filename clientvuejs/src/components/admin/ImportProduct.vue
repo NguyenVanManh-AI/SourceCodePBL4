@@ -85,7 +85,7 @@ export default {
         // paginate: Paginate
     },
     setup() {
-      document.title = "Meta Shop | Import Product";
+      document.title = "Meta Shop - Import Product";
     },
     data(){
         return {

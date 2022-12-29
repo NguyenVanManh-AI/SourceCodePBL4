@@ -102,7 +102,7 @@ export default {
         BarChar
     },
     setup() {
-        document.title = "Meta Shop | Dashboard";
+        document.title = "Meta Shop - Dashboard";
     },
     data(){
         return {

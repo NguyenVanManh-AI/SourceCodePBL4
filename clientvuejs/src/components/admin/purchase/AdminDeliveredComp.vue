@@ -96,6 +96,9 @@ export default {
             id_confirm:null,
         }
     },
+    setup() {
+        document.title = "Meta Shop - Admin Delivered";
+    },
     mounted(){
 
         this.admin = JSON.parse(window.localStorage.getItem('admin'));

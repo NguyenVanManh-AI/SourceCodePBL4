@@ -67,9 +67,6 @@ export default {
     Notification,
     ParticleVue32,
   },
-  created(){
-      document.title = "Meta Shop - Admin Profile"
-  },
   data(){
       return{
           changepw:{
@@ -103,10 +100,12 @@ export default {
       }
   },
   setup(){
-    return {
-
-    }
+    document.title = "Meta Shop - Change Password";
   },
+  created(){
+      // document.title = "Meta Shop - Admin Profile";
+      document.title = "Meta Shop - Change Password";
+  },// ta sẽ có created sẽ chạy sau setup() , setup chạy trước 
   computed(){
 
   },

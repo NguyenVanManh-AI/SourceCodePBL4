@@ -83,7 +83,7 @@
         ParticleVue3,
       },
       setup() {
-        document.title = "Meta Shop | Login";
+        document.title = "Meta Shop - Login";
       },
       data(){
           return {

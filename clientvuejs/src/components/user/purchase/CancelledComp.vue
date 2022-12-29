@@ -113,6 +113,9 @@ export default {
           emitEvent('eventUserError','Show Orders Failse !');
         })
     },
+    setup() {
+        document.title = "Meta Shop - Cancelled";
+    },
     methods:{
         viewDetail:function(uri){
             this.$router.push({name:'OrderDetails',params:{id:uri}});

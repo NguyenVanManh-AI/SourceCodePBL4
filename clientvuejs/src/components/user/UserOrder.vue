@@ -90,6 +90,9 @@ export default {
         mainStatus:false,
       }
     },
+    setup() {
+        document.title = "Meta Shop - Order"
+    },
     mounted(){
 
       this.user = JSON.parse(window.localStorage.getItem('user'));

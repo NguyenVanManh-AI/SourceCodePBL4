@@ -117,7 +117,7 @@ export default {
         // ParticleVue32
     },
     setup() {
-        document.title = "Meta Shop | Product"
+        document.title = "Meta Shop - Product";
     },
     data(){
         return {
@@ -190,7 +190,7 @@ export default {
         .then( (data) =>{
             this.detailsProduct = data.product ;
             this.images = data.images;
-            document.title = "Meta Shop | Product - "+this.detailsProduct.product_name; 
+            document.title = "Meta Shop - Product - "+this.detailsProduct.product_name; 
             const { emitEvent } = useEventBus();
             emitEvent('eventSuccess','View Detail Product Success !');
         }) 

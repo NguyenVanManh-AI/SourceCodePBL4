@@ -56,7 +56,7 @@ export default {
       ParticleVue32,
     },
     created(){
-        document.title = "Meta Shop - Admin Profile"
+        document.title = "Meta Shop - Shipping Address"
     },
     data(){
         return{

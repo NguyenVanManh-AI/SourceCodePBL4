@@ -127,7 +127,7 @@ export default {
         ParticleVue32
     },
     setup() {
-      document.title = "Meta Shop | Import Details";
+      document.title = "Meta Shop - Import Details";
     },
     data(){
         return {

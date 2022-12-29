@@ -204,7 +204,7 @@ export default {
         ParticleVue32
     },
     setup() {
-        document.title = "Meta Shop | Provider";
+        document.title = "Meta Shop - Provider";
     },
     data(){
         return {

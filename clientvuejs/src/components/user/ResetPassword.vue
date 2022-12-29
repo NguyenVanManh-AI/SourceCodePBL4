@@ -42,8 +42,7 @@ export default {
         }
     },
     mounted(){
-
-        window.document.title='MetaShop | Reset Password User';
+        window.document.title='MetaShop - Reset Password User';
         let urlParams = new URLSearchParams(window.location.search);
         if(urlParams.has('token')) {
             this.token = urlParams.get('token');

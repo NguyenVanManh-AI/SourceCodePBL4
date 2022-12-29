@@ -24,8 +24,11 @@ export default {
     },
     data(){
     return {
-        border_bts:[false,false,false,false,false],
-    }
+            border_bts:[false,false,false,false,false],
+        }
+    },
+    setup() {
+        document.title = "Meta Shop - Purchase Order";
     },
     mounted(){
         const { onEvent } = useEventBus()

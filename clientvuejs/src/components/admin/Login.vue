@@ -83,7 +83,7 @@ export default {
       TypedText
     },
     setup() {
-      document.title = "Meta Shop | Login";
+      document.title = "Meta Shop - Login";
     },
     data(){
         return {
@@ -198,7 +198,7 @@ export default {
 
     },
     mounted(){
-      window.document.title='MetaShop | Login';
+      window.document.title='MetaShop - Login';
       if(window.localStorage.getItem('admin')){
           this.$router.push({name:"DashboardAdmin"});
       }

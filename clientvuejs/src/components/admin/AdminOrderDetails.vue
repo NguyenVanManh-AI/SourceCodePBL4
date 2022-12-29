@@ -95,6 +95,9 @@ export default {
 
         }
     },
+    setup() {
+        document.title = "Meta Shop - Admin Order Details";
+    },
     mounted(){
         this.uriOrderDetails = location.pathname.substring(21);
         this.admin = JSON.parse(window.localStorage.getItem('admin'));

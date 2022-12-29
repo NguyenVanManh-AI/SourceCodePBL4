@@ -174,7 +174,7 @@ export default {
         ParticleVue32
     },
     setup() {
-      document.title = "Meta Shop | Management Admin";
+      document.title = "Meta Shop - Management Admin";
     },
     data(){
         return {

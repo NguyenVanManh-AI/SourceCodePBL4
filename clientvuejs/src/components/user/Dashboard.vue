@@ -134,6 +134,9 @@ export default {
   created(){
 
   },
+  setup() {
+    document.title = "Meta Shop - Dashboard";
+  },
   mounted(){
 
     var txtquery = 'api/dashboard-customer/all-products3?qr=1';

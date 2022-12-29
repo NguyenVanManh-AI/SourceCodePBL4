@@ -50,7 +50,7 @@ export default {
         ParticleVue32
     },
     setup() {
-        document.title = "Meta Shop | Order"
+        document.title = "Meta Shop - Order"
     },
     data(){
         return {

@@ -75,6 +75,9 @@ export default {
 
         }
     },
+    setup() {
+        document.title = "Meta Shop - Order Details";
+    },
     mounted(){
         this.uriOrderDetails = location.pathname.substring(28);
         this.user = JSON.parse(window.localStorage.getItem('user'));

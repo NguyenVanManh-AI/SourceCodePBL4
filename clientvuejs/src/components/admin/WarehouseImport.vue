@@ -122,7 +122,7 @@ import ParticleVue32 from "./particle/ParticleVue32.vue";
         ParticleVue32
     },
     setup() {
-      document.title = "Meta Shop | Warehouse - Import";
+      document.title = "Meta Shop - Warehouse Import";
     },
     data(){
         return {

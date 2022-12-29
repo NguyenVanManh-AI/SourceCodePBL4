@@ -176,6 +176,9 @@ export default {
 
         }
     },
+    setup() {
+        document.title = "Meta Shop - Admin Order Print PDF";
+    },
     mounted(){
         this.uriOrderDetails = location.pathname.substring(13);
         this.admin = JSON.parse(window.localStorage.getItem('admin'));

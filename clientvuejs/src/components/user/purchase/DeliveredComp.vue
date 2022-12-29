@@ -97,6 +97,9 @@ export default {
             quantity:null,
         }
     },
+    setup() {
+        document.title = "Meta Shop - Delivered";
+    },
     mounted(){
 
         this.user = JSON.parse(window.localStorage.getItem('user'));

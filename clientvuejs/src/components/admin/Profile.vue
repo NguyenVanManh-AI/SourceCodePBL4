@@ -168,7 +168,7 @@ export default {
         this.inf.fullname = this.admin.fullname;
         this.inf.role = this.admin.role;
         this.url_img = config.API_URL + '/' + this.admin.url_img; 
-        window.document.title = "Meta Shop | "+this.inf.fullname;
+        window.document.title = "Meta Shop - "+this.inf.fullname;
 
         // console.log(this.admin);
         // var s = "{\"name\":[\"The name field is required.\"],\"email\":[\"The email field is required.\"],\"password\":[\"The password field is required.\"]}";
